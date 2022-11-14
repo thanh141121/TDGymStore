@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter @Setter
 @Component
+@ConfigurationProperties(prefix = "net.gymstore.jwt")
 public class JwtUtil {
 	private String secret;
 	private int expirationMs;
