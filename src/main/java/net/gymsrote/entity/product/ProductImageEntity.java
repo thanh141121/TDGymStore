@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,18 +29,21 @@ import net.gymsrote.entity.product.ProductEntity;
 @Entity
 @Table(name = "product_image")
 public class ProductImageEntity {
-	@EmbeddedId
-	private ProductImageKey id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
 	@ManyToOne
-    @MapsId("productId")
-	@JoinColumn(name = "product_id")
+	@JoinColumn(name = "id_product")
 	private ProductEntity product;
 	
-
-	@OneToOne(cascade = CascadeType.ALL)
-    @MapsId("cloudResourceId")
-	@JoinColumn(name = "cloud_resource_id", unique = true)
-	private MediaResource cloud;
+	@OneToOne
+	@JoinColumn(name = "id_media")
+	private MediaResource media;
+	
+	public ProductImageEntity(ProductEntity product, MediaResource media) {
+		this.product = product;
+		this.media = media;
+	}
 
 }

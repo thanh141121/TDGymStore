@@ -50,15 +50,9 @@ public class MediaResource {
 	
 	@Column(name = "resource_type")
 	private String resourceType;
-	
-	@OneToOne(mappedBy = "cloud")
-	private ProductImageEntity productImage;
 
-	@OneToOne(mappedBy = "cloud", cascade = CascadeType.ALL)
-	private ProductEntity product;
-	
-	@OneToOne(mappedBy = "avatar")
-	private UserEntity user;
+//	@OneToOne(mappedBy = "avatar")
+//	private UserEntity user;
 
 
 }

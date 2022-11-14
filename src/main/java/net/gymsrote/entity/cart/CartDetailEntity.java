@@ -24,7 +24,7 @@ import net.gymsrote.entity.user.UserEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "cart_detail", uniqueConstraints = {@UniqueConstraint(columnNames = {"cart_id", "product_id"})})
+@Table(name = "cart_detail", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "id_product_variation"})})
 public class CartDetailEntity {
 	
     @EmbeddedId

@@ -44,53 +44,7 @@ import net.gymsrote.entity.order.OrderDetailEntity;
 @Entity
 @Table(name = "product")
 @EntityListeners(AuditingEntityListener.class)
-public class ProductEntity extends BaseEntity{
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	private Long id;	
-	
-//	@Column(name = "name")
-//	private String name;
-		
-//	@Column(name = "description")
-//	private String description;
-	
-//	@Column(name = "price")
-//	private Long price;
-//	
-//	@Column(name = "quantity")
-//	private Long quantity;
-//	
-//	@OneToOne
-//	@JoinColumn(name = "cloud_resource_id")
-//	private MediaResource cloud;
-	
-//	@Column(name = "status")
-//	@Enumerated(EnumType.ORDINAL)
-//	private EProductStatus  status;
-	
-	
-	
-	//
-	
-//	@OneToMany(mappedBy = "product")
-//	private List<OrderDetailEntity> orderDetail = new ArrayList<>();
-//	
-//	@OneToMany(mappedBy = "product")
-//	private List<CartDetailEntity> cartDetail = new ArrayList<>();
-	
-
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
+public class ProductEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
