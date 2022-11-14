@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import io.swagger.annotations.ApiModelProperty.AccessMode;
@@ -32,56 +34,52 @@ import net.gymsrote.filter.CustomAuthorizationFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
+	
 	@Autowired
-	UserDetailsService userDetailsService;
-
+	CustomAuthenticationEntryPoint authenticationExceptionHandling;
+	
+	@Autowired
+	CustomAccessDeniedHandler customAccessDeniedHandler;
+	
 	@Bean
-	public PasswordEncoder bCryptPasswordEncoder()
-	{
-	    return new BCryptPasswordEncoder();
-	}
-
-//	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-		customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-		http.csrf().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
-//		http 
-//			.authorizeRequests()
-//			.antMatchers("/api/admin/login",
-//					"/api/user/login", "/api/user/signup").permitAll()
-//			.and()
-//			.authorizeRequests()
-//			.antMatchers("/api/admin/**").hasAuthority(EUserRole.ROLE_ADMIN.name())
-//			.and()
-//			.authorizeRequests()
-//			.antMatchers("/api/user/**").hasAuthority(EUserRole.ROLE_USER.name())
-//			.and()
-//    		.authorizeRequests()
-//    		.antMatchers("/**").permitAll();
-			
-		http.authorizeHttpRequests().antMatchers("/api/login/**", "/api/token/refresh").permitAll();
-		http.authorizeHttpRequests().antMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("ROLE_USER");
-		http.authorizeHttpRequests().antMatchers(HttpMethod.POST, "/api/user/save/**").hasAuthority(EUserRole.ROLE_ADMIN.name());
-		http.authorizeHttpRequests().anyRequest().authenticated();
-		http.addFilter(customAuthenticationFilter);
-		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-	}
-
+    protected BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+	
 	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+    protected AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    	return authenticationConfiguration.getAuthenticationManager();
+    }    
+    
+    @Bean
+    protected AuthTokenFilter authTokenFilter() {
+		return new AuthTokenFilter();
 	}
+    
+    @Bean
+    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    	http
+    		.cors()
+    		.and()
+	    	.csrf().disable();
+    	
+    	http
+	    	.authorizeRequests()
+			.antMatchers("/api/admin/login",
+						"/api/user/login", "/api/user/signup").permitAll()
+			.and()
+			.authorizeRequests()
+    		.antMatchers("/api/admin/**").hasRole("ADMIN")
+    		.and()
+    		.authorizeRequests()
+    		.antMatchers("/api/user/**").hasRole("USER")
+			.and()
+    		.authorizeRequests()
+    		.antMatchers("/**").permitAll();
+
+    	http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    	return http.build();
+    }
 
 }
