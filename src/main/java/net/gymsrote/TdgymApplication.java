@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.RoleEntity;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.Role;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.service.MediaResourceService;
 import net.gymsrote.service.impl.UserService;
 import springfox.documentation.builders.RequestHandlerSelectors;

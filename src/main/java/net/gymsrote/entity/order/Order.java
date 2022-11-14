@@ -24,14 +24,14 @@ import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.EnumEntity.ETransportation;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.User;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "orders")
-public class OrderEntity {
+public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -54,7 +54,7 @@ public class OrderEntity {
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private UserEntity user;
+	private User user;
 	
 	@Column(name="address_detail")
 	private String address_detail;
@@ -75,6 +75,6 @@ public class OrderEntity {
 	private Long payPrice;
 	
 	@OneToMany(mappedBy = "orders")
-	private List<OrderDetailEntity> orderDetail = new ArrayList<>();
+	private List<OrderDetail> orderDetail = new ArrayList<>();
 
 }

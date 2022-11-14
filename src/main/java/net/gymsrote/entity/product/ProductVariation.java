@@ -31,13 +31,13 @@ public class ProductVariation {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_product")
-	private ProductEntity product;
+	private Product product;
 	
 	@Column(name = "variation_name")
 	private String variationName;
 	
-	@Column(name = "tier")
-	private String tier;
+//	@Column(name = "tier")
+//	private String tier;
 	
 	@Column(name = "price", nullable = false)
 	private Long price;
@@ -52,19 +52,18 @@ public class ProductVariation {
 	@Enumerated(EnumType.ORDINAL)
 	private EProductVariationStatus status;
 	
-	public ProductVariation(ProductEntity product, String variationName, String tier, Long price, Long availableQuantity,
+	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity,
 			EProductVariationStatus status) {
 		this.product = product;
 		this.variationName = variationName;
-		this.tier = tier;
 		this.price = price;
 		this.availableQuantity = availableQuantity;
 		this.status = status;
 	}
 
-	public ProductVariation(ProductEntity product, String variationName, String tier, Long price, Long availableQuantity, Integer discount,
+	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity, Integer discount,
 			EProductVariationStatus status) {
-		this(product, variationName, tier, price, availableQuantity, status);
+		this(product, variationName, price, availableQuantity, status);
 		
 		if (discount == null) {
 			this.discount = 0;

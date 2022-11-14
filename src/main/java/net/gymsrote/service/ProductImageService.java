@@ -14,8 +14,8 @@ import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.ProductImageDTO;
 import net.gymsrote.entity.MediaResource;
-import net.gymsrote.entity.product.ProductEntity;
-import net.gymsrote.entity.product.ProductImageEntity;
+import net.gymsrote.entity.product.Product;
+import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.repository.ProductImageRepo;
 import net.gymsrote.repository.ProductRepo;
 import net.gymsrote.service.utils.ServiceUtils;
@@ -40,9 +40,9 @@ public class ProductImageService {
 	}
 	
 	@Transactional
-	public ListResponse<ProductImageDTO> create(ProductEntity p, List<MultipartFile> images) {
+	public ListResponse<ProductImageDTO> create(Product p, List<MultipartFile> images) {
 		List<MediaResource> mrs = new ArrayList<>();
-		List<ProductImageEntity> pimgs = new ArrayList<>();
+		List<ProductImage> pimgs = new ArrayList<>();
 		
 		try {
 			for (MultipartFile image : images) {
@@ -50,7 +50,7 @@ public class ProductImageService {
 				mrs.add(mr);
 				pimgs.add(
 						productImageRepo.save(
-							new ProductImageEntity(
+							new ProductImage(
 									p, 
 									mr
 								)
@@ -72,10 +72,10 @@ public class ProductImageService {
 			throw new CommonRuntimeException("At least one image is specified to be deleted");
 		}
 		
-		List<ProductImageEntity> l = new ArrayList<>();
+		List<ProductImage> l = new ArrayList<>();
 		for (Long idProductImage : idProductImages) {
-			ProductImageEntity img = productImageRepo.getReferenceById(idProductImage);
-			ProductEntity p = img.getProduct();
+			ProductImage img = productImageRepo.getReferenceById(idProductImage);
+			Product p = img.getProduct();
 			
 			if (!p.getId().equals(idProduct)) {
 				throw new CommonRuntimeException("Product doesn't have any image with id " + idProductImage.toString());
@@ -87,12 +87,12 @@ public class ProductImageService {
 	}
 	
 	@Transactional
-	private void deleteWithEntity(List<ProductImageEntity> productImages) {
+	private void deleteWithEntity(List<ProductImage> productImages) {
 		if (productImages.get(0).getProduct().getImages().size() - productImages.size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_IMAGE) {
 			throw new InvalidInputDataException(String.format("Product should have at least %d image(s)", PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_IMAGE));
 		}
 		
-		for (ProductImageEntity productImage : productImages) {
+		for (ProductImage productImage : productImages) {
 			MediaResource media = productImage.getMedia();
 			productImage.setMedia(null);
 			mediaResourceService.delete(media.getId());

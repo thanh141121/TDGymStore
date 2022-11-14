@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.product.ProductEntity;
+import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductVariation;
 
 @Getter
@@ -19,7 +19,7 @@ import net.gymsrote.entity.product.ProductVariation;
 @NoArgsConstructor
 @Entity
 @Table(name = "orders_detail")
-public class OrderDetailEntity {
+public class OrderDetail {
 	
     @EmbeddedId
     private OrderDetailKey id;
@@ -27,7 +27,7 @@ public class OrderDetailEntity {
     @ManyToOne
     @MapsId("ordersId")
     @JoinColumn(name = "orders_id")
-    OrderEntity orders;
+    Order orders;
     
 	@ManyToOne
 	@MapsId("idProductVariation")
@@ -43,7 +43,7 @@ public class OrderDetailEntity {
 	@Column(name = "reviewed")
 	private Boolean reviewed;
 	
-	public OrderDetailEntity(OrderEntity orders, ProductVariation productVariation, Long quantity, Long unitPrice) {
+	public OrderDetail(Order orders, ProductVariation productVariation, Long quantity, Long unitPrice) {
 		this.orders = orders;
 		this.productVariation = productVariation;
 		this.quantity = quantity;

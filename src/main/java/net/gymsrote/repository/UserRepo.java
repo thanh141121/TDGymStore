@@ -5,18 +5,18 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.User;
 
-public interface UserRepo extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByEmail(String email);
+public interface UserRepo extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 
-    Optional<UserEntity> findByUsernameOrEmail(String username, String email);
+    Optional<User> findByUsernameOrEmail(String username, String email);
 
-    List<UserEntity> findByIdIn(List<Long> userIds);
+    List<User> findByIdIn(List<Long> userIds);
 
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 
-    UserEntity findByUsernameAndPassword(String username, String password);
+    User findByUsernameAndPassword(String username, String password);
 
     Boolean existsByUsername(String username);
 

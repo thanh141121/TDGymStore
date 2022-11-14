@@ -14,6 +14,7 @@ import net.gymsrote.controller.advice.exception.CommonRestException;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.UpdatableAvatar;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.product.ProductCategory;
@@ -38,7 +39,7 @@ public class ServiceUtils {
 			throw new CommonRestException("Can not processing new avatar");
 		}
 		if (entity.getAvatar() != null) {
-			var oldAvatar = entity.getAvatar();
+			MediaResource oldAvatar = entity.getAvatar();
 			entity.setAvatar(null);
 			mediaResourceService.delete(oldAvatar.getId());
 		}

@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,13 +28,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.bytebuddy.implementation.bind.annotation.Super;
-import net.gymsrote.entity.BaseEntity;
 import net.gymsrote.entity.MediaResource;
-import net.gymsrote.entity.EnumEntity.EOrderStatus;
+import net.gymsrote.entity.UpdatableAvatar;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
-import net.gymsrote.entity.cart.CartDetailEntity;
-import net.gymsrote.entity.order.OrderDetailEntity;
 
 @Getter
 @Setter
@@ -44,7 +38,7 @@ import net.gymsrote.entity.order.OrderDetailEntity;
 @Entity
 @Table(name = "product")
 @EntityListeners(AuditingEntityListener.class)
-public class ProductEntity{
+public class Product implements UpdatableAvatar{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -57,7 +51,7 @@ public class ProductEntity{
 	private List<ProductVariation> variations = new ArrayList<>();
 
 	@OneToMany(mappedBy = "product",cascade =  CascadeType.ALL)
-	private List<ProductImageEntity> images = new ArrayList<>();
+	private List<ProductImage> images = new ArrayList<>();
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_avatar")
@@ -120,7 +114,7 @@ public class ProductEntity{
 	@LastModifiedDate
 	private Date lastModifiedDate;
 
-	public ProductEntity(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
+	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;
 		this.name = name;
 		this.description = description;

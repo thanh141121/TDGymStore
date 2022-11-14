@@ -18,14 +18,14 @@ import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.product.ProductVariation;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.User;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "cart_detail", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "id_product_variation"})})
-public class CartDetailEntity {
+public class CartDetail {
 	
     @EmbeddedId
     private CartDetailKey id;
@@ -33,7 +33,7 @@ public class CartDetailEntity {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    UserEntity buyer;
+    User buyer;
     
 	@MapsId("idProductVariation")
 	@ManyToOne
@@ -43,7 +43,7 @@ public class CartDetailEntity {
     @Column(name="quantity")
     private Long quantity;
     
-	public CartDetailEntity(UserEntity buyer, ProductVariation productVariation, Long quantity) {
+	public CartDetail(User buyer, ProductVariation productVariation, Long quantity) {
 		this.buyer = buyer;
 		this.productVariation = productVariation;
 		this.quantity = quantity;

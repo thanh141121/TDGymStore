@@ -38,9 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.RoleEntity;
-import net.gymsrote.entity.user.UserEntity;
-import net.gymsrote.entity.user.UserRoleEntity;
+import net.gymsrote.entity.user.Role;
+import net.gymsrote.entity.user.User;
+import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.service.impl.UserService;
 
 @RestController
@@ -51,7 +51,7 @@ public class UserResource {
 	
 	//Change to admin/users
 	@GetMapping("/user/users")
-	public ResponseEntity<List<UserEntity>> getUsers(){
+	public ResponseEntity<List<User>> getUsers(){
 		return ResponseEntity.ok().body(userService.getUsers());
 	}
 	
@@ -65,7 +65,7 @@ public class UserResource {
 				JWTVerifier verifier = JWT.require(algorithm).build();
 				DecodedJWT decodedJWT = verifier.verify(refreshToken);
 				String username = decodedJWT.getSubject();
-				UserEntity user = userService.getUser(username);
+				User user = userService.getUser(username);
 				String accessToken = JWT.create()
 						.withSubject(user.getUsername())
 						.withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
@@ -92,13 +92,13 @@ public class UserResource {
 	}
 	
 	@PostMapping("/user/save")
-	public ResponseEntity<UserEntity> saveUser(@RequestBody UserEntity user){
+	public ResponseEntity<User> saveUser(@RequestBody User user){
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toString());
 		return ResponseEntity.created(uri).body(userService.saveUser(user));
 	}
 	
 	@PostMapping("/admin/role/save")
-	public ResponseEntity<RoleEntity> saveRole(@RequestBody RoleEntity role){
+	public ResponseEntity<Role> saveRole(@RequestBody Role role){
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/admin/role/save").toString());
 		return ResponseEntity.created(uri).body(userService.saveRole(role));
 	}

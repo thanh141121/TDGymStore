@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.entity.EnumEntity.EProductStatus;
-import net.gymsrote.entity.product.ProductEntity;
+import net.gymsrote.entity.product.Product;
 import net.gymsrote.service.NeedImpl.ProductRepoCustom;
 import net.gymsrote.service.NeedImpl.RefreshableRepo;
 
 @Repository
 public interface ProductRepo
-		extends JpaRepository<ProductEntity, Long>, ProductRepoCustom, RefreshableRepo<ProductEntity> {
+		extends JpaRepository<Product, Long>, ProductRepoCustom, RefreshableRepo<Product> {
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE product SET nvisit = nvisit + 1 WHERE id = ?1", nativeQuery = true)
@@ -52,12 +52,12 @@ public interface ProductRepo
 			nativeQuery = true)
 	int updateAverageRating(Long id, Integer point);
 
-	List<ProductEntity> findTop10ByStatusOrderByMaxDiscountDesc(EProductStatus status);
+	List<Product> findTop10ByStatusOrderByMaxDiscountDesc(EProductStatus status);
 
-	List<ProductEntity> findTop10ByStatusOrderByCreatedDateDesc(EProductStatus status);
+	List<Product> findTop10ByStatusOrderByCreatedDateDesc(EProductStatus status);
 
-	List<ProductEntity> findTop10ByStatusOrderByNvisitDesc(EProductStatus status);
+	List<Product> findTop10ByStatusOrderByNvisitDesc(EProductStatus status);
 
-	List<ProductEntity> findTop10ByStatusOrderByNsoldDesc(EProductStatus status);
+	List<Product> findTop10ByStatusOrderByNsoldDesc(EProductStatus status);
 	// List<Product> findByName(String name);
 }

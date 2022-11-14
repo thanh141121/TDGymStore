@@ -19,29 +19,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
-import net.gymsrote.entity.cart.CartDetailEntity;
-import net.gymsrote.entity.order.OrderDetailEntity;
-import net.gymsrote.entity.product.ProductEntity;
+import net.gymsrote.entity.cart.CartDetail;
+import net.gymsrote.entity.order.OrderDetail;
+import net.gymsrote.entity.product.Product;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "product_image")
-public class ProductImageEntity {
+public class ProductImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_product")
-	private ProductEntity product;
+	private Product product;
 	
 	@OneToOne
 	@JoinColumn(name = "id_media")
 	private MediaResource media;
 	
-	public ProductImageEntity(ProductEntity product, MediaResource media) {
+	public ProductImage(Product product, MediaResource media) {
 		this.product = product;
 		this.media = media;
 	}
