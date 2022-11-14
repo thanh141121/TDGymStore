@@ -24,10 +24,10 @@ import net.gymsrote.entity.user.UserEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cloud_resource")
-public class CloudResource {
+@Table(name = "media_resource")
+public class MediaResource {
 	
-	public CloudResource(String url, String publicId, String resourceType) {
+	public MediaResource(String url, String publicId, String resourceType) {
 		this.url = url;
 		this.publicId = publicId;
 		this.resourceType = resourceType;

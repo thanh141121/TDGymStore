@@ -28,7 +28,6 @@ public class ProductCategoryEntity {
 	@Column(name = "name")
 	private String name;
 	
-    /*@OneToMany(mappedBy = "category")
-    private List<ProductEntity> news = new ArrayList<>();*/
+
 
 }

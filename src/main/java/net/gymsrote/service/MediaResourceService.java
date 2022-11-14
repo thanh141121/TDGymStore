@@ -8,12 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.CloudinaryUploadResponse;
-import net.gymsrote.entity.CloudResource;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.repository.CloudResourceRepo;
 import net.gymsrote.service.thirdparty.CloudinaryService;
 
 @Service
-public class CloudResourceService {
+public class MediaResourceService {
 	@Autowired
 	CloudResourceRepo repo;
 
@@ -22,12 +22,12 @@ public class CloudResourceService {
 
 	@SuppressWarnings("unused")
 	@Transactional
-	public CloudResource save(byte[] data) {
+	public MediaResource save(byte[] data) {
 		CloudinaryUploadResponse resp = null;
 		try {
 			resp = cloudinaryService.upload(data);
-			CloudResource m =
-					new CloudResource(resp.getUrl(), resp.getPublicId(), resp.getResourceType());
+			MediaResource m =
+					new MediaResource(resp.getUrl(), resp.getPublicId(), resp.getResourceType());
 			return repo.save(m);
 		} catch (IOException e) {
 			if (resp != null) { // resource has been uploaded to 3rd service
@@ -49,12 +49,12 @@ public class CloudResourceService {
 	}
 
 	public void delete(Long id) {
-		CloudResource m = repo.findById(id).orElseThrow(
+		MediaResource m = repo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("Media resource can not be found"));
 		delete(m);
 	}
 
-	public void delete(CloudResource m) {
+	public void delete(MediaResource m) {
 		try {
 			if (m.getResourceType().equals("video"))
 				cloudinaryService.deleteVideo(m.getPublicId());

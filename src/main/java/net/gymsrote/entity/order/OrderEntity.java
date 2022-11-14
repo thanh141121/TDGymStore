@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
+import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.EnumEntity.ETransportation;
 import net.gymsrote.entity.user.UserEntity;
 
@@ -47,13 +48,31 @@ public class OrderEntity {
 	@Enumerated(EnumType.STRING)
 	private EOrderStatus  status;
 	
-	@Column(name = "transportation")
+	@Column(name = "payment_method")
 	@Enumerated(EnumType.STRING)
-	private ETransportation  transportation;
+	private EPaymentMethod paymentMethod;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private UserEntity user;
+	
+	@Column(name="address_detail")
+	private String address_detail;
+	
+	@Column(name="receiver_phone")
+	private String receiver_phone;
+	
+	@Column(name = "receiver_name")
+	private String receiver_name;
+	
+	@Column(name = "create_time")
+	private Date createTime;
+
+	@Column(name = "price")
+	private Long price = 0L;
+
+	@Column(name = "payPrice")
+	private Long payPrice;
 	
 	@OneToMany(mappedBy = "orders")
 	private List<OrderDetailEntity> orderDetail = new ArrayList<>();

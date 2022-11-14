@@ -27,10 +27,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.CloudResource;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
 import net.gymsrote.entity.address.AddressEntity;
-import net.gymsrote.entity.cart.CartEntity;
+import net.gymsrote.entity.cart.CartDetailEntity;
 
 @Getter
 @Setter
@@ -38,16 +38,7 @@ import net.gymsrote.entity.cart.CartEntity;
 @Entity
 @Table(name = "user")
 public class UserEntity {
-//	public UserEntity(String email, String username, String password, String fullname, String phone,
-//			Collection<RoleEntity> roles) {
-//		super();
-//		this.email = email;
-//		this.username = username;
-//		this.password = password;
-//		this.fullname = fullname;
-//		this.phone = phone;
-//		this.roles = roles;
-//	}
+
 	public UserEntity(String email, String username, String password, String fullname, String phone,
 			Collection<UserRoleEntity> userRoles) {
 		super();
@@ -101,22 +92,9 @@ public class UserEntity {
 	
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cloud_resource_id", referencedColumnName = "id")
-	private CloudResource avatar;
-//    @MapsId("cloudResourceId")
-//	@JoinColumn(name = "cloud_resource_id",nullable = true)
-    
-    
-	
-//	@ManyToOne 
-//	@JoinColumn(name = "role_id") 
-//	private UserRoleEntity role;
-    
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_roles",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id"),
-//            uniqueConstraints=@UniqueConstraint(columnNames={"user_id", "role_id"})
-//    )
+	private MediaResource avatar;
+
+
     @OneToMany(mappedBy = "users")
     @JsonManagedReference
     private Collection<UserRoleEntity> userRoles = new HashSet<>();
@@ -124,8 +102,9 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user")
 	private List<AddressEntity> addresses = new ArrayList<AddressEntity>();
 	
-	@OneToOne(mappedBy = "user")
-	private CartEntity cart;
+
+	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+	private List<CartDetailEntity> cart;
 	
 
 }

@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import net.gymsrote.entity.CloudResource;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.RoleEntity;
 import net.gymsrote.entity.user.UserEntity;
-import net.gymsrote.service.CloudResourceService;
+import net.gymsrote.service.MediaResourceService;
 import net.gymsrote.service.impl.UserService;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.product.ProductEntity;
+import net.gymsrote.entity.product.ProductVariation;
 
 @Getter
 @Setter
@@ -27,15 +28,30 @@ public class OrderDetailEntity {
     @MapsId("ordersId")
     @JoinColumn(name = "orders_id")
     OrderEntity orders;
-
-    @ManyToOne
-    @MapsId("productId")
-    @JoinColumn(name = "product_id")
-    ProductEntity product;
+    
+	@ManyToOne
+	@MapsId("idProductVariation")
+	@JoinColumn(name = "id_product_variation", insertable = false, updatable = false)
+	private ProductVariation productVariation;
     
     @Column(name="quantity")
     private Long quantity;
+
+	@Column(name = "unit_price")
+	private Long unitPrice;
 	
+	@Column(name = "reviewed")
+	private Boolean reviewed;
+	
+	public OrderDetailEntity(OrderEntity orders, ProductVariation productVariation, Long quantity, Long unitPrice) {
+		this.orders = orders;
+		this.productVariation = productVariation;
+		this.quantity = quantity;
+		this.unitPrice = unitPrice;
+		
+		this.id = new OrderDetailKey(orders.getId(), productVariation.getId());
+		this.reviewed = false;
+	}
 	
 
 }

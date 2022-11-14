@@ -27,7 +27,6 @@ import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
 import net.gymsrote.entity.address.AddressEntity;
-import net.gymsrote.entity.cart.CartEntity;
 
 @Getter
 @Setter

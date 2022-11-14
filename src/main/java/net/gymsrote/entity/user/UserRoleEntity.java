@@ -15,10 +15,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.CloudResource;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
 import net.gymsrote.entity.address.AddressEntity;
-import net.gymsrote.entity.cart.CartEntity;
 import net.gymsrote.entity.order.OrderDetailKey;
 import net.gymsrote.entity.order.OrderEntity;
 

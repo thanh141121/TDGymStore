@@ -15,10 +15,11 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.CloudResource;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.cart.CartDetailEntity;
 import net.gymsrote.entity.order.OrderDetailEntity;
+import net.gymsrote.entity.product.ProductEntity;
 
 @Getter
 @Setter
@@ -38,6 +39,6 @@ public class ProductImageEntity {
 	@OneToOne(cascade = CascadeType.ALL)
     @MapsId("cloudResourceId")
 	@JoinColumn(name = "cloud_resource_id", unique = true)
-	private CloudResource cloud;
+	private MediaResource cloud;
 
 }

@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 @EqualsAndHashCode
 @Embeddable
 public class OrderDetailKey implements Serializable {
@@ -25,6 +27,6 @@ public class OrderDetailKey implements Serializable {
 	@Column(name = "orders_id")
 	Long ordersId;
 
-	@Column(name = "product_id")
-	Long productId;
+	@Column(name="id_product_variation")
+	private Long idProductVariation;
 }
