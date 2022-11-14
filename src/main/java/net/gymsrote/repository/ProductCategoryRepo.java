@@ -13,7 +13,7 @@ import net.gymsrote.service.NeedImpl.ProductCategoryRepoCustom;
 
 @Repository
 public interface ProductCategoryRepo
-		extends JpaRepository<ProductCategory, Long>, ProductCategoryRepoCustom {
+		extends JpaRepository<ProductCategory, Long>{//, ProductCategoryRepoCustom {
 	/*@Query(value = "WITH RECURSIVE cte as (\r\n" + "	SELECT *\r\n"
 			+ "		FROM product_category\r\n" + "		WHERE id = :categoryId\r\n"
 			+ "	UNION ALL\r\n" + "    SELECT product_category.*\r\n"

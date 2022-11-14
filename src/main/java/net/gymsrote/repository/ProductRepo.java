@@ -11,11 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.service.NeedImpl.ProductRepoCustom;
-import net.gymsrote.service.NeedImpl.RefreshableRepo;
 
 @Repository
 public interface ProductRepo
-		extends JpaRepository<Product, Long>, ProductRepoCustom, RefreshableRepo<Product> {
+		extends JpaRepository<Product, Long>{//, ProductRepoCustom//, RefreshableRepo<Product> {
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE product SET nvisit = nvisit + 1 WHERE id = ?1", nativeQuery = true)

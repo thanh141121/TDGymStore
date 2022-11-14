@@ -42,10 +42,10 @@ public class LogService {
 		);
 	}
 	
-	public ListWithPagingResponse<LogDTO> search(LogFilter filter, PagingInfo pagingInfo) {
-		return serviceUtils.convertToListResponse(
-				logRepo.search(filter, pagingInfo),
-				LogDTO.class
-			);
-	}
+//	public ListWithPagingResponse<LogDTO> search(LogFilter filter, PagingInfo pagingInfo) {
+//		return serviceUtils.convertToListResponse(
+//				logRepo.search(filter, pagingInfo),
+//				LogDTO.class
+//			);
+//	}
 }

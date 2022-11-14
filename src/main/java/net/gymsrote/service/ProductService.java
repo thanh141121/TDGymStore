@@ -59,11 +59,11 @@ public class ProductService {
 	@Autowired
 	ServiceUtils serviceUtils;
 
-	public ListWithPagingResponse<ProductGeneralDetailDTO> search(ProductFilter filter,
-			PagingInfo pagingInfo) {
-		return serviceUtils.convertToListResponse(productRepo.search(filter, pagingInfo),
-				ProductGeneralDetailDTO.class);
-	}
+//	public ListWithPagingResponse<ProductGeneralDetailDTO> search(ProductFilter filter,
+//			PagingInfo pagingInfo) {
+//		return serviceUtils.convertToListResponse(productRepo.search(filter, pagingInfo),
+//				ProductGeneralDetailDTO.class);
+//	}
 
 	public ListResponse<ProductGeneralDetailDTO> getTopSaleProduct() {
 		return serviceUtils.convertToListResponse(
@@ -128,7 +128,7 @@ public class ProductService {
 		p = productRepo.saveAndFlush(p);
 		productImageService.create(p, images);
 		productVariationService.create(p, data.getVariations());
-		productRepo.refresh(p);
+		//productRepo.refresh(p);
 		updatePrice(p, p.getVariations());
 //		if (p.getCategory().getParent() != null) {
 //			p.setParents(productCategoryRepo.findAncestry(p.getCategory().getParent().getId()));
