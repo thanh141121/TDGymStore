@@ -35,6 +35,8 @@ import net.gymsrote.filter.CustomAuthorizationFilter;
 @RequiredArgsConstructor
 
 public class SecurityConfig {
+	@Autowired
+	UserDetailsService userDetailsService;
 	
 	@Autowired
 	CustomAuthenticationEntryPoint authenticationExceptionHandling;
@@ -56,6 +58,7 @@ public class SecurityConfig {
     protected AuthTokenFilter authTokenFilter() {
 		return new AuthTokenFilter();
 	}
+
     
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

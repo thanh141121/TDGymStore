@@ -29,7 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 @Transactional
 @Slf4j
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService{
 	@Autowired
 	private UserRepo userRepo;
 
@@ -82,23 +82,5 @@ public class UserService implements IUserService, UserDetailsService {
 		return userRepo.findAll();
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username);
-		if (user == null) {
-			log.error("User not found in the databse");
-			throw new UsernameNotFoundException("User not found in the databse");
-		} else {
-			log.info("User found in the database {}", username);
-		}
-		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		user.getUserRoles().forEach(uRole -> {
-			authorities.add(new SimpleGrantedAuthority(uRole.getRoles().getName().name()));
-		});
-		// user.getRoles().forEach(role -> {
-		// authorities.add(new SimpleGrantedAuthority(role.getName().name()));
-		// });
-		return new org.springframework.security.core.userdetails.User(user.getUsername(),
-				user.getPassword(), authorities);
-	}
+
 }
