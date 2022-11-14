@@ -23,7 +23,7 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.RoleEntity;
 import net.gymsrote.entity.user.UserEntity;
 import net.gymsrote.repository.RoleRepository;
-import net.gymsrote.repository.UserRepository;
+import net.gymsrote.repository.UserRepo;
 // import net.gymsrote.security.JwtTokenProvider;
 
 import javax.validation.Valid;

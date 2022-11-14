@@ -16,7 +16,7 @@ import net.gymsrote.entity.user.RoleEntity;
 import net.gymsrote.entity.user.UserEntity;
 import net.gymsrote.entity.user.UserRoleEntity;
 import net.gymsrote.repository.RoleRepository;
-import net.gymsrote.repository.UserRepository;
+import net.gymsrote.repository.UserRepo;
 import net.gymsrote.repository.UserRoleRepo;
 import net.gymsrote.service.IUserService;
 
@@ -31,7 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Slf4j
 public class UserService implements IUserService, UserDetailsService {
 	@Autowired
-	private UserRepository userRepo;
+	private UserRepo userRepo;
 
 	@Autowired
 	private UserRoleRepo userRoleRepo;
