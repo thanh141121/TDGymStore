@@ -13,44 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-//import net.gymsrote.controller.TestRequest;
-//import net.gymsrote.controller.TierVariation;
-//import net.gymsrote.controller.advice.exception.CommonRuntimeException;
-//import net.gymsrote.controller.advice.exception.InvalidInputDataException;
-//import net.gymsrote.controller.payload.dto.ProductGeneralDetailDTO;
-//import net.gymsrote.controller.payload.dto.productdetail.ProductDetailDTO;
-//import net.gymsrote.controller.payload.request.product.CreateProductRequest;
-//import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
-//import net.gymsrote.controller.payload.response.DataResponse;
-//import net.gymsrote.controller.payload.response.ListResponse;
-//import net.gymsrote.controller.payload.response.ListWithPagingResponse;
-//import net.gymsrote.entity.product.Product;
-//import net.gymsrote.entity.product.ProductCategory;
-//import net.gymsrote.entity.product.ProductVariation;
-//import net.gymsrote.repository.ProductCategoryRepo;
-//import net.gymsrote.repository.ProductRepo;
-//import net.gymsrote.repository.ProductVariationRepo;
-//import net.gymsrote.service.util.ServiceUtils;
-//import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
-//import net.gymsrote.entity.EnumEntity.EProductStatus;
-//import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
-//import net.gymsrote.entity.EnumEntity.PlatformPolicyParameter;
-//import net.gymsrote.controller.payload.request.filter.PagingInfo;
-//import net.gymsrote.controller.payload.request.filter.ProductFilter;
+import net.gymsrote.repository.ProductRepo;
+
 
 @Service
 public class ProductService {
-//	@Autowired
-//	LogService logService;
-//
-//	@Autowired
-//	ProductRepo productRepo;
-//
-//	@Autowired
-//	ProductImageService productImageService;
-//
-//	@Autowired
-//	MediaResourceService mediaResourceService;
+	@Autowired
+	LogService logService;
+
+	@Autowired
+	ProductRepo productRepo;
+
+	@Autowired
+	ProductImageService productImageService;
+
+	@Autowired
+	MediaResourceService mediaResourceService;
 //
 //	@Autowired
 //	ProductVariationService productVariationService;
