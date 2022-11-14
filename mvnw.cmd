@@ -92,7 +92,7 @@ set EXEC_DIR=%CD%
 set WDIR=%EXEC_DIR%
 :findBaseDir
 IF EXIST "%WDIR%"\.mvn goto baseDirFound
-cd ..
+cd .
 IF "%WDIR%"=="%CD%" goto baseDirNotFound
 set WDIR=%CD%
 goto findBaseDir
@@ -137,7 +137,7 @@ if exist %WRAPPER_JAR% (
         SET DOWNLOAD_URL="%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
     )
     if "%MVNW_VERBOSE%" == "true" (
-        echo Couldn't find %WRAPPER_JAR%, downloading it ...
+        echo Couldn't find %WRAPPER_JAR%, downloading it ..
         echo Downloading from: %DOWNLOAD_URL%
     )
 

@@ -1,4 +1,4 @@
-package net.gymsrote.exception;
+package net.gymsrote.controller.advice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

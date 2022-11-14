@@ -1,7 +1,6 @@
-package net.gymsrote.exception;
+package net.gymsrote.controller.advice.exception;
 
 public class InvalidInputDataException extends RuntimeException {
-
 	/**
 	 * 
 	 */

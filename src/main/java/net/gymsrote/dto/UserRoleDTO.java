@@ -5,9 +5,9 @@ import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UserRoleDTO {
 	private Long id;
 	private EUserRole name;
-
 }

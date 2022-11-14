@@ -9,6 +9,6 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.UserEntity;
 import net.gymsrote.entity.user.RoleEntity;
 
-public interface RoleRepository extends JpaRepository<RoleEntity, Long>{
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 	RoleEntity findByName(EUserRole roleName);
 }

@@ -17,7 +17,6 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.product.ProductEntity;
 import net.gymsrote.entity.user.UserEntity;
 
 @Getter
@@ -29,14 +28,14 @@ public class CartEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "total")
 	private Long total;
-	
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserEntity user;
-    
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private UserEntity user;
+
 	@OneToMany(mappedBy = "cart")
 	private List<CartDetailEntity> cart = new ArrayList<>();
 }
