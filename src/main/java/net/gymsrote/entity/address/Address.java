@@ -12,14 +12,14 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.User;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "address")
-public class AddressEntity {
+public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,5 +36,5 @@ public class AddressEntity {
 	
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 }

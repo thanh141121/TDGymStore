@@ -29,18 +29,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
-import net.gymsrote.entity.address.AddressEntity;
-import net.gymsrote.entity.cart.CartDetailEntity;
+import net.gymsrote.entity.address.Address;
+import net.gymsrote.entity.cart.CartDetail;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
-public class UserEntity {
+public class User {
 
-	public UserEntity(String email, String username, String password, String fullname, String phone,
-			Collection<UserRoleEntity> userRoles) {
+	public User(String email, String username, String password, String fullname, String phone,
+			Collection<UserRole> userRoles) {
 		super();
 		this.email = email;
 		this.username = username;
@@ -50,7 +50,7 @@ public class UserEntity {
 		this.userRoles = userRoles;
 	}
 
-	public UserEntity(String email, String username, String password, String fullname, String phone,
+	public User(String email, String username, String password, String fullname, String phone,
 			EUserStatus status) {
 		this.email = email;
 		this.username = username;
@@ -59,7 +59,7 @@ public class UserEntity {
 		this.status = status;
 	}
 	
-    public UserEntity(String fullname, String username, String email, String password) {
+    public User(String fullname, String username, String email, String password) {
         this.fullname = fullname;
         this.username = username;
         this.email = email;
@@ -97,14 +97,14 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "users")
     @JsonManagedReference
-    private Collection<UserRoleEntity> userRoles = new HashSet<>();
+    private Collection<UserRole> userRoles = new HashSet<>();
 	
 	@OneToMany(mappedBy = "user")
-	private List<AddressEntity> addresses = new ArrayList<AddressEntity>();
+	private List<Address> addresses = new ArrayList<Address>();
 	
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
-	private List<CartDetailEntity> cart;
+	private List<CartDetail> cart;
 	
 
 }

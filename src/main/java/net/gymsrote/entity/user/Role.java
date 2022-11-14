@@ -26,15 +26,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
-import net.gymsrote.entity.address.AddressEntity;
+import net.gymsrote.entity.address.Address;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
-public class RoleEntity {
-	public RoleEntity(EUserRole name) {
+public class Role {
+	public Role(EUserRole name) {
 		super();
 		this.name = name;
 	}
@@ -52,7 +52,7 @@ public class RoleEntity {
 	
     @OneToMany(mappedBy = "roles")
     @JsonManagedReference
-    private Collection<UserRoleEntity> userRoles = new HashSet<>();
+    private Collection<UserRole> userRoles = new HashSet<>();
 //	@OneToMany(mappedBy = "role") 
 //	private List<UserEntity> user = new ArrayList<>();
 }

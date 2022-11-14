@@ -16,9 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.gymsrote.entity.product.ProductEntity;
-import net.gymsrote.entity.product.ProductImageEntity;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.product.Product;
+import net.gymsrote.entity.product.ProductImage;
+import net.gymsrote.entity.user.User;
 
 @Getter @Setter
 @NoArgsConstructor

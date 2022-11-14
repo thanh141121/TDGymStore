@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.ELogType;
-import net.gymsrote.entity.user.UserEntity;
+import net.gymsrote.entity.user.User;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -35,7 +35,7 @@ public class Log {
 	
 	@OneToOne
 	@JoinColumn(name = "id_user")
-	private UserEntity user;
+	private User user;
 	
 	@Column(name = "date")
 	@CreatedDate
@@ -47,7 +47,7 @@ public class Log {
 	
 	private String content;
 
-	public Log(UserEntity user, String content, ELogType logType) {
+	public Log(User user, String content, ELogType logType) {
 		this.user = user;
 		this.content = content;
 		this.logType = logType;

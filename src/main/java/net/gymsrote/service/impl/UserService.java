@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.RoleEntity;
-import net.gymsrote.entity.user.UserEntity;
-import net.gymsrote.entity.user.UserRoleEntity;
+import net.gymsrote.entity.user.Role;
+import net.gymsrote.entity.user.User;
+import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.repository.UserRoleRepo;
@@ -43,14 +43,14 @@ public class UserService implements IUserService, UserDetailsService {
 	PasswordEncoder passwordEncoder;
 
 	@Override
-	public UserEntity saveUser(UserEntity user) {
+	public User saveUser(User user) {
 		log.info("Saving user {} to the database", user.getFullname());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return userRepo.save(user);
 	}
 
 	@Override
-	public RoleEntity saveRole(RoleEntity role) {
+	public Role saveRole(Role role) {
 		log.info("Saving new role {} to the database", role.getName());
 		return roleRepo.save(role);
 	}
@@ -58,18 +58,18 @@ public class UserService implements IUserService, UserDetailsService {
 	@Override
 	public void addRoleToUser(String username, EUserRole roleName) {
 		log.info("Adding role {} to user", roleName, username);
-		UserEntity user = userRepo.findByUsernameOrEmail(username, username)
+		User user = userRepo.findByUsernameOrEmail(username, username)
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User not found with username or email : " + username));
-		RoleEntity role = roleRepo.findByName(roleName);
-		UserRoleEntity userRole = new UserRoleEntity(user, role);
+		Role role = roleRepo.findByName(roleName);
+		UserRole userRole = new UserRole(user, role);
 		userRoleRepo.save(userRole);
 		// user.getUserRoles().add(new UserRoleEntity(user, role));
 		// user.getRoles().add(role);
 	}
 
 	@Override
-	public UserEntity getUser(String username) {
+	public User getUser(String username) {
 		log.info("Fetching user {}", username);
 		return userRepo.findByUsernameOrEmail(username, username)
 				.orElseThrow(() -> new UsernameNotFoundException(
@@ -77,14 +77,14 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public List<UserEntity> getUsers() {
+	public List<User> getUsers() {
 		log.info("Fetching all users");
 		return userRepo.findAll();
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserEntity user = userRepo.findByUsername(username);
+		User user = userRepo.findByUsername(username);
 		if (user == null) {
 			log.error("User not found in the databse");
 			throw new UsernameNotFoundException("User not found in the databse");
