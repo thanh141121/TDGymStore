@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,19 +16,24 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "product_category")
-public class ProductCategoryEntity {
+public class ProductCategory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;	
 	
 	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "status")
+	@Enumerated(EnumType.ORDINAL)
+	private EProductCategoryStatus status;
 	
 
 

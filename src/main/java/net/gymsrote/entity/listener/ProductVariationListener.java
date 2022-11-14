@@ -21,12 +21,12 @@ public class ProductVariationListener {
 	
 	@PrePersist
 	public void updateProductPriceWhenPersist(ProductVariation pv) {
-		productService.updatePriceWhenVariationCreated(pv);
+		//productService.updatePriceWhenVariationCreated(pv);
 	}
 	
     @PreUpdate
     @PreRemove
 	public void updateProductPriceWhenUpdate(ProductVariation pv) {
-		productService.updatePriceWhenVariationChange(pv);
+		//productService.updatePriceWhenVariationChange(pv);
 	}
 }

@@ -97,7 +97,7 @@ public class ProductEntity extends BaseEntity{
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	private ProductCategoryEntity category;
+	private ProductCategory category;
 	
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<ProductVariation> variations = new ArrayList<>();
@@ -166,7 +166,7 @@ public class ProductEntity extends BaseEntity{
 	@LastModifiedDate
 	private Date lastModifiedDate;
 
-	public ProductEntity(ProductCategoryEntity category, String name, String description, MediaResource avatar, EProductStatus status) {
+	public ProductEntity(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;
 		this.name = name;
 		this.description = description;

@@ -9,6 +9,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.var;
+import net.gymsrote.controller.advice.exception.CommonRestException;
+import net.gymsrote.controller.payload.response.DataResponse;
+import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.controller.payload.response.ListWithPagingResponse;
+import net.gymsrote.entity.UpdatableAvatar;
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
+import net.gymsrote.entity.product.ProductCategory;
+import net.gymsrote.service.MediaResourceService;
+import net.gymsrote.utility.Page;
+import net.gymsrote.utility.PageWithJpaSort;
+import net.gymsrote.utility.PlatformPolicyParameter;
+
 @Service
 public class ServiceUtils {
 	@Autowired
@@ -70,10 +83,10 @@ public class ServiceUtils {
 
 	public boolean checkStatusProductCategory(ProductCategory pc,
 			EProductCategoryStatus statusToCheck) { // check it and its parent
-		while (pc != null) {
+		if (pc != null) {
 			if (pc.getStatus() == statusToCheck)
 				return true;
-			pc = pc.getParent();
+			//pc = pc.getParent();
 		}
 		return false;
 	}
