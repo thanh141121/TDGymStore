@@ -35,8 +35,8 @@ import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.EnumEntity.PlatformPolicyParameter;
-import net.gymsrote.entity.EnumEntity.filter.PagingInfo;
-import net.gymsrote.entity.EnumEntity.filter.ProductFilter;
+import net.gymsrote.controller.payload.request.filter.PagingInfo;
+import net.gymsrote.controller.payload.request.filter.ProductFilter;
 
 @Service
 public class ProductService {

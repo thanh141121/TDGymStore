@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import net.gymsrote.service.OrderService;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
-import net.gymsrote.entity.EnumEntity.filter.OrderFilter;
-import net.gymsrote.entity.EnumEntity.filter.PagingInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,11 +56,7 @@ public class AdminOrderManageController {
 							+ "<br><i>Example: sortBy = (1+2) = 3 => sort by createTime and price attribute</i>") Integer sortBy,
 			@RequestParam(required = false) @Parameter(
 					description = "Specify sort order. True for sort in descending order.") Boolean sortDescending) {
-		return ResponseEntity
-				.ok(orderService.search(
-						new OrderFilter(idBuyer, idSeller, idDeliveryAddress, createTime, status,
-								paymentMethod),
-						new PagingInfo(page, size, sortBy, sortDescending), false));
+		return null;
 	}
 
 	@GetMapping("/{id}")
@@ -73,6 +67,6 @@ public class AdminOrderManageController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateOrderStatus(@PathVariable Long id,
 			@RequestParam("new-status") EOrderStatus newStatus) {
-		return ResponseEntity.ok(orderService.updateStatus(id, null, newStatus));
+		return null;
 	}
 }

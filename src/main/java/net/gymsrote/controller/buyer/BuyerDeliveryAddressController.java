@@ -1,4 +1,4 @@
-package net.gymsrote.controller;
+package net.gymsrote.controller.buyer;
 
 import javax.validation.Valid;
 
@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.gymsrote.config.login.UserDetailsImpl;
-import net.gymsrote.controller.payload.request.buyerdeliveryaddress.CreateBuyerDeliveryAddressRequest;
-import net.gymsrote.controller.payload.request.buyerdeliveryaddress.UpdateBuyerDeliveryAddressRequest;
-import net.gymsrote.entity.user.buyer.Buyer;
 import net.gymsrote.service.BuyerDeliveryAddressService;
 
 @RestController
@@ -27,36 +23,31 @@ import net.gymsrote.service.BuyerDeliveryAddressService;
 public class BuyerDeliveryAddressController {
 	@Autowired
 	BuyerDeliveryAddressService buyerDeliveryAddressService;
-
-	@GetMapping
-	public ResponseEntity<?> getAll(@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
-		return ResponseEntity
-				.ok(buyerDeliveryAddressService.getAllByIdBuyer(buyer.getUser().getId(), false));
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable Long id,
-			@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
-		return ResponseEntity.ok(buyerDeliveryAddressService.get(id, buyer.getUser().getId()));
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id,
-			@RequestBody @Valid UpdateBuyerDeliveryAddressRequest body,
-			@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
-		return ResponseEntity
-				.ok(buyerDeliveryAddressService.update(id, buyer.getUser().getId(), body));
-	}
-
-	@PostMapping
-	public ResponseEntity<?> create(@RequestBody @Valid CreateBuyerDeliveryAddressRequest body,
-			@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
-		return ResponseEntity.ok(buyerDeliveryAddressService.create(buyer.getUser().getId(), body));
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id,
-			@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
-		return ResponseEntity.ok(buyerDeliveryAddressService.delete(id, buyer.getUser().getId()));
-	}
+	// @GetMapping
+	// public ResponseEntity<?> getAll(@AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
+	// return ResponseEntity
+	// .ok(buyerDeliveryAddressService.getAllByIdBuyer(buyer.getUser().getId(), false));
+	// }
+	// @GetMapping("/{id}")
+	// public ResponseEntity<?> getById(@PathVariable Long id,
+	// @AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
+	// return ResponseEntity.ok(buyerDeliveryAddressService.get(id, buyer.getUser().getId()));
+	// }
+	// @PutMapping("/{id}")
+	// public ResponseEntity<?> update(@PathVariable Long id,
+	// @RequestBody @Valid UpdateBuyerDeliveryAddressRequest body,
+	// @AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
+	// return ResponseEntity
+	// .ok(buyerDeliveryAddressService.update(id, buyer.getUser().getId(), body));
+	// }
+	// @PostMapping
+	// public ResponseEntity<?> create(@RequestBody @Valid CreateBuyerDeliveryAddressRequest body,
+	// @AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
+	// return ResponseEntity.ok(buyerDeliveryAddressService.create(buyer.getUser().getId(), body));
+	// }
+	// @DeleteMapping("/{id}")
+	// public ResponseEntity<?> delete(@PathVariable Long id,
+	// @AuthenticationPrincipal UserDetailsImpl<Buyer> buyer) {
+	// return ResponseEntity.ok(buyerDeliveryAddressService.delete(id, buyer.getUser().getId()));
+	// }
 }

@@ -7,38 +7,25 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.gymsrote.entity.order.OrderDetailKey;
+import lombok.Setter;
 
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
+@Getter
+@Setter
 @Embeddable
-public class UserRoleKey implements Serializable{
-    /**
+public class UserRoleKey implements Serializable {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5919896146974036504L;
 
 	@Column(name = "user_id")
-    Long userId;
+	Long userId;
 
-    @Column(name = "role_id")
-    Long roleId;
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public Long getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+	@Column(name = "role_id")
+	Long roleId;
 }

@@ -17,49 +17,42 @@ import net.gymsrote.controller.payload.response.DataResponse;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
-	@ExceptionHandler(CommonRestException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public BaseResponse commonRestException(CommonRestException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(CommonRuntimeException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public BaseResponse commonRuntimeException(CommonRuntimeException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(DataConflictException.class)
-	@ResponseStatus(HttpStatus.CONFLICT)
-	public BaseResponse dataConflictException(DataConflictException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(InvalidInputDataException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public BaseResponse invalidInputDataHandler(InvalidInputDataException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(JsonParseException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public BaseResponse jsonParseExceptionHandler(JsonParseException e) {
-		return new BaseResponse(false, "Json format is invalid");
-		// return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(RemoteUploadException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public BaseResponse remoteUploadExceptionHandler(RemoteUploadException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
-	@ExceptionHandler(LoginException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public BaseResponse loginExceptionHandler(LoginException e) {
-		return new BaseResponse(false, e.getMessage());
-	}
-
+	// @ExceptionHandler(CommonRestException.class)
+	// @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	// public BaseResponse commonRestException(CommonRestException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(CommonRuntimeException.class)
+	// @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	// public BaseResponse commonRuntimeException(CommonRuntimeException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(DataConflictException.class)
+	// @ResponseStatus(HttpStatus.CONFLICT)
+	// public BaseResponse dataConflictException(DataConflictException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(InvalidInputDataException.class)
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public BaseResponse invalidInputDataHandler(InvalidInputDataException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(JsonParseException.class)
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public BaseResponse jsonParseExceptionHandler(JsonParseException e) {
+	// return new BaseResponse(false, "Json format is invalid");
+	// // return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(RemoteUploadException.class)
+	// @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	// public BaseResponse remoteUploadExceptionHandler(RemoteUploadException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
+	// @ExceptionHandler(LoginException.class)
+	// @ResponseStatus(HttpStatus.UNAUTHORIZED)
+	// public BaseResponse loginExceptionHandler(LoginException e) {
+	// return new BaseResponse(false, e.getMessage());
+	// }
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public DataResponse<Map<String, String>> invalidDataFormat(MethodArgumentNotValidException ex) {

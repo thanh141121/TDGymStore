@@ -39,8 +39,8 @@ import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
-import net.gymsrote.entity.EnumEntity.filter.OrderFilter;
-import net.gymsrote.entity.EnumEntity.filter.PagingInfo;
+import net.gymsrote.controller.payload.request.filter.OrderFilter;
+import net.gymsrote.controller.payload.request.filter.PagingInfo;
 
 @Service
 public class OrderService {

@@ -1,4 +1,4 @@
-package net.gymsrote.entity.EnumEntity.filter;
+package net.gymsrote.controller.payload.request.filter;
 
 import java.util.List;
 
