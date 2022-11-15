@@ -43,12 +43,12 @@ import net.gymsrote.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api")
-public class UserResource {
+public class UserController {
 	@Autowired
 	UserServiceImpl userService;
 	
 	//Change to admin/users
-	@GetMapping("/users/users")
+	@GetMapping("/user/users")
 	public ResponseEntity<?> getUsers(){
 		return ResponseEntity.ok().body(userService.getUsers());
 	}

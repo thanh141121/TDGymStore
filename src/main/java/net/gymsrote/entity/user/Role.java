@@ -47,12 +47,7 @@ public class Role {
 	@Enumerated(EnumType.STRING)
 	private EUserRole name;
 
-//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "roles")
-//	private Set<UserEntity> users = new HashSet<>();
+	@ManyToMany(mappedBy = "roles")
+	private Set<User> users = new HashSet<>();
 	
-    @OneToMany(mappedBy = "roles")
-    @JsonManagedReference
-    private Collection<UserRole> userRoles = new HashSet<>();
-//	@OneToMany(mappedBy = "role") 
-//	private List<UserEntity> user = new ArrayList<>();
 }

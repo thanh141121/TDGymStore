@@ -40,14 +40,14 @@ import net.gymsrote.entity.cart.CartDetail;
 public class User implements UserInfo{
 
 	public User(String email, String username, String password, String fullname, String phone,
-			Collection<UserRole> userRoles) {
+			Collection<Role> roles) {
 		super();
 		this.email = email;
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
 		this.phone = phone;
-		this.userRoles = userRoles;
+		this.roles = roles;
 	}
 
 	public User(String email, String username, String password, String fullname, String phone,
@@ -97,7 +97,7 @@ public class User implements UserInfo{
 
     @OneToMany(mappedBy = "users")
     @JsonManagedReference
-    private Collection<UserRole> userRoles = new HashSet<>();
+    private Collection<Role> roles = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user")
 	private List<Address> addresses = new ArrayList<Address>();
@@ -105,6 +105,4 @@ public class User implements UserInfo{
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
 	private List<CartDetail> cart;
-	
-
 }

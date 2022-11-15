@@ -29,10 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		} else {
 			log.info("User found in the database {}", username);
 		}
-		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		user.getUserRoles().forEach(uRole -> {
-			authorities.add(new SimpleGrantedAuthority(uRole.getRoles().getName().name()));
-		});
+		// Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		// user.getUserRoles().forEach(uRole -> {
+		// 	authorities.add(new SimpleGrantedAuthority(uRole.getRoles().getName().name()));
+		// });
 		return new UserDetailsImpl<User>(user);
 		// user.getRoles().forEach(role -> {
 		// authorities.add(new SimpleGrantedAuthority(role.getName().name()));

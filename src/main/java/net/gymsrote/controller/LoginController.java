@@ -55,7 +55,7 @@ public class LoginController {
 
 	@PostMapping("signup")
 	public ResponseEntity<?> signup(@RequestBody SignUpRequest body) {
-		return ResponseEntity.ok(userService.saveUser(body);
+		return null;
 	}
 	
 	private LoginResponse<?> login(LoginKeyPasswordRequest body, EUserRole r) {
