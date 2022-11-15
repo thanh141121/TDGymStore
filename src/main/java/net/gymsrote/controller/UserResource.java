@@ -39,13 +39,13 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.Role;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.entity.user.UserRole;
-import net.gymsrote.service.impl.UserService;
+import net.gymsrote.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class UserResource {
 	@Autowired
-	UserService userService;
+	UserServiceImpl userService;
 	
 	//Change to admin/users
 	@GetMapping("/users/users")

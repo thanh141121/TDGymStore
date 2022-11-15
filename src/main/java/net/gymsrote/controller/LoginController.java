@@ -12,14 +12,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import net.gymsrote.controller.payload.request.LoginKeyPasswordRequest;
+import net.gymsrote.controller.payload.request.SignUpRequest;
 import net.gymsrote.controller.payload.response.LoginResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
+import net.gymsrote.service.UserService;
 import net.gymsrote.service.authen.LoginService;
 @RestController
 @RequestMapping("/api")
 public class LoginController {
 	@Autowired
 	LoginService loginService;
+
+	@Autowired
+	UserService userService;
 	
 //	@Operation(
 //			summary = "Login API for admin",
@@ -42,12 +47,18 @@ public class LoginController {
 					description = "Successful",
 					content = { @Content(mediaType = "application/json") })
 	})
-	@PostMapping("/user/login")
+
+	@PostMapping("login")
 	public ResponseEntity<?> buyer(@RequestBody LoginKeyPasswordRequest body) {
 		return ResponseEntity.ok(login(body, EUserRole.ROLE_USER));
 	}
+
+	@PostMapping("signup")
+	public ResponseEntity<?> signup(@RequestBody SignUpRequest body) {
+		return ResponseEntity.ok(userService.saveUser(body);
+	}
 	
-	public LoginResponse<?> login(LoginKeyPasswordRequest body, EUserRole r) {
+	private LoginResponse<?> login(LoginKeyPasswordRequest body, EUserRole r) {
 		return loginService.authenticateWithUsernamePassword(body.getLoginKey(), body.getPassword(), r);
 	}
 }

@@ -20,7 +20,7 @@ import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.repository.UserRoleRepo;
-import net.gymsrote.service.IUserService;
+import net.gymsrote.service.UserService;
 import net.gymsrote.service.utils.ServiceUtils;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,7 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 @Transactional
 @Slf4j
-public class UserService implements IUserService{
+public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepo userRepo;
 

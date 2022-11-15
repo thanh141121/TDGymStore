@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.UserRepo;
-import net.gymsrote.service.impl.UserService;
+import net.gymsrote.service.impl.UserServiceImpl;
 
 @Service
 @Slf4j

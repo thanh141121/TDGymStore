@@ -10,7 +10,7 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.Role;
 import net.gymsrote.entity.user.User;
 
-public interface IUserService {
+public interface UserService {
 	User saveUser(User user);
 	Role saveRole(Role role);
 	void addRoleToUser(String username,EUserRole roleName);
