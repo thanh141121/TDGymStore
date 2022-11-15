@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.Role;
 import net.gymsrote.entity.user.User;
@@ -19,6 +21,7 @@ import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.repository.UserRoleRepo;
 import net.gymsrote.service.IUserService;
+import net.gymsrote.service.utils.ServiceUtils;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +44,9 @@ public class UserService implements IUserService{
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	ServiceUtils serviceUtils;
 
 	@Override
 	public User saveUser(User user) {
@@ -76,10 +82,16 @@ public class UserService implements IUserService{
 						"User not found with username or email : " + username));
 	}
 
+//	@Override
+//	public List<User> getUsers() {
+//		log.info("Fetching all users");
+//		return userRepo.findAll();
+//	}
 	@Override
-	public List<User> getUsers() {
+	public ListResponse<UserDTO> getUsers() {
 		log.info("Fetching all users");
-		return userRepo.findAll();
+		return serviceUtils.convertToListResponse(userRepo.findAll(), UserDTO.class);
+				//userRepo.findAll();
 	}
 
 

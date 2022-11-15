@@ -33,6 +33,8 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
+import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.Role;
 import net.gymsrote.entity.user.User;
@@ -46,8 +48,8 @@ public class UserResource {
 	UserService userService;
 	
 	//Change to admin/users
-	@GetMapping("/user/users")
-	public ResponseEntity<List<User>> getUsers(){
+	@GetMapping("/users/users")
+	public ResponseEntity<?> getUsers(){
 		return ResponseEntity.ok().body(userService.getUsers());
 	}
 	

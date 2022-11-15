@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.Role;
 import net.gymsrote.entity.user.User;
@@ -13,7 +15,7 @@ public interface IUserService {
 	Role saveRole(Role role);
 	void addRoleToUser(String username,EUserRole roleName);
 	User getUser(String username);
-	List<User> getUsers();
+	ListResponse<UserDTO> getUsers();
 
 /*	NewDTO save(NewDTO newDTO);
 	void delete(long[] ids);
