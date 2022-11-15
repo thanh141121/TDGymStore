@@ -1,12 +1,9 @@
 package net.gymsrote.service.authen;
-import javax.security.auth.login.LoginException;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +45,7 @@ public class LoginService {
 		return new LoginResponse<>(
 				token, 
 				mapper.map((User)userDetails.getUser(), UserDTO.class)
-			);
+		);
 	}
 	
 	public String generateToken(String username) {

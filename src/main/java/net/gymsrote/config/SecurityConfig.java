@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 //import io.swagger.annotations.ApiModelProperty.AccessMode;
 import lombok.RequiredArgsConstructor;
@@ -69,9 +72,23 @@ public class SecurityConfig {
 			.and()
     		.authorizeRequests()
     		.antMatchers("/**").permitAll();
+			// .and()
+			// .failureHandler(authenticationFailureHandler())
 
     	http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     	return http.build();
+    }
+
+	@Bean
+    protected CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
 }

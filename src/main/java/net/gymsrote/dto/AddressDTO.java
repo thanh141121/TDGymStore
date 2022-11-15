@@ -10,5 +10,4 @@ public class AddressDTO {
 	private String receiveName;
 	private String receivePhone;
 	private Long userId;
-	
 }
