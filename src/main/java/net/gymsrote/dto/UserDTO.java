@@ -1,5 +1,7 @@
 package net.gymsrote.dto;
 
+import java.util.Collection;
+
 import lombok.Getter;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
@@ -13,6 +15,6 @@ public class UserDTO {
 	private String fullname;
 	private String phone;
 	private EUserStatus status;
-	private UserRoleDTO role;
+	private Collection<UserRoleDTO> userRoles;
 
 }

@@ -2,12 +2,17 @@ package net.gymsrote.config;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import net.gymsrote.dto.UserDTO;
+import net.gymsrote.dto.UserRoleDTO;
+import net.gymsrote.entity.product.ProductVariation;
+import net.gymsrote.entity.user.User;
+import net.gymsrote.entity.user.UserRole;
 
 @Configuration
 public class ModelMapperConfig {
@@ -21,11 +26,11 @@ public class ModelMapperConfig {
 		// else
 		// return c.getSource().getUrl();
 		// };
-		// Converter<List<ProductVariation>, List<String>> tierVariationsCvt = c -> {
+		// Converter<List<UserRole>, List<UserRoleDTO>> rolesCvt = c -> {
 		// if (c.getSource() == null)
 		// return null;
 		// else
-		// return c.getSource().stream().map(ProductVariation::getTier).distinct().toList();
+		// return c.getSource().stream().map(UserRole::getTier).distinct().toList();
 		// };
 		// Converter<String, Boolean> emptyPasswordCvt = c -> {
 		// return StringUtils.isBlank(c.getSource());
@@ -55,10 +60,13 @@ public class ModelMapperConfig {
 		// ProductCategoryDTO::setChild);
 		// m.map(src -> src.getParent().getId(), ProductCategoryDTO::setIdParent);
 		// });
-		// mapper.createTypeMap(ProductCategory.class, ProductCategoryDetailDTO.class)
-		// .addMappings(m -> {
-		// m.map(src -> src.getParent().getId(), ProductCategoryDetailDTO::setIdParent);
+		// mapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
+		// 	m.map(src -> src.getUserRoles().getRoles(), UserDTO::setUserRoles);
 		// });
+		mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
+			m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
+			m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
+		});
 		// mapper.createTypeMap(Product.class, ProductDetailDTO.class).addMappings(m -> {
 		// m.using(lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
 		// m.using(lstProductVariationCvt).map(Product::getVariations,
