@@ -15,6 +15,6 @@ public class UserDTO {
 	private String fullname;
 	private String phone;
 	private EUserStatus status;
-	private Collection<UserRoleDTO> userRoles;
+	private Collection<UserRoleDTO> roles;
 
 }
