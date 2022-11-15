@@ -63,10 +63,10 @@ public class ModelMapperConfig {
 		// mapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
 		// 	m.map(src -> src.getUserRoles().getRoles(), UserDTO::setUserRoles);
 		// });
-		mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
-			m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
-			m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
-		});
+		// mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
+		// 	m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
+		// 	m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
+		// });
 		// mapper.createTypeMap(Product.class, ProductDetailDTO.class).addMappings(m -> {
 		// m.using(lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
 		// m.using(lstProductVariationCvt).map(Product::getVariations,

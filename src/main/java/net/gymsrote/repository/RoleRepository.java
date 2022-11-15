@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.User;
-import net.gymsrote.entity.user.Role;
+import net.gymsrote.entity.user.UserRole;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
-	Role findByName(EUserRole roleName);
+public interface RoleRepository extends JpaRepository<UserRole, Long> {
+	UserRole findByName(EUserRole roleName);
 }

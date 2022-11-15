@@ -14,12 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.Role;
-import net.gymsrote.entity.user.User;
 import net.gymsrote.entity.user.UserRole;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
-import net.gymsrote.repository.UserRoleRepo;
 import net.gymsrote.service.UserService;
 import net.gymsrote.service.utils.ServiceUtils;
 
@@ -35,9 +33,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepo userRepo;
-
-	@Autowired
-	private UserRoleRepo userRoleRepo;
 
 	@Autowired
 	private RoleRepository roleRepo;
@@ -56,7 +51,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Role saveRole(Role role) {
+	public UserRole saveRole(UserRole role) {
 		log.info("Saving new role {} to the database", role.getName());
 		return roleRepo.save(role);
 	}
@@ -67,9 +62,9 @@ public class UserServiceImpl implements UserService{
 		User user = userRepo.findByUsernameOrEmail(username, username)
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User not found with username or email : " + username));
-		Role role = roleRepo.findByName(roleName);
-		UserRole userRole = new UserRole(user, role);
-		userRoleRepo.save(userRole);
+		UserRole role = roleRepo.findByName(roleName);
+		// UserRole userRole = new UserRole(user, role);
+		// userRoleRepo.save(userRole);
 		// user.getUserRoles().add(new UserRoleEntity(user, role));
 		// user.getRoles().add(role);
 	}

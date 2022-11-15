@@ -20,7 +20,7 @@ import net.gymsrote.controller.payload.request.SignUpRequest;
 import net.gymsrote.controller.payload.response.ApiResponse;
 import net.gymsrote.controller.payload.response.JwtAuthenticationResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.Role;
+import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;

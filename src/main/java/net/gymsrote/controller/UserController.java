@@ -36,9 +36,8 @@ import lombok.Data;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.user.Role;
-import net.gymsrote.entity.user.User;
 import net.gymsrote.entity.user.UserRole;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.service.impl.UserServiceImpl;
 
 @RestController
@@ -96,7 +95,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/admin/role/save")
-	public ResponseEntity<Role> saveRole(@RequestBody Role role){
+	public ResponseEntity<UserRole> saveRole(@RequestBody UserRole role){
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/admin/role/save").toString());
 		return ResponseEntity.created(uri).body(userService.saveRole(role));
 	}

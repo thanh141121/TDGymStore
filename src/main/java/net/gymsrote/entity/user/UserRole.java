@@ -1,40 +1,32 @@
 package net.gymsrote.entity.user;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EUserRole;
-import net.gymsrote.entity.EnumEntity.EUserStatus;
-import net.gymsrote.entity.address.Address;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role {
-	public Role(EUserRole name) {
+@Table(name = "role")
+public class UserRole {
+	public UserRole(EUserRole name) {
 		super();
 		this.name = name;
 	}
@@ -47,7 +39,8 @@ public class Role {
 	@Enumerated(EnumType.STRING)
 	private EUserRole name;
 
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> users = new HashSet<>();
 	
 }

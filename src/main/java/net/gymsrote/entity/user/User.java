@@ -40,7 +40,7 @@ import net.gymsrote.entity.cart.CartDetail;
 public class User implements UserInfo{
 
 	public User(String email, String username, String password, String fullname, String phone,
-			Collection<Role> roles) {
+			Collection<UserRole> roles) {
 		super();
 		this.email = email;
 		this.username = username;
@@ -95,12 +95,11 @@ public class User implements UserInfo{
 	private MediaResource avatar;
 
 
-    @OneToMany(mappedBy = "users")
-    @JsonManagedReference
-    private Collection<Role> roles = new ArrayList<>();
+    @ManyToMany(mappedBy = "users")
+    private Collection<UserRole> roles = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user")
-	private List<Address> addresses = new ArrayList<Address>();
+	private List<Address> addresses = new ArrayList<>();
 	
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
