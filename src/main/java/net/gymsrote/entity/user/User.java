@@ -37,7 +37,7 @@ import net.gymsrote.entity.cart.CartDetail;
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserInfo{
 
 	public User(String email, String username, String password, String fullname, String phone,
 			Collection<UserRole> userRoles) {

@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import net.gymsrote.service.impl.UserService;
+import net.gymsrote.config.login.UserDetailsServiceImpl;
 import net.gymsrote.utility.component.JwtUtil;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -25,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	CustomAuthenticationEntryPoint authenticationExceptionHandling;
 
 	@Autowired
-	private UserService userDetailsService;
+	private UserDetailsServiceImpl userDetailsService;
 
 	@SuppressWarnings("serial")
 	@Override
