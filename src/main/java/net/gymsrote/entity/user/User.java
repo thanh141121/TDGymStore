@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -40,18 +41,17 @@ import net.gymsrote.entity.cart.CartDetail;
 public class User implements UserInfo{
 
 	public User(String email, String username, String password, String fullname, String phone,
-			Collection<UserRole> roles) {
+			UserRole role) {
 		super();
 		this.email = email;
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
 		this.phone = phone;
-		this.roles = roles;
+		this.role = role;
 	}
 
-	public User(String email, String username, String password, String fullname, String phone,
-			EUserStatus status) {
+	public User(String email, String username, String password, String fullname, String phone) {
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -95,8 +95,10 @@ public class User implements UserInfo{
 	private MediaResource avatar;
 
 
-    @ManyToMany(mappedBy = "users")
-    private Collection<UserRole> roles = new ArrayList<>();
+	@ManyToOne
+	//@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    //private Collection<UserRole> roles = new ArrayList<>();
+	private UserRole role;
 	
 	@OneToMany(mappedBy = "user")
 	private List<Address> addresses = new ArrayList<>();

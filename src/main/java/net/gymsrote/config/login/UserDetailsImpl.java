@@ -24,9 +24,10 @@ public class UserDetailsImpl<T extends UserInfo> implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		((User) user).getRoles().forEach(uRole -> {
-			authorities.add(new SimpleGrantedAuthority(uRole.getName().name()));
-		});
+//		((User) user).getRoles().forEach(uRole -> {
+//			authorities.add(new SimpleGrantedAuthority(uRole.getName().name()));
+//		});
+		authorities.add(new SimpleGrantedAuthority("ROLE_" +user.getRole().getName().name()));
 		return authorities;
 	}
 

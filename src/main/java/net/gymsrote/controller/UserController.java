@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,55 +38,25 @@ import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.UserRole;
+import net.gymsrote.service.UserService;
 import net.gymsrote.entity.user.User;
-import net.gymsrote.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 	@Autowired
-	UserServiceImpl userService;
+	UserService userService;
 	
 	//Change to admin/users
 	@GetMapping("/user/users")
+	//@PreAuthorize("hasRole('BUYER')")
 	public ResponseEntity<?> getUsers(){
+		System.out.println("get Users");
 		return ResponseEntity.ok().body(userService.getUsers());
 	}
 	
 	@GetMapping("/token/refresh")
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException{
-//		String authorizationHeader = request.getHeader("Authorization");
-//		if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//			try {
-//				String refreshToken = authorizationHeader.substring("Bearer ".length());
-//				Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-//				JWTVerifier verifier = JWT.require(algorithm).build();
-//				DecodedJWT decodedJWT = verifier.verify(refreshToken);
-//				String username = decodedJWT.getSubject();
-//				User user = userService.getUser(username);
-//				String accessToken = JWT.create()
-//						.withSubject(user.getUsername())
-//						.withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
-//						.withIssuer(request.getRequestURL().toString())
-//						.withClaim("roles", user.getUserRoles().stream().map(userRole -> userRole.getRoles().getName().name()).collect(Collectors.toList()))
-//						.sign(algorithm);
-//				Map<String, String> tokens = new HashMap<>();
-//				tokens.put("accessToken", accessToken);
-//				tokens.put("refreshToken", refreshToken);
-//				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-//				
-//			}catch(Exception e) {
-//				response.setStatus(HttpStatus.FORBIDDEN.value());
-////				response.sendError(HttpStatus.FORBIDDEN.value());
-//				Map<String, String> error = new HashMap<>();
-//				error.put("error_massage", e.getMessage());
-//				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//				new ObjectMapper().writeValue(response.getOutputStream(), error);
-//			}
-//		}else {
-//			throw new RuntimeException("Refresh Token is missing");
-//		}
 	}
 	
 	@PostMapping("/user/save")

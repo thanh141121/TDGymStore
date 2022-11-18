@@ -14,18 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.UserRepo;
-import net.gymsrote.service.impl.UserServiceImpl;
+import net.gymsrote.service.UserService;
 
 @Service
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
-	private UserRepo userRepo;
+	UserRepo userRepo;
 
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username);
+		User user = null;
+		user = userRepo.findByUsername(username);
 		if (user == null) {
 			log.error("User not found in the databse");
 			throw new UsernameNotFoundException("User not found in the databse");
@@ -37,10 +38,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		// 	authorities.add(new SimpleGrantedAuthority(uRole.getRoles().getName().name()));
 		// });
 		return new UserDetailsImpl<User>(user);
-		// user.getRoles().forEach(role -> {
-		// authorities.add(new SimpleGrantedAuthority(role.getName().name()));
-		// });
-//		return new org.springframework.security.core.userdetails.User(user.getUsername(),
-//				user.getPassword(), authorities);
 	}
 }

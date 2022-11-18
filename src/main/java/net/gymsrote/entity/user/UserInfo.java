@@ -5,6 +5,6 @@ import net.gymsrote.entity.EnumEntity.EUserStatus;
 public interface UserInfo {
 	String getUsername();
 	String getPassword();
-//	UserRole getUserRoles();
+	UserRole getRole();
 	EUserStatus getStatus();
 }

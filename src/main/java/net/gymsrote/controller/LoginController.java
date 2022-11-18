@@ -50,7 +50,7 @@ public class LoginController {
 
 	@PostMapping("login")
 	public ResponseEntity<?> buyer(@RequestBody LoginKeyPasswordRequest body) {
-		return ResponseEntity.ok(login(body, EUserRole.ROLE_USER));
+		return ResponseEntity.ok(login(body, null));
 	}
 
 	@PostMapping("signup")

@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import net.gymsrote.service.impl.UserServiceImpl;
+
+import net.gymsrote.service.UserService;
 
 @RestController
 // @RequestMapping("/api/user")
 public class UserCartDetailAPI {
 	@Autowired
-	UserServiceImpl userService;
+	UserService userService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/javainuse")
 	public String sayHello() {

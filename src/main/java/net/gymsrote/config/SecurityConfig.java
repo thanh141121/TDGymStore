@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 
 //import io.swagger.annotations.ApiModelProperty.AccessMode;
 import lombok.RequiredArgsConstructor;
+import net.gymsrote.entity.EnumEntity.EUserRole;
 
 //import net.gymsrote.security.CustomUserDetailsService;
 //import net.gymsrote.security.JwtAuthenticationEntryPoint;
@@ -25,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
 	@Autowired
@@ -57,19 +59,22 @@ public class SecurityConfig {
     	http
     		.cors()
     		.and()
-	    	.csrf().disable();
+	    	.csrf().disable()
+	    	.exceptionHandling().authenticationEntryPoint(authenticationExceptionHandling)
+	    	.and()
+	    	.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
     	
     	http
 	    	.authorizeRequests()
 			.antMatchers("/api/admin/login",
 						"/api/user/login", "/api/user/signup").permitAll()
 			.and()
-			.authorizeRequests()
-    		.antMatchers("/api/admin/**").hasRole("ADMIN")
-    		.and()
     		.authorizeRequests()
     		.antMatchers("/api/user/**").hasRole("USER")
 			.and()
+			.authorizeRequests()
+    		.antMatchers("/api/admin/**").hasRole("ADMIN")
+    		.and()
     		.authorizeRequests()
     		.antMatchers("/**").permitAll();
 			// .and()
