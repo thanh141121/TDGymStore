@@ -31,8 +31,6 @@ public class ProductDetailDTO {
 	private Integer rating4;
 	private Integer rating5;
 	private Integer totalRatingTimes;
-	
-	private List<String> tierVariations;
 	private List<ProductImageDTO> images;
 	private List<ProductVariationDTO> variations;
 }

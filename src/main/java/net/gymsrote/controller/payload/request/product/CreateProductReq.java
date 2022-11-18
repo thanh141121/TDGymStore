@@ -9,16 +9,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class CreateProductRequest {
-	@NotBlank
+public class CreateProductReq {
+	@NotNull
 	private String name;
 	
-	@NotNull
-	private List<CreateProductVariationRequest> variations;
+	private Long min_price;
+	private Long max_price;
 	
 	@NotBlank
 	private String description;
-	
 	@NotNull
-	private Long idCategory;
+	private Long categoryId;
+	
+	private List<CreateVariationReq> variations;
+
 }

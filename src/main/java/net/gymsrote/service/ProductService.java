@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,21 +18,26 @@ import org.springframework.web.multipart.MultipartFile;
 import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.filter.ProductFilter;
-import net.gymsrote.controller.payload.request.product.CreateProductRequest;
+import net.gymsrote.controller.payload.request.product.CreateProductReq;
+import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductGeneralDetailDTO;
+import net.gymsrote.dto.ProductVariationDTO;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductCategory;
+import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
 import net.gymsrote.repository.ProductCategoryRepo;
 import net.gymsrote.repository.ProductRepo;
+import net.gymsrote.repository.ProductVariationRepo;
 import net.gymsrote.service.utils.ServiceUtils;
 import net.gymsrote.utility.PagingInfo;
 import net.gymsrote.utility.PlatformPolicyParameter;
@@ -38,9 +45,6 @@ import net.gymsrote.utility.PlatformPolicyParameter;
 
 @Service
 public class ProductService {
-	@Autowired
-	LogService logService;
-
 	@Autowired
 	ProductRepo productRepo;
 
@@ -55,6 +59,9 @@ public class ProductService {
 
 	@Autowired
 	ProductCategoryRepo productCategoryRepo;
+
+	@Autowired
+	ProductVariationRepo productVariationRepo;
 
 	@Autowired
 	ServiceUtils serviceUtils;
@@ -103,51 +110,42 @@ public class ProductService {
 	}
 
 	@Transactional
-	public DataResponse<ProductDetailDTO> create(Long idUser, CreateProductRequest data,
-			MultipartFile avatar, List<MultipartFile> images) {
-		ProductCategory productCategory = productCategoryRepo.findById(data.getIdCategory()).orElseThrow(
-				() -> new InvalidInputDataException("No category found with given id"));
-		if (!serviceUtils.checkStatusProductCategory(productCategory,
-				EProductCategoryStatus.ACTIVE))
-			throw new InvalidInputDataException(
-					"Can not create new product to this category or its parent category because it has been disabled");
-		if (data.getVariations().size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
+	public DataResponse<ProductDetailDTO> create(CreateProductReq product,
+			MultipartFile avatar, List<MultipartFile> images) throws IOException {
+		ProductCategory productCategory = productCategoryRepo.findById(product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
+		if (product.getVariations().size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
 			throw new InvalidInputDataException(
 					String.format("At least %d product variation(s) is required",
 							PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
 		}
-		Product p;
-		try {
-			p = new Product(productCategoryRepo.getReferenceById(data.getIdCategory()),
-					data.getName(), data.getDescription(),
-					mediaResourceService.save(avatar.getBytes()), EProductStatus.DISABLED);
-		} catch (IOException e) {
-			throw new CommonRuntimeException(
-					"Error occurred when trying to save product avatar image");
-		}
+		Product p = new Product(productCategory,
+					product.getName(), 
+					product.getDescription(),
+					mediaResourceService.save(avatar.getBytes()), 
+					EProductStatus.ENABLED, 
+					product.getMin_price(),
+					product.getMax_price());
 		p = productRepo.saveAndFlush(p);
-		productImageService.create(p, images);
-		productVariationService.create(p, data.getVariations());
-		//productRepo.refresh(p);
-		updatePrice(p, p.getVariations());
-//		if (p.getCategory().getParent() != null) {
-//			p.setParents(productCategoryRepo.findAncestry(p.getCategory().getParent().getId()));
-//		}
-		logService.logInfo(idUser,
-				String.format("New product has been created with id %d", p.getId()));
+		List<ProductImage> sourceImg= p.getImages();
+		for(MultipartFile image: images) {
+			MediaResource media = mediaResourceService.save(image.getBytes());
+			if(media != null)
+			sourceImg.add(new ProductImage(p,media));
+		}
+		addVariation(p, product.getVariations());
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
-
+	
 	@Transactional
-	public DataResponse<ProductDetailDTO> update(Long idUser, Long id, UpdateProductRequest data,
+	public DataResponse<ProductDetailDTO> update(Long id, UpdateProductRequest data,
 			MultipartFile avatar) {
 		Product p = productRepo.findById(id)
 				.orElseThrow(() -> new InvalidInputDataException("No product found with given id"));
 		if (data != null) {
-			if (StringUtils.isNotEmpty(data.getName()) && !p.getName().equals(data.getName()))
+			if (StringUtils.isNotEmpty(data.getName().trim()) && !p.getName().equals(data.getName().trim()))
 				p.setName(data.getName());
-			if (StringUtils.isNotEmpty(data.getDescription())
-					&& !p.getDescription().equals(data.getDescription()))
+			if (StringUtils.isNotEmpty(data.getDescription().trim())
+					&& !p.getDescription().equals(data.getDescription().trim()))
 				p.setDescription(data.getDescription());
 			if (data.getIdCategory() != null
 					&& !p.getCategory().getId().equals(data.getIdCategory())) {
@@ -162,9 +160,6 @@ public class ProductService {
 			serviceUtils.updateAvatar(p, avatar);
 		}
 		p = productRepo.save(p);
-//		if (p.getCategory().getParent() != null)
-//			p.setParents(productCategoryRepo.findAncestry(p.getCategory().getParent().getId()));
-		logService.logInfo(idUser, String.format("Product with id %d has been edited", p.getId()));
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
@@ -229,6 +224,22 @@ public class ProductService {
 		if (maxPv.isPresent())
 			p.setMaxPrice(maxPv.get().getPriceAfterDiscount());
 		productRepo.save(p);
+	}
+
+	@Transactional
+	public void addVariation(Product p,List<CreateVariationReq> variationReqs) {
+		//Product p = productRepo.findById(proId).orElseThrow(() -> new InvalidInputDataException("Product not found"));
+		if(p != null) {
+			ProductVariation proVar = null;
+			for(CreateVariationReq var : variationReqs) {
+				proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
+						var.getAvailableQuantity(), var.getDiscount(), EProductVariationStatus.ENABLED));
+			}
+			//p.setVariations(proVar);
+			//return serviceUtils.convertToDataResponse(proVar, ProductVariationDTO.class);
+		}else {
+			 throw new InvalidInputDataException("No product found with given id");
+		}
 	}
 
 }

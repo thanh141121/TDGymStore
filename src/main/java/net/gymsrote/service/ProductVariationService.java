@@ -1,19 +1,15 @@
 package net.gymsrote.service;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.gymsrote.controller.advice.exception.CommonRestException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
-import net.gymsrote.controller.payload.request.product.CreateProductVariationRequest;
 import net.gymsrote.controller.payload.request.product.UpdateProductVariationRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.dto.ProductVariationDTO;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
-import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductVariation;
 import net.gymsrote.repository.ProductRepo;
 //import net.gymsrote.controller.payload.dto.ProductVariationDTO;
@@ -51,7 +47,7 @@ public class ProductVariationService {
 		return serviceUtils.convertToDataResponse(variation, ProductVariationDTO.class);
 	}
 
-	public DataResponse<ProductVariationDTO> create(Long idUser, Long idProduct,
+	/*public DataResponse<ProductVariationDTO> create(Long idUser, Long idProduct,
 			CreateProductVariationRequest data) {
 		if (!productRepo.existsById(idProduct))
 			throw new InvalidInputDataException("No product found with given id");
@@ -72,7 +68,7 @@ public class ProductVariationService {
 					variation.getPrice(), variation.getAvailableQuantity(),
 					variation.getDiscount(), EProductVariationStatus.ENABLED));
 		}
-	}
+	}*/
 
 	public DataResponse<ProductVariationDTO> update(Long idUser, Long id, Long idProduct,
 			UpdateProductVariationRequest data) {
