@@ -87,7 +87,6 @@ public class ServiceUtils {
 		if (pc != null) {
 			if (pc.getStatus() == statusToCheck)
 				return true;
-			//pc = pc.getParent();
 		}
 		return false;
 	}

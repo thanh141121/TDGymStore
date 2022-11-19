@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.filter.ProductFilter;
@@ -31,10 +32,12 @@ import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
+import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductCategory;
 import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.ProductCategoryRepo;
 import net.gymsrote.repository.ProductRepo;
 import net.gymsrote.repository.ProductVariationRepo;
@@ -96,15 +99,20 @@ public class ProductService {
 				ProductGeneralDetailDTO.class);
 	}
 
-	public DataResponse<ProductDetailDTO> getById(Long id, boolean isBuyer) {
+	@Transactional
+	public DataResponse<ProductDetailDTO> getById(Long id, UserDetailsImpl<User> authen) {
 		Product p = productRepo.findById(id)
 				.orElseThrow(() -> new InvalidInputDataException("No product found with given id"));
-		if (isBuyer && (p.getStatus() == EProductStatus.DISABLED || serviceUtils
-				.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.BANNED)))
-			throw new InvalidInputDataException("No product found with given id");
-		else {
-			if (isBuyer)
-				productRepo.updateVisitCount(id);
+		if (authen != null) {
+			if(authen.getUser().getRole().getName().equals(EUserRole.ADMIN)) {
+				return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
+			}else {
+				if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.BANNED))
+					throw new InvalidInputDataException("No product found with given id");
+				else {
+					p.setNvisit(p.getNvisit()+1);
+				}
+			}
 		}
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}

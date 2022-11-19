@@ -8,8 +8,13 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import net.gymsrote.dto.ProductDetailDTO;
+import net.gymsrote.dto.ProductImageDTO;
+import net.gymsrote.dto.ProductVariationDTO;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.dto.UserRoleDTO;
+import net.gymsrote.entity.product.Product;
+import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.entity.user.UserRole;
@@ -37,12 +42,11 @@ public class ModelMapperConfig {
 		// };
 		// var lstChildProductCategoryCvt =
 		// generateListConverter(ProductCategory.class, ProductCategoryDTO.class, mapper);
-		// var lstProductImageCvt =
-		// generateListConverter(ProductImage.class, ProductImageDTO.class, mapper);
+		Object lstProductImageCvt = generateListConverter(ProductImage.class, ProductImageDTO.class, mapper);
 		// var lstProductReviewImageCvt = generateListConverter(ProductReviewImage.class,
 		// ProductReviewImageDTO.class, mapper);
-		// var lstProductVariationCvt =
-		// generateListConverter(ProductVariation.class, ProductVariationDTO.class, mapper);
+		Object lstProductVariationCvt =
+		generateListConverter(ProductVariation.class, ProductVariationDTO.class, mapper);
 		// var lstOrderDetailCvt =
 		// generateListConverter(OrderDetail.class, OrderDetailDTO.class, mapper);
 		// mapper.createTypeMap(Buyer.class, BuyerDTO.class).addMappings(m -> {
@@ -67,8 +71,11 @@ public class ModelMapperConfig {
 		// 	m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
 		// 	m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
 		// });
-		// mapper.createTypeMap(Product.class, ProductDetailDTO.class).addMappings(m -> {
-		// m.using(lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
+		 mapper.createTypeMap(Product.class, ProductDetailDTO.class).addMappings(m -> {
+		 m.using((Converter<?, ?>) lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
+		 m.using((Converter<?, ?>) lstProductVariationCvt).map(Product::getVariations,
+		 ProductDetailDTO::setVariations);
+		 });
 		// m.using(lstProductVariationCvt).map(Product::getVariations,
 		// ProductDetailDTO::setVariations);
 		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductDetailDTO::setAvatar);
@@ -82,11 +89,11 @@ public class ModelMapperConfig {
 		// mapper.createTypeMap(Product.class, ProductGeneralDetailDTO.class).addMappings(m -> {
 		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductGeneralDetailDTO::setAvatar);
 		// });
-		// mapper.createTypeMap(ProductImage.class, ProductImageDTO.class).addMappings(m -> {
-		// m.map(src -> src.getProduct().getId(), ProductImageDTO::setIdProduct);
-		// m.map(src -> src.getMedia().getUrl(), ProductImageDTO::setUrl);
-		// m.map(src -> src.getMedia().getResourceType(), ProductImageDTO::setResourceType);
-		// });
+		 mapper.createTypeMap(ProductImage.class, ProductImageDTO.class).addMappings(m -> {
+		 m.map(src -> src.getProduct().getId(), ProductImageDTO::setProductId);
+		 m.map(src -> src.getMedia().getUrl(), ProductImageDTO::setUrl);
+		 m.map(src -> src.getMedia().getResourceType(), ProductImageDTO::setResourceType);
+		 });
 		// mapper.createTypeMap(ProductReview.class, ProductReviewDTO.class).addMappings(m -> {
 		// m.map(src -> src.getBuyer().getId(), ProductReviewDTO::setIdBuyer);
 		// m.map(src -> src.getBuyer().getUsername(), ProductReviewDTO::setBuyerUsername);
@@ -101,10 +108,10 @@ public class ModelMapperConfig {
 		// m.map(src -> src.getMedia().getResourceType(),
 		// ProductReviewImageDTO::setResourceType);
 		// });
-		// mapper.createTypeMap(ProductVariation.class, ProductVariationDTO.class).addMappings(m ->
-		// {
-		// m.map(src -> src.getProduct().getId(), ProductVariationDTO::setIdProduct);
-		// });
+		mapper.createTypeMap(ProductVariation.class, ProductVariationDTO.class).addMappings(m ->
+		{
+		m.map(src -> src.getProduct().getId(), ProductVariationDTO::setIdProduct);
+		});
 		// mapper.createTypeMap(BuyerCartDetail.class, BuyerCartDetailDTO.class).addMappings(m -> {
 		// m.map(src -> src.getBuyer().getId(), BuyerCartDetailDTO::setIdBuyer);
 		// m.map(src -> src.getProductVariation().getProduct(),
