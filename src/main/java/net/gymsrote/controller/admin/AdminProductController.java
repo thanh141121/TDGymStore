@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.payload.request.product.CreateProductReq;
+import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.entity.user.User;
@@ -26,9 +28,14 @@ import net.gymsrote.service.ProductService;
 
 @RestController
 @RequestMapping("/api/admin/product")
-public class AdminProduct {
+public class AdminProductController {
 	@Autowired
 	ProductService productService;
+
+	@GetMapping("/products")
+	public ResponseEntity<?> getAllProducts(){
+		return ResponseEntity.ok(productService.getAllProducts());
+	}
 	
 	@PostMapping("/new")
 	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
@@ -48,14 +55,13 @@ public class AdminProduct {
 	}
 	
 	/*@PostMapping("/variations")
-	public DataResponse<?> addProductVariation(@AuthenticationPrincipal UserDetailsImpl<User> user,
+	public Object addProductVariation(@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestPart("variations")@Valid List<CreateVariationReq> variationReqs,
 			@RequestPart("productId") Long proId
 			) throws IOException{
-		return productService.addVariation(proId, variationReqs);
+		return productService.addVariation(productService.getById(proId, user), variationReqs);
 		//return user.getUser().getId();
-	}
-*/	
+	}*/
 	
 
 }

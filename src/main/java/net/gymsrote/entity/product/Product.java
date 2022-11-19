@@ -114,15 +114,15 @@ public class Product implements UpdatableAvatar{
 	@LastModifiedDate
 	private Date lastModifiedDate;
 
-	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status, Long minPrice, Long maxPrice) {
+	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;
 		this.name = name;
 		this.description = description;
 		this.avatar = avatar;
 		this.status = status;
-		
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
+
+		this.minPrice = 0L;
+		this.maxPrice = 0L;
 		this.nsold = 0L;
 		this.nvisit = 0L;
 		

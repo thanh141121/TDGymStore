@@ -99,11 +99,12 @@ public class ProductService {
 				ProductGeneralDetailDTO.class);
 	}
 
+	@SuppressWarnings("null")
 	@Transactional
 	public DataResponse<ProductDetailDTO> getById(Long id, UserDetailsImpl<User> authen) {
 		Product p = productRepo.findById(id)
 				.orElseThrow(() -> new InvalidInputDataException("No product found with given id"));
-		if (authen != null) {
+		/*if (authen != null) {
 			if(authen.getUser().getRole().getName().equals(EUserRole.ADMIN)) {
 				return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 			}else {
@@ -113,6 +114,10 @@ public class ProductService {
 					p.setNvisit(p.getNvisit()+1);
 				}
 			}
+		}*/
+		if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.BANNED)) {
+			if (authen == null || authen.getUser().getRole().getName().equals(EUserRole.USER))
+				throw new InvalidInputDataException("No product found with given id");
 		}
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
@@ -130,9 +135,10 @@ public class ProductService {
 					product.getName(), 
 					product.getDescription(),
 					mediaResourceService.save(avatar.getBytes()), 
-					EProductStatus.ENABLED, 
-					product.getMin_price(),
-					product.getMax_price());
+					EProductStatus.ENABLED 
+					// product.getMin_price(),
+					// product.getMax_price()
+					);
 		p = productRepo.saveAndFlush(p);
 		List<ProductImage> sourceImg= p.getImages();
 		for(MultipartFile image: images) {
@@ -234,6 +240,7 @@ public class ProductService {
 		productRepo.save(p);
 	}
 
+	@SuppressWarnings("null")
 	@Transactional
 	public void addVariation(Product p,List<CreateVariationReq> variationReqs) {
 		//Product p = productRepo.findById(proId).orElseThrow(() -> new InvalidInputDataException("Product not found"));
@@ -242,12 +249,30 @@ public class ProductService {
 			for(CreateVariationReq var : variationReqs) {
 				proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
 						var.getAvailableQuantity(), var.getDiscount(), EProductVariationStatus.ENABLED));
+				Long minPricePro = p.getMinPrice();
+				Long maxPricePro = p.getMaxPrice();
+				if(minPricePro != null) {
+					p.setMinPrice(var.getPrice());
+				}else {
+					if(minPricePro > var.getPrice())
+						p.setMinPrice(var.getPrice());
+				}
+				if(p.getMaxPrice() != null) {
+					p.setMaxPrice(var.getPrice());
+				}else {
+					if(maxPricePro < var.getPrice())
+						p.setMaxPrice(var.getPrice());
+				}
 			}
 			//p.setVariations(proVar);
 			//return serviceUtils.convertToDataResponse(proVar, ProductVariationDTO.class);
 		}else {
 			 throw new InvalidInputDataException("No product found with given id");
 		}
+	}
+
+	public Object getAllProducts() {
+		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
 	}
 
 }

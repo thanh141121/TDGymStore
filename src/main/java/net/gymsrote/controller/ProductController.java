@@ -18,6 +18,11 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 	
+	@GetMapping("/products")
+	public ResponseEntity<?> getAllProducts(){
+		return ResponseEntity.ok(productService.getAllProducts());
+	}
+	
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getDetails(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl<User> user) {

@@ -42,20 +42,19 @@ import net.gymsrote.service.UserService;
 import net.gymsrote.entity.user.User;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
 	@Autowired
 	UserService userService;
 	
-	//Change to admin/users
-	@GetMapping("/user/users")
-	//@PreAuthorize("hasRole('BUYER')")
+	@GetMapping("/users")
+	//@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getUsers(){
 		System.out.println("get Users");
 		return ResponseEntity.ok().body(userService.getUsers());
 	}
 	
-	@GetMapping("/token/refresh")
+/*	@GetMapping("/token/refresh")
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException{
 	}
 	
@@ -76,7 +75,7 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 	
-
+*/
 	
 }
 

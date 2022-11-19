@@ -12,14 +12,14 @@ import net.gymsrote.service.UserService;
 
 @RestController
 // @RequestMapping("/api/user")
-public class UserCartDetailAPI {
+public class UserCartDetailController {
 	@Autowired
 	UserService userService;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/api/javainuse")
+/*	@RequestMapping(method = RequestMethod.GET, value = "/api/javainuse")
 	public String sayHello() {
 		return "Swagger Hello World";
-	}
+	}*/
 	//
 	// @GetMapping(value = "/new")
 	// public NewOutput showNew(@RequestParam("page") int page,
