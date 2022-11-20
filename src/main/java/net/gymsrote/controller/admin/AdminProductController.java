@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +38,8 @@ public class AdminProductController {
 		return ResponseEntity.ok(productService.getAllProducts());
 	}
 	
-	@PostMapping("/new")
+	//@PostMapping("/new")
+	@RequestMapping(value = "/new", method = RequestMethod.POST, consumes = { "multipart/form-data" })
 	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestPart("productInfo")@Valid CreateProductReq productInfo ,
 			@RequestPart("avatar")@NotEmpty MultipartFile avatar ,
