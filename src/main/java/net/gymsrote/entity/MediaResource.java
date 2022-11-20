@@ -51,8 +51,5 @@ public class MediaResource {
 	@Column(name = "resource_type")
 	private String resourceType;
 
-//	@OneToOne(mappedBy = "avatar")
-//	private UserEntity user;
-
 
 }

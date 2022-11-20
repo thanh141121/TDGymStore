@@ -10,12 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.listener.ProductVariationListener;
 
@@ -36,8 +38,10 @@ public class ProductVariation {
 	@Column(name = "variation_name")
 	private String variationName;
 	
-//	@Column(name = "tier")
-//	private String tier;
+	@OneToOne
+	@JoinColumn(name = "media_resource_id", unique = true)
+	private MediaResource image;
+	
 	
 	@Column(name = "price", nullable = false)
 	private Long price;
@@ -61,9 +65,10 @@ public class ProductVariation {
 		this.status = status;
 	}
 
-	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity, Integer discount,
+	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity, Integer discount, MediaResource image,
 			EProductVariationStatus status) {
 		this(product, variationName, price, availableQuantity, status);
+		this.image = image;
 		
 		if (discount == null) {
 			this.discount = 0;

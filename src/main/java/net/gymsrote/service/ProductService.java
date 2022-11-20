@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.advice.exception.CommonRuntimeException;
+import net.gymsrote.controller.advice.exception.DataConflictException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.filter.ProductFilter;
 import net.gymsrote.controller.payload.request.product.CreateProductReq;
@@ -122,7 +123,7 @@ public class ProductService {
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = { InvalidInputDataException.class })
 	public DataResponse<ProductDetailDTO> create(CreateProductReq product,
 			MultipartFile avatar, List<MultipartFile> images) throws IOException {
 		ProductCategory productCategory = productCategoryRepo.findById(product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
@@ -136,15 +137,15 @@ public class ProductService {
 					product.getDescription(),
 					mediaResourceService.save(avatar.getBytes()), 
 					EProductStatus.ENABLED 
-					// product.getMin_price(),
-					// product.getMax_price()
 					);
 		p = productRepo.saveAndFlush(p);
 		List<ProductImage> sourceImg= p.getImages();
-		for(MultipartFile image: images) {
-			MediaResource media = mediaResourceService.save(image.getBytes());
-			if(media != null)
-			sourceImg.add(new ProductImage(p,media));
+		if(images != null){
+			for(MultipartFile image: images) {
+				MediaResource media = mediaResourceService.save(image.getBytes());
+				if(media != null)
+				sourceImg.add(new ProductImage(p,media));
+			}
 		}
 		addVariation(p, product.getVariations());
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
@@ -177,7 +178,49 @@ public class ProductService {
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
-	public void updateRating(Long id, Integer point) {
+
+	@Transactional
+	public void addVariation(Product p,List<CreateVariationReq> variationReqs) {
+		//Product p = productRepo.findById(proId).orElseThrow(() -> new InvalidInputDataException("Product not found"));
+		try {
+			if(p != null) {
+				ProductVariation proVar = null;
+				for(CreateVariationReq var : variationReqs) {
+					proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
+							var.getAvailableQuantity(), var.getDiscount(),mediaResourceService.save(var.getImage().getBytes()), EProductVariationStatus.ENABLED));
+					updatePriceProduct(p, var);
+					p.getVariations().add(proVar);
+				}
+			}else {
+				 throw new InvalidInputDataException("No product found with given id");
+			}
+		}catch (IOException e) {
+			throw new InvalidInputDataException("Having something wrong happen!\n"+ e.getMessage());
+		}
+	}
+
+	public static void updatePriceProduct(Product p, CreateVariationReq var) {
+		Long minPricePro = p.getMinPrice();
+		Long maxPricePro = p.getMaxPrice();
+		if(minPricePro == null) {
+			p.setMinPrice(var.getPrice());
+		}else {
+			if(minPricePro.longValue() > var.getPrice().longValue())
+				p.setMinPrice(var.getPrice());
+		}
+		if(p.getMaxPrice() == null) {
+			p.setMaxPrice(var.getPrice());
+		}else {
+			if(maxPricePro.longValue() < var.getPrice().longValue())
+				p.setMaxPrice(var.getPrice());
+		}
+	}
+
+	public Object getAllProducts() {
+		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
+	}
+
+	/*public void updateRating(Long id, Integer point) {
 		switch (point) {
 			case 1:
 				productRepo.updateRating1(id);
@@ -196,26 +239,26 @@ public class ProductService {
 				break;
 		}
 		productRepo.updateAverageRating(id, point);
-	}
+	}*/
 //
 //	/***
 //	 * For entity listener
 //	 * 
 //	 * @param pv
 //	 */
-	public void updatePriceWhenVariationCreated(ProductVariation pv) {
+	/*public void updatePriceWhenVariationCreated(ProductVariation pv) {
 		Product p = pv.getProduct();
 		List<ProductVariation> pvs = new ArrayList<>(p.getVariations());
 		pvs.add(pv);
 		updatePrice(p, pvs);
-	}
+	}*/
 //
 //	/***
 //	 * For entity listener
 //	 * 
 //	 * @param pv
 //	 */
-	public void updatePriceWhenVariationChange(ProductVariation pv) {
+	/*public void updatePriceWhenVariationChange(ProductVariation pv) {
 		Product p = pv.getProduct();
 		List<ProductVariation> pvs = new ArrayList<>(p.getVariations());
 		updatePrice(p, pvs);
@@ -238,41 +281,6 @@ public class ProductService {
 		if (maxPv.isPresent())
 			p.setMaxPrice(maxPv.get().getPriceAfterDiscount());
 		productRepo.save(p);
-	}
-
-	@SuppressWarnings("null")
-	@Transactional
-	public void addVariation(Product p,List<CreateVariationReq> variationReqs) {
-		//Product p = productRepo.findById(proId).orElseThrow(() -> new InvalidInputDataException("Product not found"));
-		if(p != null) {
-			ProductVariation proVar = null;
-			for(CreateVariationReq var : variationReqs) {
-				proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
-						var.getAvailableQuantity(), var.getDiscount(), EProductVariationStatus.ENABLED));
-				Long minPricePro = p.getMinPrice();
-				Long maxPricePro = p.getMaxPrice();
-				if(minPricePro != null) {
-					p.setMinPrice(var.getPrice());
-				}else {
-					if(minPricePro > var.getPrice())
-						p.setMinPrice(var.getPrice());
-				}
-				if(p.getMaxPrice() != null) {
-					p.setMaxPrice(var.getPrice());
-				}else {
-					if(maxPricePro < var.getPrice())
-						p.setMaxPrice(var.getPrice());
-				}
-			}
-			//p.setVariations(proVar);
-			//return serviceUtils.convertToDataResponse(proVar, ProductVariationDTO.class);
-		}else {
-			 throw new InvalidInputDataException("No product found with given id");
-		}
-	}
-
-	public Object getAllProducts() {
-		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
-	}
+	}*/
 
 }

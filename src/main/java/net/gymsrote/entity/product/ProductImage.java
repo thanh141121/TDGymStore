@@ -38,8 +38,9 @@ public class ProductImage {
 	private Product product;
 	
 	@OneToOne
-	@JoinColumn(name = "id_media")
+	@JoinColumn(name = "id_media", unique = true)
 	private MediaResource media;
+	
 	
 	public ProductImage(Product product, MediaResource media) {
 		this.product = product;

@@ -3,6 +3,7 @@ package net.gymsrote.controller.payload.request.product;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,5 +22,8 @@ public class CreateVariationReq {
 	
 	@Range(min = 0, max = 100)
 	private Integer discount;
+	
+	private MultipartFile image;
+	
 
 }

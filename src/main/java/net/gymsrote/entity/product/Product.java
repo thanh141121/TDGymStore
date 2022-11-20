@@ -121,8 +121,8 @@ public class Product implements UpdatableAvatar{
 		this.avatar = avatar;
 		this.status = status;
 
-		this.minPrice = 0L;
-		this.maxPrice = 0L;
+		this.minPrice = null;
+		this.maxPrice = null;
 		this.nsold = 0L;
 		this.nvisit = 0L;
 		
