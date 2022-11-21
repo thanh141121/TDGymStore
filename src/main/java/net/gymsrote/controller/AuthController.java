@@ -9,11 +9,13 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +29,8 @@ import net.gymsrote.controller.payload.response.LoginResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.service.UserService;
 import net.gymsrote.service.authen.AuthService;
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/api")
 public class AuthController {
 	@Autowired
@@ -58,6 +61,7 @@ public class AuthController {
 					content = { @Content(mediaType = "application/json") })
 	})
 
+	@ResponseBody
 	@PostMapping("login")
 	public ResponseEntity<?> buyer(@RequestBody LoginKeyPasswordRequest body) {
 		return ResponseEntity.ok(login(body));
