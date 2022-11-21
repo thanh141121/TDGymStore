@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -71,7 +72,7 @@ public class AuthController {
 //		return ResponseEntity.ok(authService.register(body, getSiteURL(request)));
 //	}
 	@PostMapping("signup")
-	public String signup(@RequestBody SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+	public String signup(@Valid @RequestBody SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
 		BaseResponse temp =  authService.register(body, getSiteURL(request));
 		return "register_success";
 	}
