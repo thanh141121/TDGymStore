@@ -30,6 +30,7 @@ import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductGeneralDetailDTO;
 import net.gymsrote.dto.ProductVariationDTO;
 import net.gymsrote.entity.MediaResource;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
@@ -125,30 +126,34 @@ public class ProductService {
 
 	@Transactional(rollbackFor = { InvalidInputDataException.class })
 	public DataResponse<ProductDetailDTO> create(CreateProductReq product,
-			MultipartFile avatar, List<MultipartFile> images) throws IOException {
-		ProductCategory productCategory = productCategoryRepo.findById(product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
-		if (product.getVariations().size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
-			throw new InvalidInputDataException(
-					String.format("At least %d product variation(s) is required",
-							PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
-		}
-		Product p = new Product(productCategory,
-					product.getName(), 
-					product.getDescription(),
-					mediaResourceService.save(avatar.getBytes()), 
-					EProductStatus.ENABLED 
-					);
-		p = productRepo.saveAndFlush(p);
-		List<ProductImage> sourceImg= p.getImages();
-		if(images != null){
-			for(MultipartFile image: images) {
-				MediaResource media = mediaResourceService.save(image.getBytes());
-				if(media != null)
-				sourceImg.add(new ProductImage(p,media));
+			MultipartFile avatar, List<MultipartFile> images) {
+		try{
+			ProductCategory productCategory = productCategoryRepo.findById(product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
+			if (product.getVariations().size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
+				throw new InvalidInputDataException(
+						String.format("At least %d product variation(s) is required",
+								PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
 			}
+			Product p = new Product(productCategory,
+						product.getName(), 
+						product.getDescription(),
+						mediaResourceService.save(avatar.getBytes(), EFolderMediaResource.ThumnailProduct), 
+						EProductStatus.ENABLED 
+						);
+			p = productRepo.saveAndFlush(p);
+			List<ProductImage> sourceImg= p.getImages();
+			if(images != null){
+				for(MultipartFile image: images) {
+					MediaResource media = mediaResourceService.save(image.getBytes(), EFolderMediaResource.ProductImage);
+					if(media != null)
+					sourceImg.add(new ProductImage(p,media));
+				}
+			}
+			addVariation(p, product.getVariations());
+			return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
+		}catch(Exception e){
+			throw new InvalidInputDataException(e.getMessage());
 		}
-		addVariation(p, product.getVariations());
-		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 	
 	@Transactional
@@ -172,7 +177,7 @@ public class ProductService {
 				p.setStatus(data.getStatus());
 		}
 		if (avatar != null) {
-			serviceUtils.updateAvatar(p, avatar);
+			serviceUtils.updateAvatar(p, avatar, EFolderMediaResource.ThumnailProduct);
 		}
 		p = productRepo.save(p);
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
@@ -187,7 +192,7 @@ public class ProductService {
 				ProductVariation proVar = null;
 				for(CreateVariationReq var : variationReqs) {
 					proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
-							var.getAvailableQuantity(), var.getDiscount(),mediaResourceService.save(var.getImage().getBytes()), EProductVariationStatus.ENABLED));
+							var.getAvailableQuantity(), var.getDiscount(),mediaResourceService.save(var.getImage().getBytes(), EFolderMediaResource.ProductVariation), EProductVariationStatus.ENABLED));
 					updatePriceProduct(p, var);
 					p.getVariations().add(proVar);
 				}
@@ -202,17 +207,28 @@ public class ProductService {
 	public static void updatePriceProduct(Product p, CreateVariationReq var) {
 		Long minPricePro = p.getMinPrice();
 		Long maxPricePro = p.getMaxPrice();
+		long price = var.getFinalPrice().longValue();
 		if(minPricePro == null) {
-			p.setMinPrice(var.getPrice());
+			p.setMinPrice(price);
 		}else {
-			if(minPricePro.longValue() > var.getPrice().longValue())
-				p.setMinPrice(var.getPrice());
+			if(minPricePro.longValue() > price)
+				p.setMinPrice(price);
 		}
 		if(p.getMaxPrice() == null) {
-			p.setMaxPrice(var.getPrice());
+			p.setMaxPrice(price);
 		}else {
-			if(maxPricePro.longValue() < var.getPrice().longValue())
-				p.setMaxPrice(var.getPrice());
+			if(maxPricePro.longValue() < price)
+				p.setMaxPrice(price);
+		}
+		if(var.getDiscount() != null){
+			int maxDis = var.getDiscount();
+			Integer pMaxDis = p.getMaxDiscount();
+			if(pMaxDis != null )
+				if(pMaxDis < maxDis)
+					p.setMaxDiscount(maxDis);
+			else
+				p.setMaxDiscount(maxDis);
+
 		}
 	}
 

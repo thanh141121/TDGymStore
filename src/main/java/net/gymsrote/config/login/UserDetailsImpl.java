@@ -63,8 +63,7 @@ public class UserDetailsImpl<T extends UserInfo> implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
+		return user.getIsEnabled();
 	}
 
 }

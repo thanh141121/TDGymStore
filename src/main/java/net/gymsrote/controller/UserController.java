@@ -23,6 +23,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +54,11 @@ public class UserController {
 	public ResponseEntity<?> getUsers(){
 		System.out.println("get Users");
 		return ResponseEntity.ok().body(userService.getUsers());
+	}
+	
+	@PatchMapping("/enabled/{id}")
+	public ResponseEntity<?> isEnabled(@PathVariable("id") Long id){
+		return ResponseEntity.ok(userService.isEnabled(id, true));
 	}
 	
 /*	@GetMapping("/token/refresh")

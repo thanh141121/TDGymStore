@@ -16,6 +16,7 @@ import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.UpdatableAvatar;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.product.ProductCategory;
 import net.gymsrote.service.MediaResourceService;
@@ -31,7 +32,7 @@ public class ServiceUtils {
 	@Autowired
 	MediaResourceService mediaResourceService;
 
-	public void updateAvatar(UpdatableAvatar entity, MultipartFile newAvatar) {
+	public void updateAvatar(UpdatableAvatar entity, MultipartFile newAvatar, EFolderMediaResource folder) {
 		byte[] byteNewAvatar;
 		try {
 			byteNewAvatar = newAvatar.getBytes();
@@ -43,7 +44,7 @@ public class ServiceUtils {
 			entity.setAvatar(null);
 			mediaResourceService.delete(oldAvatar.getId());
 		}
-		entity.setAvatar(mediaResourceService.save(byteNewAvatar));
+		entity.setAvatar(mediaResourceService.save(byteNewAvatar, folder));
 	}
 
 	public <T, V> DataResponse<V> convertToDataResponse(T src, Class<V> cls) {

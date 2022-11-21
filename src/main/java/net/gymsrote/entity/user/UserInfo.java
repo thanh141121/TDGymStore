@@ -6,5 +6,5 @@ public interface UserInfo {
 	String getUsername();
 	String getPassword();
 	UserRole getRole();
-	EUserStatus getStatus();
+	Boolean getIsEnabled();
 }

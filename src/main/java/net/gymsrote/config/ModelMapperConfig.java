@@ -8,11 +8,13 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import net.gymsrote.dto.MediaResourceDTO;
 import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductImageDTO;
 import net.gymsrote.dto.ProductVariationDTO;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.dto.UserRoleDTO;
+import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
@@ -67,6 +69,7 @@ public class ModelMapperConfig {
 		mapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
 			m.map(src -> src.getRole().getName(), UserDTO::setRole);
 		});
+		mapper.createTypeMap(MediaResource.class, MediaResourceDTO.class);
 		// mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
 		// 	m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
 		// 	m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
@@ -86,6 +89,7 @@ public class ModelMapperConfig {
 		// (dst, value) -> dst.getCategory().setParents(value));
 		// m.map(Product::getTotalRatingTimes, ProductDetailDTO::setTotalRatingTimes);
 		// });
+		
 		// mapper.createTypeMap(Product.class, ProductGeneralDetailDTO.class).addMappings(m -> {
 		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductGeneralDetailDTO::setAvatar);
 		// });

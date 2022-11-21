@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.CloudinaryUploadResponse;
 import net.gymsrote.entity.MediaResource;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.repository.CloudResourceRepo;
 import net.gymsrote.service.thirdparty.CloudinaryService;
 
@@ -22,10 +23,10 @@ public class MediaResourceService {
 
 	@SuppressWarnings("unused")
 	@Transactional
-	public MediaResource save(byte[] data) {
+	public MediaResource save(byte[] data, EFolderMediaResource folder) {
 		CloudinaryUploadResponse resp = null;
 		try {
-			resp = cloudinaryService.upload(data);
+			resp = cloudinaryService.upload(data, folder);
 			MediaResource m =
 					new MediaResource(resp.getUrl(), resp.getPublicId(), resp.getResourceType());
 			return repo.save(m);

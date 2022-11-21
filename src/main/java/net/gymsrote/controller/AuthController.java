@@ -1,10 +1,18 @@
 package net.gymsrote.controller;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,15 +21,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import net.gymsrote.controller.payload.request.LoginKeyPasswordRequest;
 import net.gymsrote.controller.payload.request.SignUpRequest;
+import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.LoginResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.service.UserService;
-import net.gymsrote.service.authen.LoginService;
+import net.gymsrote.service.authen.AuthService;
 @RestController
 @RequestMapping("/api")
-public class LoginController {
+public class AuthController {
 	@Autowired
-	LoginService loginService;
+	AuthService authService;
 
 	@Autowired
 	UserService userService;
@@ -50,15 +59,33 @@ public class LoginController {
 
 	@PostMapping("login")
 	public ResponseEntity<?> buyer(@RequestBody LoginKeyPasswordRequest body) {
-		return ResponseEntity.ok(login(body, null));
-	}
-
-	@PostMapping("signup")
-	public ResponseEntity<?> signup(@RequestBody SignUpRequest body) {
-		return null;
+		return ResponseEntity.ok(login(body));
 	}
 	
-	private LoginResponse<?> login(LoginKeyPasswordRequest body, EUserRole r) {
-		return loginService.authenticateWithUsernamePassword(body.getLoginKey(), body.getPassword(), r);
+	private LoginResponse<?> login(LoginKeyPasswordRequest body) {
+		return authService.authenticateWithUsernamePassword(body.getLoginKey(), body.getPassword());
+	}
+
+//	@PostMapping("signup")
+//	public ResponseEntity<?> signup(@RequestPart SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+//		return ResponseEntity.ok(authService.register(body, getSiteURL(request)));
+//	}
+	@PostMapping("signup")
+	public String signup(@RequestBody SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+		BaseResponse temp =  authService.register(body, getSiteURL(request));
+		return "register_success";
+	}
+	private String getSiteURL(HttpServletRequest request) {
+		String siteURL = request.getRequestURL().toString();
+		return siteURL.replace(request.getServletPath(), "");
+	}	
+	
+	@GetMapping("/verify")
+	public String verifyUser(@Param("code") String code) {
+		if (authService.verify(code)) {
+			return "verify_success";
+		} else {
+			return "verify_fail";
+		}
 	}
 }

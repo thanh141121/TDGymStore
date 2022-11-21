@@ -1,5 +1,6 @@
 package net.gymsrote.controller.payload.request;
 
+import javax.persistence.Column;
 import javax.validation.constraints.*;
 
 import lombok.Getter;
@@ -24,4 +25,8 @@ public class SignUpRequest {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
+    
+    @NotNull
+    @Size(max=10)
+	private String phone;
 }

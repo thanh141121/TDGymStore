@@ -5,6 +5,7 @@ import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 import net.gymsrote.controller.advice.exception.DataConflictException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.advice.exception.RemoteUploadException;
+import net.gymsrote.controller.advice.exception.UnknownException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import javax.security.auth.login.LoginException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,7 +35,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     	CommonRestException.class,
     	CommonRuntimeException.class,
     	DataConflictException.class,
-    	InvalidInputDataException.class
+    	InvalidInputDataException.class,
+    	UnknownException.class,
+    	UsernameNotFoundException.class
     	})
     ResponseEntity<?> offerNotValidHandler(Exception exc, ServletWebRequest request) {
 

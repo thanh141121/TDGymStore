@@ -14,6 +14,7 @@ import com.cloudinary.utils.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.gymsrote.controller.payload.response.CloudinaryUploadResponse;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 
 @Getter @Setter
 @Service
@@ -33,10 +34,12 @@ public class CloudinaryService {
 				"secure", true));
     }
     
-    public CloudinaryUploadResponse upload(byte[] data) throws IOException {    	
+    public CloudinaryUploadResponse upload(byte[] data, EFolderMediaResource folder) throws IOException {    	
     	Map response = cloudinary.uploader().upload(
     			data,
-    			ObjectUtils.emptyMap()
+    			ObjectUtils.asMap(
+					"resource_type", "auto",
+					"folder", folder.name())
     		);
     	
     	return new CloudinaryUploadResponse(

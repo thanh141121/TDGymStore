@@ -14,6 +14,7 @@ import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.ProductImageDTO;
 import net.gymsrote.entity.MediaResource;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.repository.ProductImageRepo;
@@ -46,7 +47,7 @@ public class ProductImageService {
 		
 		try {
 			for (MultipartFile image : images) {
-				MediaResource mr = mediaResourceService.save(image.getBytes());
+				MediaResource mr = mediaResourceService.save(image.getBytes(), EFolderMediaResource.ProductImage);
 				mrs.add(mr);
 				pimgs.add(
 						productImageRepo.save(

@@ -56,7 +56,7 @@ public class User implements UserInfo{
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
-		this.status = status;
+		this.isEnabled = false;
 	}
 	
     public User(String fullname, String username, String email, String password) {
@@ -86,9 +86,15 @@ public class User implements UserInfo{
 	@Column(name = "phone", unique = true)
 	private String phone;
 
-	@Column(name = "status")
-	@Enumerated(EnumType.ORDINAL)
-	private EUserStatus status;
+//	@Column(name = "status")
+//	@Enumerated(EnumType.ORDINAL)
+//	private EUserStatus status;
+	
+	@Column
+	private Boolean isEnabled;
+	
+	@Column(name = "verification_code", length = 64)
+	private String verificationCode;
 	
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cloud_resource_id", referencedColumnName = "id")
@@ -106,4 +112,7 @@ public class User implements UserInfo{
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
 	private List<CartDetail> cart;
+
+
+
 }
