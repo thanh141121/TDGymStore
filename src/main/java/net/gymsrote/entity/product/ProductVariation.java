@@ -54,7 +54,13 @@ public class ProductVariation {
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
-	private EProductVariationStatus status;
+	private EProductVariationStatus status;	
+	
+	public Long getFinalPrice(){
+		if(discount!= null)
+			return (Long) (this.price*(100 - this.discount)/100);
+		return this.price;
+	}
 	
 	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity,
 			EProductVariationStatus status) {

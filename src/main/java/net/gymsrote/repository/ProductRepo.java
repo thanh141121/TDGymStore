@@ -2,9 +2,12 @@ package net.gymsrote.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,11 @@ import net.gymsrote.service.NeedImpl.ProductRepoCustom;
 @Repository
 public interface ProductRepo
 		extends JpaRepository<Product, Long>{//, ProductRepoCustom//, RefreshableRepo<Product> {
+	
+    @Query(value = "SELECT * FROM product WHERE MATCH(name, description) "
+            + "AGAINST (?1)", nativeQuery = true)          
+    Page<Product> search(String keyword, Pageable pageable);
+
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE product SET nvisit = nvisit + 1 WHERE id = ?1", nativeQuery = true)

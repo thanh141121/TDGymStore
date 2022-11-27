@@ -1,6 +1,7 @@
 package net.gymsrote.dto;
 
 import java.util.Collection;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,8 @@ public class UserDTO {
 	private String phone;
 	private EUserStatus status;
 	private EUserRole role;
-	//private Collection<UserRoleDTO> roles;
+	private Boolean isEnabled;
+	private UserAddressDTO defaultAddress;
+	private List<UserAddressDTO> userAddress;
 
 }

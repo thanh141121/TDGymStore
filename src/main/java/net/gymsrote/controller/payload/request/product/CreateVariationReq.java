@@ -25,11 +25,7 @@ public class CreateVariationReq {
 	
 	private MultipartFile image;
 
-	public Long getFinalPrice(){
-		if(discount!= null)
-			return (Long) (this.price*(100 - this.discount)/100);
-		return this.price;
-	}
+
 	
 
 }

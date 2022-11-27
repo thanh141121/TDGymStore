@@ -40,6 +40,6 @@ public interface ProductCategoryRepo
 	List<ProductCategory> findAllRootCategories();*/
 
 	//@Query(value = "SELECT pc FROM ProductCategory pc WHERE pc.parent IS NULL AND pc.status <> net.gymsrote.entity.EnumEntity.EProductCategoryStatus.BANNED")
-	@Query(value = "SELECT pc FROM ProductCategory pc WHERE pc.status <> net.gymsrote.entity.EnumEntity.EProductCategoryStatus.BANNED")
+	@Query(value = "SELECT pc FROM ProductCategory pc WHERE pc.status <> net.gymsrote.entity.EnumEntity.EProductCategoryStatus.DISABLED")
 	List<ProductCategory> buyerFindAllRootCategories();
 }

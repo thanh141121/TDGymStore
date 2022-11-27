@@ -3,23 +3,17 @@ package net.gymsrote.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.gymsrote.config.login.UserDetailsImpl;
-import net.gymsrote.controller.advice.exception.CommonRuntimeException;
-import net.gymsrote.controller.advice.exception.DataConflictException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
-import net.gymsrote.controller.payload.request.filter.ProductFilter;
 import net.gymsrote.controller.payload.request.product.CreateProductReq;
 import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
@@ -28,12 +22,10 @@ import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductGeneralDetailDTO;
-import net.gymsrote.dto.ProductVariationDTO;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
-import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductCategory;
@@ -43,8 +35,8 @@ import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.ProductCategoryRepo;
 import net.gymsrote.repository.ProductRepo;
 import net.gymsrote.repository.ProductVariationRepo;
+import net.gymsrote.service.thirdparty.CloudinaryService;
 import net.gymsrote.service.utils.ServiceUtils;
-import net.gymsrote.utility.PagingInfo;
 import net.gymsrote.utility.PlatformPolicyParameter;
 
 
@@ -58,6 +50,9 @@ public class ProductService {
 
 	@Autowired
 	MediaResourceService mediaResourceService;
+	
+	@Autowired
+	CloudinaryService cloudinaryService;
 
 	@Autowired
 	ProductVariationService productVariationService;
@@ -117,41 +112,67 @@ public class ProductService {
 				}
 			}
 		}*/
-		if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.BANNED)) {
+		if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.DISABLED)) {
 			if (authen == null || authen.getUser().getRole().getName().equals(EUserRole.USER))
 				throw new InvalidInputDataException("No product found with given id");
 		}
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
+	@SuppressWarnings("null")
 	@Transactional(rollbackFor = { InvalidInputDataException.class })
 	public DataResponse<ProductDetailDTO> create(CreateProductReq product,
-			MultipartFile avatar, List<MultipartFile> images) {
+			MultipartFile avatar, List<MultipartFile> images) throws IOException {
+		//a list to save PublicId to handle before rollback
+		List<String> tempCloudianaryImage = new ArrayList<>();
+		
 		try{
-			ProductCategory productCategory = productCategoryRepo.findById(product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
+			ProductCategory productCategory = productCategoryRepo.findById(
+					product.getCategoryId()).orElseThrow(() -> new InvalidInputDataException("Category not found"));
+			
 			if (product.getVariations().size() < PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
 				throw new InvalidInputDataException(
 						String.format("At least %d product variation(s) is required",
 								PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
 			}
+			
 			Product p = new Product(productCategory,
 						product.getName(), 
 						product.getDescription(),
 						mediaResourceService.save(avatar.getBytes(), EFolderMediaResource.ThumnailProduct), 
 						EProductStatus.ENABLED 
 						);
+			tempCloudianaryImage.add(p.getAvatar().getPublicId());
+			
 			p = productRepo.saveAndFlush(p);
-			List<ProductImage> sourceImg= p.getImages();
+			List<ProductImage> productImage= p.getImages();
+			List<ProductVariation> productVariation = p.getVariations();
+			
+			//create ProductImage
 			if(images != null){
 				for(MultipartFile image: images) {
 					MediaResource media = mediaResourceService.save(image.getBytes(), EFolderMediaResource.ProductImage);
 					if(media != null)
-					sourceImg.add(new ProductImage(p,media));
+					productImage.add(new ProductImage(p,media));
+					tempCloudianaryImage.add(media.getPublicId());
 				}
 			}
-			addVariation(p, product.getVariations());
+			
+			//create ProductVariation
+			for(CreateVariationReq var : product.getVariations()) {
+				ProductVariation proVar = productVariationService.create(p.getId(), var);
+				productVariation.add(proVar);
+				tempCloudianaryImage.add(proVar.getImage().getPublicId());
+			}
 			return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
+			
 		}catch(Exception e){
+			//handle cloudinary before rollback
+			if(tempCloudianaryImage.size() > 0) {
+				for(String publicId : tempCloudianaryImage) {
+					cloudinaryService.delete(publicId);
+				}
+			}
 			throw new InvalidInputDataException(e.getMessage());
 		}
 	}
@@ -183,57 +204,16 @@ public class ProductService {
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
-
-	@Transactional
-	public void addVariation(Product p,List<CreateVariationReq> variationReqs) {
-		//Product p = productRepo.findById(proId).orElseThrow(() -> new InvalidInputDataException("Product not found"));
-		try {
-			if(p != null) {
-				ProductVariation proVar = null;
-				for(CreateVariationReq var : variationReqs) {
-					proVar = productVariationRepo.saveAndFlush(new ProductVariation(p, var.getVariationName(), var.getPrice(),
-							var.getAvailableQuantity(), var.getDiscount(),mediaResourceService.save(var.getImage().getBytes(), EFolderMediaResource.ProductVariation), EProductVariationStatus.ENABLED));
-					updatePriceProduct(p, var);
-					p.getVariations().add(proVar);
-				}
-			}else {
-				 throw new InvalidInputDataException("No product found with given id");
-			}
-		}catch (IOException e) {
-			throw new InvalidInputDataException("Having something wrong happen!\n"+ e.getMessage());
-		}
+	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable) {
+		Page<Product> products = productRepo.findAll(pageable);
+		return serviceUtils.convertToListResponse(products, ProductDetailDTO.class);
+//		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
 	}
-
-	public static void updatePriceProduct(Product p, CreateVariationReq var) {
-		Long minPricePro = p.getMinPrice();
-		Long maxPricePro = p.getMaxPrice();
-		long price = var.getFinalPrice().longValue();
-		if(minPricePro == null) {
-			p.setMinPrice(price);
-		}else {
-			if(minPricePro.longValue() > price)
-				p.setMinPrice(price);
-		}
-		if(p.getMaxPrice() == null) {
-			p.setMaxPrice(price);
-		}else {
-			if(maxPricePro.longValue() < price)
-				p.setMaxPrice(price);
-		}
-		if(var.getDiscount() != null){
-			int maxDis = var.getDiscount();
-			Integer pMaxDis = p.getMaxDiscount();
-			if(pMaxDis != null )
-				if(pMaxDis < maxDis)
-					p.setMaxDiscount(maxDis);
-			else
-				p.setMaxDiscount(maxDis);
-
-		}
-	}
-
-	public Object getAllProducts() {
-		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
+	
+	public ListWithPagingResponse<ProductGeneralDetailDTO> search(String keyword, Pageable pageable) {
+		return serviceUtils.convertToListResponse(
+				productRepo.search(keyword, pageable),
+				ProductGeneralDetailDTO.class);
 	}
 
 	/*public void updateRating(Long id, Integer point) {

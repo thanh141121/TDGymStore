@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.EnumEntity.EUserStatus;
-import net.gymsrote.entity.address.Address;
+import net.gymsrote.entity.address.District;
 import net.gymsrote.entity.cart.CartDetail;
 
 @Getter
@@ -85,16 +85,19 @@ public class User implements UserInfo{
 
 	@Column(name = "phone", unique = true)
 	private String phone;
-
-//	@Column(name = "status")
-//	@Enumerated(EnumType.ORDINAL)
-//	private EUserStatus status;
 	
 	@Column
 	private Boolean isEnabled;
 	
 	@Column(name = "verification_code", length = 64)
 	private String verificationCode;
+	
+	@OneToOne
+	@JoinColumn(name = "default_address")
+	private UserAddress defaultAddress;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<UserAddress> userAddress;
 	
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cloud_resource_id", referencedColumnName = "id")
@@ -107,7 +110,7 @@ public class User implements UserInfo{
 	private UserRole role;
 	
 	@OneToMany(mappedBy = "user")
-	private List<Address> addresses = new ArrayList<>();
+	private List<UserAddress> addresses = new ArrayList<>();
 	
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)

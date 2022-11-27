@@ -1,15 +1,22 @@
 package net.gymsrote.service;
 
+import java.io.IOException;
+import java.lang.StackWalker.Option;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.gymsrote.controller.advice.exception.CommonRestException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
+import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductVariationRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.dto.ProductVariationDTO;
+import net.gymsrote.entity.EnumEntity.EFolderMediaResource;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
+import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductVariation;
 import net.gymsrote.repository.ProductRepo;
 //import net.gymsrote.controller.payload.dto.ProductVariationDTO;
@@ -30,7 +37,10 @@ import net.gymsrote.utility.PlatformPolicyParameter;
 @Service
 public class ProductVariationService {
 	@Autowired
-	LogService logService;
+	LogService logService;	
+	
+	@Autowired
+	MediaResourceService mediaResourceService;
 
 	@Autowired
 	ProductRepo productRepo;
@@ -47,22 +57,48 @@ public class ProductVariationService {
 		return serviceUtils.convertToDataResponse(variation, ProductVariationDTO.class);
 	}
 
-	/*public DataResponse<ProductVariationDTO> create(Long idUser, Long idProduct,
-			CreateProductVariationRequest data) {
+	public ProductVariation create(Long idProduct, CreateVariationReq var) throws IOException {
+		Optional<Product> p = productRepo.findById(idProduct);
+		if(p.isPresent()) {
+			ProductVariation ProductVariation = productVariationRepo.saveAndFlush(new ProductVariation(p.get(), var.getVariationName(), var.getPrice(),
+					var.getAvailableQuantity(), var.getDiscount(),mediaResourceService.save(var.getImage().getBytes(), EFolderMediaResource.ProductVariation), EProductVariationStatus.ENABLED));
+			updatePriceProduct(p.get(), ProductVariation);
+			return ProductVariation;
+		}
 		if (!productRepo.existsById(idProduct))
 			throw new InvalidInputDataException("No product found with given id");
-		ProductVariation variation = new ProductVariation(productRepo.getReferenceById(idProduct),
-				data.getVariationName(), data.getPrice(),
-				data.getAvailableQuantity(), data.getDiscount(), EProductVariationStatus.ENABLED);
-		variation = productVariationRepo.saveAndFlush(variation);
-		logService.logInfo(idUser,
-				String.format(
-						"New product variation for product (id: %d) has been created with id %d",
-						idProduct, variation.getId()));
-		return serviceUtils.convertToDataResponse(variation, ProductVariationDTO.class);
+		return null;
+	}
+	
+	public static void updatePriceProduct(Product p, ProductVariation var) {
+		Long minPricePro = p.getMinPrice();
+		Long maxPricePro = p.getMaxPrice();
+		long price = var.getFinalPrice().longValue();
+		if(minPricePro == null) {
+			p.setMinPrice(price);
+		}else {
+			if(minPricePro.longValue() > price)
+				p.setMinPrice(price);
+		}
+		if(p.getMaxPrice() == null) {
+			p.setMaxPrice(price);
+		}else {
+			if(maxPricePro.longValue() < price)
+				p.setMaxPrice(price);
+		}
+		if(var.getDiscount() != null){
+			int maxDis = var.getDiscount();
+			Integer pMaxDis = p.getMaxDiscount();
+			if(pMaxDis != null ){
+				if(pMaxDis < maxDis)
+					p.setMaxDiscount(maxDis);
+			}
+			else
+				p.setMaxDiscount(maxDis);
+		}
 	}
 
-	public void create(Product p, List<CreateProductVariationRequest> data) {
+	/*public void create(Product p, List<CreateProductVariationRequest> data) {
 		for (CreateProductVariationRequest variation : data) {
 			productVariationRepo.save(new ProductVariation(p, variation.getVariationName(),
 					variation.getPrice(), variation.getAvailableQuantity(),

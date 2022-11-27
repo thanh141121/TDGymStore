@@ -1,23 +1,22 @@
 package net.gymsrote.service;
 
-import java.io.UnsupportedEncodingException;
-
-import javax.mail.MessagingException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
+import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.dto.UserAddressDTO;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.User;
+import net.gymsrote.entity.user.UserAddress;
 import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
@@ -38,6 +37,13 @@ public class UserService{// implements IUserService{
 
 	@Autowired
 	ServiceUtils serviceUtils;
+	
+	public ListResponse<UserAddressDTO> getListAddress(Long id) {
+		User u = userRepo.findById(id)
+				.orElseThrow(() -> new InvalidInputDataException("User not found with id: "+id));
+		List<UserAddress> addresses = u.getUserAddress();
+		return serviceUtils.convertToListResponse(addresses, UserAddressDTO.class);
+	}
 	
 	public BaseResponse isEnabled(Long id, boolean isEnable) {
 		User user = userRepo.findById(id)
