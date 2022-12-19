@@ -39,11 +39,20 @@ public class CustomProductRepository {
         return (root, query, criteriaBuilder)-> criteriaBuilder.equal(root.get(Product_.CATEGORY).get(ProductCategory_.ID), categoryId);
     }
 	
-    public ListWithPagingResponse<ProductDetailDTO> getQueryResult(List<Filter> filters){
+    /*public ListWithPagingResponse<ProductDetailDTO> getQueryResult(List<Filter> filters){
         if(filters.size()>0) {
             return serviceUtils.convertToListResponse(
             		productRepo.findAll(getSpecificationFromFilters(filters), PageRequest.of(0,1)),
             		ProductDetailDTO.class);
+            		
+        }else {
+//            return productRepo.findAll();
+        	return null;
+        }
+    }*/
+    public List<Product> getQueryResult(List<Filter> filters){
+        if(filters.size()>0) {
+            return productRepo.findAll(getSpecificationFromFilters(filters));
             		
         }else {
 //            return productRepo.findAll();

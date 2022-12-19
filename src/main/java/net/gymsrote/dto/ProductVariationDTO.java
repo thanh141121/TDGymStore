@@ -14,6 +14,6 @@ public class ProductVariationDTO {
 	private Long price;
 	private Long availableQuantity;
 	private Integer discount;
-	private MediaResourceDTO image;
+	private MediaResourceDTO avatar;
 	private EProductVariationStatus status;
 }

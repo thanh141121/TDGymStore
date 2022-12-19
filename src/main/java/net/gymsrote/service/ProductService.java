@@ -162,7 +162,7 @@ public class ProductService {
 			for(CreateVariationReq var : product.getVariations()) {
 				ProductVariation proVar = productVariationService.create(p.getId(), var);
 				productVariation.add(proVar);
-				tempCloudianaryImage.add(proVar.getImage().getPublicId());
+				tempCloudianaryImage.add(proVar.getAvatar().getPublicId());
 			}
 			return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 			
@@ -207,7 +207,6 @@ public class ProductService {
 	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable) {
 		Page<Product> products = productRepo.findAll(pageable);
 		return serviceUtils.convertToListResponse(products, ProductDetailDTO.class);
-//		return serviceUtils.convertToListResponse(productRepo.findAll(), ProductDetailDTO.class);
 	}
 	
 	public ListWithPagingResponse<ProductGeneralDetailDTO> search(String keyword, Pageable pageable) {

@@ -106,7 +106,7 @@ public class ProductVariationService {
 		}
 	}*/
 
-	public DataResponse<ProductVariationDTO> update(Long idUser, Long id, Long idProduct,
+	public DataResponse<ProductVariationDTO> update(Long id, Long idProduct,
 			UpdateProductVariationRequest data) {
 		ProductVariation variation = productVariationRepo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("No product variation found with given id"));
@@ -136,10 +136,10 @@ public class ProductVariationService {
 						PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
 			}
 			variation.setStatus(data.getStatus());
+		}		
+		if (data.getImage() != null) {
+			serviceUtils.updateAvatar(variation, data.getImage(), EFolderMediaResource.ProductVariation);
 		}
-		logService.logInfo(idUser,
-				String.format("Product variation with id %d for product (id: %d) has been edited",
-						variation.getId(), idProduct));
 		return serviceUtils.convertToDataResponse(productVariationRepo.save(variation),
 				ProductVariationDTO.class);
 	}

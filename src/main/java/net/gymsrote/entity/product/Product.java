@@ -113,6 +113,15 @@ public class Product implements UpdatableAvatar{
 	@Column(name = "last_modified_date")
 	@LastModifiedDate
 	private Date lastModifiedDate;
+	
+	@Column(name = "weight")
+	private Integer weight;
+	@Column(name = "length")
+	private Integer length;
+	@Column(name = "width")
+	private Integer width;
+	@Column(name = "height")
+	private Integer height;
 
 	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;

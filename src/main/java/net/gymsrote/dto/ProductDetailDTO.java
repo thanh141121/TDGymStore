@@ -2,6 +2,8 @@ package net.gymsrote.dto;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,5 +34,11 @@ public class ProductDetailDTO {
 	private Integer rating5;
 	private Integer totalRatingTimes;
 	private List<ProductImageDTO> images;
+	
+	private Integer weight;
+	private Integer length;
+	private Integer width;
+	private Integer height;
+	
 	private List<ProductVariationDTO> variations;
 }

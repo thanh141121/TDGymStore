@@ -33,4 +33,10 @@ public class District {
 	@ManyToOne
 	@JoinColumn(name = "province_id")
 	private Province province;
+
+	public District(Long districtID, String districtName) {
+		super();
+		DistrictID = districtID;
+		DistrictName = districtName;
+	}
 }

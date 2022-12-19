@@ -49,12 +49,6 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/addresses/{id}")
-	public ResponseEntity<?> getAddresses(@PathVariable("id") Long id){
-		System.out.println("get User Addresses");
-		return ResponseEntity.ok().body(userService.getListAddress(id));
-	}
-	
 	@GetMapping("/users")
 	//@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getUsers(){

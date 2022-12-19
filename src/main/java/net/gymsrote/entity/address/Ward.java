@@ -18,13 +18,19 @@ import lombok.Setter;
 @Table(name = "tb_ward")
 public class Ward {
 	@Id
-	private Long WardCode;
+	private Long wardCode;
 	
 	@Column
-	private String WardName;
+	private String wardName;
 	
 	@ManyToOne
 	@JoinColumn(name = "district_id")
 	private District district;
+
+	public Ward(Long wardCode, String wardName) {
+		super();
+		this.wardCode = wardCode;
+		this.wardName = wardName;
+	}
 
 }

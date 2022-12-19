@@ -38,12 +38,6 @@ public class UserService{// implements IUserService{
 	@Autowired
 	ServiceUtils serviceUtils;
 	
-	public ListResponse<UserAddressDTO> getListAddress(Long id) {
-		User u = userRepo.findById(id)
-				.orElseThrow(() -> new InvalidInputDataException("User not found with id: "+id));
-		List<UserAddress> addresses = u.getUserAddress();
-		return serviceUtils.convertToListResponse(addresses, UserAddressDTO.class);
-	}
 	
 	public BaseResponse isEnabled(Long id, boolean isEnable) {
 		User user = userRepo.findById(id)

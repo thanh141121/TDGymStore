@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
+import net.gymsrote.entity.UpdatableAvatar;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 import net.gymsrote.entity.listener.ProductVariationListener;
 
@@ -26,7 +27,7 @@ import net.gymsrote.entity.listener.ProductVariationListener;
 @Entity
 @EntityListeners(ProductVariationListener.class)
 @Table(name = "product_variation")
-public class ProductVariation {
+public class ProductVariation implements UpdatableAvatar{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -40,7 +41,7 @@ public class ProductVariation {
 	
 	@OneToOne
 	@JoinColumn(name = "media_resource_id", unique = true)
-	private MediaResource image;
+	private MediaResource avatar;
 	
 	
 	@Column(name = "price", nullable = false)
@@ -71,10 +72,10 @@ public class ProductVariation {
 		this.status = status;
 	}
 
-	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity, Integer discount, MediaResource image,
+	public ProductVariation(Product product, String variationName, Long price, Long availableQuantity, Integer discount, MediaResource avatar,
 			EProductVariationStatus status) {
 		this(product, variationName, price, availableQuantity, status);
-		this.image = image;
+		this.avatar = avatar;
 		
 		if (discount == null) {
 			this.discount = 0;

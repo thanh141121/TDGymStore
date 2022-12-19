@@ -96,7 +96,7 @@ public class User implements UserInfo{
 	@JoinColumn(name = "default_address")
 	private UserAddress defaultAddress;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user")//, fetch = FetchType.LAZY)
 	private List<UserAddress> userAddress;
 	
     @OneToOne(cascade = CascadeType.ALL)
@@ -108,9 +108,6 @@ public class User implements UserInfo{
 	//@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     //private Collection<UserRole> roles = new ArrayList<>();
 	private UserRole role;
-	
-	@OneToMany(mappedBy = "user")
-	private List<UserAddress> addresses = new ArrayList<>();
 	
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)

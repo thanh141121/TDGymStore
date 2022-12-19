@@ -27,4 +27,10 @@ public class Province {
 	@OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
 	private List<District> districts;
 
+	public Province(Long provinceID, String provinceName) {
+		super();
+		ProvinceID = provinceID;
+		ProvinceName = provinceName;
+	}
+
 }

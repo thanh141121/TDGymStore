@@ -47,4 +47,13 @@ public class UserAddress {
 	@Column(name = "receiver_phone", nullable = false)
 	private String receiverPhone;
 
+	public UserAddress(String addressDetail, User user, Ward ward, String receiverName, String receiverPhone) {
+		super();
+		this.addressDetail = addressDetail;
+		this.user = user;
+		this.ward = ward;
+		this.receiverName = receiverName;
+		this.receiverPhone = receiverPhone;
+	}
+
 }

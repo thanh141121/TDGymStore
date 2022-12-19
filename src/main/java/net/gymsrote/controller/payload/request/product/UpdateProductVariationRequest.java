@@ -1,6 +1,7 @@
 package net.gymsrote.controller.payload.request.product;
 
 import org.hibernate.validator.constraints.Range;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +11,6 @@ import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
 public class UpdateProductVariationRequest {	
 	
 	private String variationName;
-	
-	private String tier;
 	
 	@Range(min = 1)
 	private Long price;
@@ -23,4 +22,6 @@ public class UpdateProductVariationRequest {
 	private Integer discount;
 	
 	private EProductVariationStatus status;
+	
+	private MultipartFile image;
 }
