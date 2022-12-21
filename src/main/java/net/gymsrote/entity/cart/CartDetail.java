@@ -54,15 +54,16 @@ public class CartDetail {
 	@PreUpdate
 	private void check(){
 		if (productVariation.getStatus() != EProductVariationStatus.ENABLED) {
-			throw new InvalidInputDataException("Product Variation is not enabled");
+			throw new InvalidInputDataException("Phân loại sản phẩm này không còn khả dụng");
 		}
 
 		if (productVariation.getProduct().getStatus() != EProductStatus.ENABLED) {
-			throw new InvalidInputDataException("Product is not enabled");
+			throw new InvalidInputDataException("Sản phẩm này không còn khả dụng");
 		}
 
 		if (quantity > productVariation.getAvailableQuantity()) {
-			throw new InvalidInputDataException("Quantity cannot be greater than stock");
+			quantity = productVariation.getAvailableQuantity();
+			throw new InvalidInputDataException("Số lượng sản phẩm vượt quá số lượng có sẵn");
 		}
 	}
 	

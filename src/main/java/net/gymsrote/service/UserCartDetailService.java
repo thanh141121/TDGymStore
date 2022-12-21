@@ -4,6 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import net.gymsrote.controller.advice.exception.InvalidInputDataException;
+import net.gymsrote.controller.payload.request.CreateCartDetailRequest;
+import net.gymsrote.controller.payload.response.DataResponse;
+import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.dto.CartDetailDTO;
+import net.gymsrote.entity.cart.CartDetail;
+import net.gymsrote.entity.user.User;
+import net.gymsrote.repository.ProductVariationRepo;
+import net.gymsrote.repository.UserCartDetailRepo;
+import net.gymsrote.repository.UserRepo;
+import net.gymsrote.service.utils.ServiceUtils;
+
 //import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 //import net.gymsrote.controller.payload.dto.BuyerCartDetailDTO;
 //import net.gymsrote.controller.payload.request.buyercartdetail.CreateBuyerCartDetailRequest;
@@ -20,48 +32,41 @@ import org.springframework.stereotype.Service;
 //import net.gymsrote.service.util.ServiceUtils;
 
 @Service
-public class BuyerCartDetailService {
-//	@Autowired
-//	BuyerCartDetailRepo buyerCartDetailRepo;
-//
-//	@Autowired
-//	BuyerRepo buyerRepo;
-//
-//	@Autowired
-//	ProductVariationRepo productVariationRepo;
-//
-//	@Autowired
-//	ServiceUtils serviceUtils;
-//
-//	public DataResponse<BuyerCartDetailDTO> get(Long idProductVariation, Long idBuyer) {
-//		BuyerCartDetail cartDetail =
-//				buyerCartDetailRepo.findById(new BuyerCartDetailPK(idBuyer, idProductVariation))
-//						.orElseThrow(() -> new InvalidInputDataException(
-//								"No Cart Detail found with given id " + idProductVariation));
-//		return serviceUtils.convertToDataResponse(cartDetail, BuyerCartDetailDTO.class);
-//	}
-//
-//	public ListResponse<BuyerCartDetailDTO> getAllByIdBuyer(Long idBuyer) {
-//		if (!buyerRepo.existsById(idBuyer)) {
-//			throw new InvalidInputDataException("No Buyer found with given id " + idBuyer);
-//		}
-//		Buyer buyer = buyerRepo.getReferenceById(idBuyer);
-//		return serviceUtils.convertToListResponse(
-//				buyerCartDetailRepo.findAllByBuyer(buyer, Sort.by("productVariation.product")),
-//				BuyerCartDetailDTO.class);
-//	}
-//
-//	public DataResponse<BuyerCartDetailDTO> create(Long idProductVariation, Long idBuyer,
-//			CreateBuyerCartDetailRequest data) {
-//		if (!productVariationRepo.existsById(idProductVariation)) {
-//			throw new InvalidInputDataException(
-//					"No Product Variation found with given id " + idProductVariation);
-//		}
-//		BuyerCartDetail cartDetail = new BuyerCartDetail(buyerRepo.getReferenceById(idBuyer),
-//				productVariationRepo.getReferenceById(idProductVariation), data.getQuantity());
-//		return serviceUtils.convertToDataResponse(buyerCartDetailRepo.save(cartDetail),
-//				BuyerCartDetailDTO.class);
-//	}
+public class UserCartDetailService {
+	@Autowired
+	UserCartDetailRepo cartDetailRepo;
+
+	@Autowired
+	UserRepo userRepo;
+	
+	@Autowired
+	ProductVariationRepo productVariationRepo;
+	
+	@Autowired
+	ServiceUtils serviceUtils;
+
+
+	public ListResponse<?> getAllByIdBuyer(Long userId) {
+		if (!userRepo.existsById(userId)) {
+			throw new InvalidInputDataException("Không tìm thấy người dùng với id: " + userId);
+		}
+		User user  = userRepo.getReferenceById(userId);
+		return serviceUtils.convertToListResponse(
+				cartDetailRepo.findAllByBuyer(user, Sort.by("productVariation.product")), 
+				CartDetailDTO.class);
+	}
+
+	public DataResponse<?> create(Long idProductVariation, Long userId,
+			CreateCartDetailRequest data) {
+		if (!productVariationRepo.existsById(idProductVariation)) {
+			throw new InvalidInputDataException(
+					"Không tìm thấy Phân loại sản phẩm với id: " + idProductVariation);
+		}
+		CartDetail cartDetail = new CartDetail(userRepo.getReferenceById(userId),
+				productVariationRepo.getReferenceById(idProductVariation), data.getQuantity());
+		return serviceUtils.convertToDataResponse(cartDetailRepo.save(cartDetail),
+				CartDetailDTO.class);
+	}
 //
 //	public DataResponse<BuyerCartDetailDTO> update(Long idProductVariation, Long idBuyer,
 //			UpdateBuyerCartDetailRequest data) {

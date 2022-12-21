@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.gymsrote.controller.advice.exception.CommonRestException;
+import net.gymsrote.controller.payload.response.Data;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
@@ -56,20 +57,30 @@ public class ServiceUtils {
 
 	public <T, V> ListWithPagingResponse<V> convertToListResponse(List<T> src, Class<V> cls,
 			PageWithJpaSort page) {
-		return new ListWithPagingResponse<>(page.getPageNumber() + 1, page.getTotalPage(),
-				src.stream().map(p -> mapper.map(p, cls)).toList());
+		return new ListWithPagingResponse<>(new Data<>(page.getPageNumber() + 1, 
+				page.getTotalPage(), 
+				src.stream().map(p -> mapper.map(p, cls)).toList()));
 	}
 
 	public <T, V> ListWithPagingResponse<V> convertToListResponse(List<T> src, Class<V> cls,
 			Page page) {
-		return new ListWithPagingResponse<>(page.getPageNumber() + 1, page.getTotalPage(),
-				src.stream().map(p -> mapper.map(p, cls)).toList());
+		return new ListWithPagingResponse<>(new Data<>(page.getPageNumber() + 1, 
+				page.getTotalPage(), 
+				src.stream().map(p -> mapper.map(p, cls)).toList()));
+				
+				/*page.getPageNumber() + 1, page.getTotalPage(),
+				src.stream().map(p -> mapper.map(p, cls)).toList());*/
 	}
 
 	public <T, V> ListWithPagingResponse<V> convertToListResponse(
 			org.springframework.data.domain.Page<T> src, Class<V> cls) {
-		return new ListWithPagingResponse<>(src.getPageable().getPageNumber() + 1,
-				src.getTotalPages(), src.stream().map(p -> mapper.map(p, cls)).toList());
+		return new ListWithPagingResponse<>(new Data<>(
+				src.getPageable().getPageNumber() + 1, 
+				src.getTotalPages(),
+				src.stream().map(p -> mapper.map(p, cls)).toList()
+				)
+				);
+				//src.stream().map(p -> mapper.map(p, cls)).toList());
 	}
 
 	public PageRequest getPageRequest(Integer page, Integer size) {

@@ -11,5 +11,7 @@ public class UserAddressDTO {
 	private String receiverName;
 	private String receiverPhone;
 	private WardDTO ward;
+	private String addressString;
+	
 
 }

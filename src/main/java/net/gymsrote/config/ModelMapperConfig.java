@@ -8,7 +8,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import net.gymsrote.dto.CartDetailDTO;
 import net.gymsrote.dto.MediaResourceDTO;
+import net.gymsrote.dto.ProductCartDetailDTO;
 import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductImageDTO;
 import net.gymsrote.dto.ProductVariationDTO;
@@ -20,7 +22,9 @@ import net.gymsrote.dto.address.ProvinceDTO;
 import net.gymsrote.dto.address.WardDTO;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.address.District;
+import net.gymsrote.entity.address.Province;
 import net.gymsrote.entity.address.Ward;
+import net.gymsrote.entity.cart.CartDetail;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
@@ -34,23 +38,7 @@ public class ModelMapperConfig {
 	public ModelMapper modelMapper() {
 		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		// Converter<MediaResource, String> mediaResourceCvt = c -> {
-		// if (c.getSource() == null)
-		// return "";
-		// else
-		// return c.getSource().getUrl();
-		// };
-		// Converter<List<UserRole>, List<UserRoleDTO>> rolesCvt = c -> {
-		// if (c.getSource() == null)
-		// return null;
-		// else
-		// return c.getSource().stream().map(UserRole::getTier).distinct().toList();
-		// };
-		// Converter<String, Boolean> emptyPasswordCvt = c -> {
-		// return StringUtils.isBlank(c.getSource());
-		// };
-		// var lstChildProductCategoryCvt =
-		// generateListConverter(ProductCategory.class, ProductCategoryDTO.class, mapper);
+
 		Object lstProductImageCvt = generateListConverter(ProductImage.class, ProductImageDTO.class, mapper);
 		// var lstProductReviewImageCvt = generateListConverter(ProductReviewImage.class,
 		// ProductReviewImageDTO.class, mapper);
@@ -60,28 +48,11 @@ public class ModelMapperConfig {
 		Object lstUserAddressCvt = 
 				generateListConverter(UserAddress.class, UserAddressDTO.class, mapper);
 		
-		// var lstOrderDetailCvt =
-		// generateListConverter(OrderDetail.class, OrderDetailDTO.class, mapper);
-		// mapper.createTypeMap(Buyer.class, BuyerDTO.class).addMappings(m -> {
-		// m.using(mediaResourceCvt).map(Buyer::getAvatar, BuyerDTO::setAvatar);
-		// m.using(emptyPasswordCvt).map(src -> src.getUser().getPassword(),
-		// BuyerDTO::setEmptyPassword);
-		// m.map(src -> src.getUser().getUsername(), BuyerDTO::setUsername);
-		// m.map(src -> src.getUser().getFullname(), BuyerDTO::setFullname);
-		// m.map(src -> src.getUser().getPhone(), BuyerDTO::setPhone);
-		// m.map(src -> src.getUser().getEmail(), BuyerDTO::setEmail);
-		// m.map(src -> src.getUser().getFullname(), BuyerDTO::setFullname);
-		// });
-		// mapper.createTypeMap(ProductCategory.class, ProductCategoryDTO.class).addMappings(m -> {
-		// m.using(lstChildProductCategoryCvt).map(ProductCategory::getChild,
-		// ProductCategoryDTO::setChild);
-		// m.map(src -> src.getParent().getId(), ProductCategoryDTO::setIdParent);
-		// });
 		
 		//adress
 		mapper.createTypeMap(District.class, DistrictDTO.class);
 		mapper.createTypeMap(Ward.class, WardDTO.class);
-		mapper.createTypeMap(Product.class, ProvinceDTO.class);
+		mapper.createTypeMap(Province.class, ProvinceDTO.class);
 		
 		//USERDTO
 		mapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
@@ -90,10 +61,16 @@ public class ModelMapperConfig {
 		});		
 		
 		//USER ADDRESS DTO
-		mapper.createTypeMap(UserAddress.class, UserAddressDTO.class);
+		mapper.createTypeMap(UserAddress.class, UserAddressDTO.class).addMappings(m -> {
+			m.map(src -> src.toString(),
+					UserAddressDTO::setAddressString);
+		});
 		
 		//MEDIA RESOURCE
 		mapper.createTypeMap(MediaResource.class, MediaResourceDTO.class);
+		
+		//PRODUCT CART DETAIL -> CART DETAIL
+		mapper.createTypeMap(Product.class, ProductCartDetailDTO.class);
 		
 		// mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
 		// 	m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
@@ -151,8 +128,12 @@ public class ModelMapperConfig {
 		// ProductReviewImageDTO::setResourceType);
 		// });
 		
-		// mapper.createTypeMap(BuyerCartDetail.class, BuyerCartDetailDTO.class).addMappings(m -> {
-		// m.map(src -> src.getBuyer().getId(), BuyerCartDetailDTO::setIdBuyer);
+		//CART DETAIL DTO
+		 mapper.createTypeMap(CartDetail.class, CartDetailDTO.class).addMappings(m -> {
+		 m.map(src -> src.getBuyer().getId(), CartDetailDTO::setUserId);
+		 m.map(src -> src.getProductVariation().getProduct(),
+					 CartDetailDTO::setProductDetail);
+		 });
 		// m.map(src -> src.getProductVariation().getProduct(),
 		// BuyerCartDetailDTO::setProductDetail);
 		// });

@@ -55,5 +55,13 @@ public class UserAddress {
 		this.receiverName = receiverName;
 		this.receiverPhone = receiverPhone;
 	}
+	
+	public String toString() {
+		return String.format("%s, %s, %s, %s",
+				this.addressDetail,
+				this.ward.getWardName(),
+				this.ward.getDistrict().getDistrictName(),
+				this.ward.getDistrict().getProvince().getProvinceName());
+	}
 
 }
