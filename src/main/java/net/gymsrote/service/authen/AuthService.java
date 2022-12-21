@@ -29,7 +29,6 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
-import net.gymsrote.service.LogService;
 import net.gymsrote.service.UserService;
 import net.gymsrote.utility.component.JwtUtil;
 @Service

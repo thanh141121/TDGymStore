@@ -36,8 +36,6 @@ import net.gymsrote.utility.PlatformPolicyParameter;
 
 @Service
 public class ProductVariationService {
-	@Autowired
-	LogService logService;	
 	
 	@Autowired
 	MediaResourceService mediaResourceService;
