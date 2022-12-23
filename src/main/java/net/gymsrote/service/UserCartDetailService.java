@@ -115,8 +115,7 @@ public class UserCartDetailService {
 		return new BaseResponse();
 	}
 	
-	public Long countByUser(Long idUser) {
-		return null;
-		// return cartDetailRepo.countByUser(userRepo.getReferenceById(idUser));
+	public DataResponse<?> countByUser(Long idUser) {
+		return  serviceUtils.convertToDataResponse(cartDetailRepo.countByUser(userRepo.getReferenceById(idUser)), Long.class);
 	}
 }
