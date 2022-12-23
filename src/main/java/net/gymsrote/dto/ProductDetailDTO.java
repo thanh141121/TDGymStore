@@ -1,5 +1,6 @@
 package net.gymsrote.dto;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -41,4 +42,7 @@ public class ProductDetailDTO {
 	private Integer height;
 	
 	private List<ProductVariationDTO> variations;
+	
+	private List<String> allImgUrl;
+	private HashMap<Long, String> allImgVar;
 }

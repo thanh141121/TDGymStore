@@ -58,6 +58,7 @@ public class ModelMapperConfig {
 		mapper.createTypeMap(User.class, UserDTO.class).addMappings(m -> {
 			m.map(src -> src.getRole().getName(), UserDTO::setRole);
 			m.using((Converter<?, ?>) lstUserAddressCvt).map(src -> src.getUserAddress(), UserDTO::setUserAddress);
+			m.map(src -> src.getDefaultAddress(), UserDTO::setDefaultAddress);
 		});		
 		
 		//USER ADDRESS DTO
@@ -82,6 +83,8 @@ public class ModelMapperConfig {
 		 m.using((Converter<?, ?>) lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
 		 m.using((Converter<?, ?>) lstProductVariationCvt).map(Product::getVariations,
 		 ProductDetailDTO::setVariations);
+		 m.map(src -> src.allImgUrl(), ProductDetailDTO::setAllImgUrl);
+		 m.map(src -> src.allImgVar(), ProductDetailDTO::setAllImgVar);
 		 });
 		 
 		 //PRODUCT IMAGED DTO

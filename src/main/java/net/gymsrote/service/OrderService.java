@@ -89,6 +89,7 @@ public class OrderService {
 					total
 					));
 		});
+		order.setPayPrice(order.getPayPrice() + data.getShipPrice());
 		return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
 	}
 //

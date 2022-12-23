@@ -2,6 +2,8 @@ package net.gymsrote.entity.product;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -145,5 +147,22 @@ public class Product implements UpdatableAvatar{
 	
 	public Integer getTotalRatingTimes() {
 		return rating1 + rating2 + rating3 + rating4 + rating5;
+	}
+	
+	public List<String> allImgUrl(){
+		List<String> urls = new ArrayList<>();
+		urls.add(this.avatar.getUrl());
+		for(ProductImage proImg : this.images) {
+			urls.add(proImg.getMedia().getUrl());
+		}
+		return urls;
+	}
+	
+	public HashMap<Long, String> allImgVar(){
+		HashMap<Long, String> result = new HashMap<>();
+		for(ProductVariation proVar : this.variations ) {
+			result.put(proVar.getId(), proVar.getAvatar().getUrl());
+		}
+		return result;
 	}
 }

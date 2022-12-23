@@ -1,5 +1,7 @@
 package net.gymsrote.controller.payload.request;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Range;
 
 import lombok.Getter;
@@ -9,6 +11,6 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class CreateCartDetailRequest {
 
-    @Range(min = 1, message = "so luong phai > 0")
+    @NotNull
     private Long quantity;
 }

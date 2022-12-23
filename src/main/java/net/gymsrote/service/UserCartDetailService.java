@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.CreateCartDetailRequest;
+import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.CartDetailDTO;
 import net.gymsrote.entity.cart.CartDetail;
+import net.gymsrote.entity.cart.CartDetailKey;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.ProductVariationRepo;
 import net.gymsrote.repository.UserCartDetailRepo;
@@ -62,10 +64,33 @@ public class UserCartDetailService {
 			throw new InvalidInputDataException(
 					"Không tìm thấy Phân loại sản phẩm với id: " + idProductVariation);
 		}
-		CartDetail cartDetail = new CartDetail(userRepo.getReferenceById(userId),
-				productVariationRepo.getReferenceById(idProductVariation), data.getQuantity());
+		CartDetail cartDetail;
+		if(!cartDetailRepo.existsById(new CartDetailKey(userId, idProductVariation))) {
+			cartDetail = new CartDetail(userRepo.getReferenceById(userId),
+					productVariationRepo.getReferenceById(idProductVariation), data.getQuantity());
+		}else {
+			cartDetail = cartDetailRepo.getReferenceById(new CartDetailKey(userId, idProductVariation));
+			cartDetail.setQuantity(cartDetail.getQuantity() + data.getQuantity());
+		}
 		return serviceUtils.convertToDataResponse(cartDetailRepo.save(cartDetail),
 				CartDetailDTO.class);
+	}
+	
+	public DataResponse<?> changeQuantity(Long idProductVariation, Long userId,
+			CreateCartDetailRequest data) {
+		if (!productVariationRepo.existsById(idProductVariation)) {
+			throw new InvalidInputDataException(
+					"Không tìm thấy Phân loại sản phẩm với id: " + idProductVariation);
+		}
+		CartDetail cartDetail = cartDetailRepo.getReferenceById(new CartDetailKey(userId, idProductVariation));
+		Long quantity = cartDetail.getQuantity() + data.getQuantity();
+		if(cartDetail.getProductVariation().getAvailableQuantity() >= quantity) {
+			cartDetail.setQuantity(quantity);
+			return serviceUtils.convertToDataResponse(cartDetailRepo.save(cartDetail),
+					CartDetailDTO.class);
+		}else
+			throw new InvalidInputDataException(String.format("Vuợt quá số lượng sản phẩm có sẵn (có sẵn: %s)", 
+					cartDetail.getProductVariation().getAvailableQuantity()));
 	}
 //
 //	public DataResponse<BuyerCartDetailDTO> update(Long idProductVariation, Long idBuyer,
@@ -78,16 +103,21 @@ public class UserCartDetailService {
 //		return serviceUtils.convertToDataResponse(buyerCartDetailRepo.save(cartDetail),
 //				BuyerCartDetailDTO.class);
 //	}
-//
-//	public BaseResponse delete(Long idProductVariation, Long idBuyer) {
-//		var cartId = new BuyerCartDetailPK(idBuyer, idProductVariation);
-//		if (!buyerCartDetailRepo.existsById(cartId)) {
-//			throw new InvalidInputDataException(
-//					"No Cart Detail found with given id " + idProductVariation);
-//		}
-//		buyerCartDetailRepo.deleteById(cartId);
-//		return new BaseResponse();
-//	}
+
+	public BaseResponse delete(Long idProductVariation, Long idUser) {
+		var cartId = new CartDetailKey(idUser, idProductVariation);
+		if (!cartDetailRepo.existsById(cartId)) {
+			throw new InvalidInputDataException(
+					"Không tồn tại sản phẩm với id: " + idProductVariation 
+					+ " trong giỏ hàng của người dùng");
+		}
+		cartDetailRepo.deleteById(cartId);
+		return new BaseResponse();
+	}
+	
+	private Long countByUser(Long idUser) {
+		return cartDetailRepo.countByUser(userRepo.getReferenceById(idUser));
+	}
 //
 //	public DataResponse<Long> countItemByBuyer(Buyer buyer) {
 //		return new DataResponse<Long>(buyerCartDetailRepo.countByBuyer(buyer));
