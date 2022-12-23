@@ -30,9 +30,9 @@ public class UserCartDetailController {
 		return ResponseEntity.ok(userCartDetailService.getAllByIdBuyer(user.getUser().getId()));
 	}
 	
-	@GetMapping
+	@GetMapping("/count")
 	public ResponseEntity<?> countItemInCart(@AuthenticationPrincipal UserDetailsImpl<User> user){
-		return ResponseEntity.ok(userCartDetailService.
+		return ResponseEntity.ok(userCartDetailService.countByUser(user.getUser().getId()));
 				//(user.getUser().getId()));
 	}
 	

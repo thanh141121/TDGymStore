@@ -33,7 +33,7 @@ public class CartDetail {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    User user;
+    User buyer;
     
 	@MapsId("idProductVariation")
 	@ManyToOne
@@ -43,11 +43,11 @@ public class CartDetail {
     @Column(name="quantity")
     private Long quantity;
     
-	public CartDetail(User user, ProductVariation productVariation, Long quantity) {
-		this.user = user;
+	public CartDetail(User buyer, ProductVariation productVariation, Long quantity) {
+		this.buyer = buyer;
 		this.productVariation = productVariation;
 		this.quantity = quantity;
-		this.id = new CartDetailKey(user.getId(), productVariation.getId());
+		this.id = new CartDetailKey(buyer.getId(), productVariation.getId());
 	}
 	
 	@PrePersist
