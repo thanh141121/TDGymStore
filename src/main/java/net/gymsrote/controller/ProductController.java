@@ -47,7 +47,7 @@ public class ProductController {
 	CustomProductRepository customProductRepository;
 	
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
+	public DataResponse<?> create(@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestPart("productInfo")@Valid CreateProductReq productInfo ,
 			@RequestPart("avatar")@NotEmpty MultipartFile avatar ,
 			@RequestPart(value = "imagesPro", required=false) List<MultipartFile> imagesPro,

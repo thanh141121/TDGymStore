@@ -9,8 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.gymsrote.entity.order.Order;
+
 @Repository
-public interface OrderRepo{// extends JpaRepository<Order, Long>, OrderRepoCustom {
+public interface OrderRepo extends JpaRepository<Order, Long>{//, OrderRepoCustom {
 //	@Transactional
 //	@Modifying
 //	@Query(value = "UPDATE Order o set o.status = net.gymsrote.entity.EnumEntity.EOrderStatus.WAIT_FOR_CONFIRM "

@@ -72,9 +72,20 @@ public class Order {
 	private Long price = 0L;
 
 	@Column(name = "payPrice")
-	private Long payPrice;
+	private Long payPrice = 0L;;
 	
 	@OneToMany(mappedBy = "orders")
 	private List<OrderDetail> orderDetail = new ArrayList<>();
+
+	public Order(User user, EOrderStatus status, EPaymentMethod paymentMethod, String address_detail,
+			String receiver_phone, String receiver_name) {
+		super();
+		this.status = status;
+		this.paymentMethod = paymentMethod;
+		this.user = user;
+		this.address_detail = address_detail;
+		this.receiver_phone = receiver_phone;
+		this.receiver_name = receiver_name;
+	}
 
 }

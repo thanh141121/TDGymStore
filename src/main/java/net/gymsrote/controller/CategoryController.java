@@ -24,4 +24,6 @@ public class CategoryController {
 	public ResponseEntity<?> getById(@PathVariable Long id) {
 		return ResponseEntity.ok(productCategoryService.get(id));
 	}
+	
+	//Create new Category
 }
