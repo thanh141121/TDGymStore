@@ -38,7 +38,7 @@ import net.gymsrote.service.ProductService;
 import org.springframework.http.MediaType;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/product")
 public class ProductController {
 	@Autowired
 	ProductService productService;
