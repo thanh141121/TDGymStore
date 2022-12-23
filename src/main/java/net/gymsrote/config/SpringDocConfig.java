@@ -1,7 +1,13 @@
 package net.gymsrote.config;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -30,7 +36,7 @@ public class SpringDocConfig {
 	        );
 	}
 	
-	/*@Bean
+	@Bean
 	public MappingJackson2HttpMessageConverter octetStreamJsonConverter() {
 		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setSupportedMediaTypes(
@@ -39,5 +45,5 @@ public class SpringDocConfig {
 						MediaType.APPLICATION_OCTET_STREAM));
 		converter.getObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 		return converter;
-	}*/
+	}
 }

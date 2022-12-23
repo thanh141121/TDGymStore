@@ -49,10 +49,10 @@ public class AdminProductController {
 	
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestPart("productInfo")@Valid CreateProductReq productInfo ,
-			@RequestPart("avatar")@NotEmpty MultipartFile avatar ,
-			@RequestPart(value = "imagesPro", required=false) List<MultipartFile> imagesPro,
-			@RequestPart(value = "imagesVar", required=false) List<MultipartFile> imagesVar
+	@RequestPart("productInfo") @Valid CreateProductReq productInfo,
+	@RequestPart("avatar") MultipartFile avatar ,
+	@RequestPart(value = "imagesPro", required=false) List<MultipartFile> imagesPro,
+	@RequestPart(value = "imagesVar", required=false) List<MultipartFile> imagesVar
 			) throws IOException{
 		 try{
 			 if(productInfo.getVariations().size() != imagesVar.size()){
