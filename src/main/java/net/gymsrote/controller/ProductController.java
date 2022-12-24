@@ -126,4 +126,24 @@ public class ProductController {
 	public ResponseEntity<?> getDetails(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl<User> user) {
 		return ResponseEntity.ok(productService.getById(id, user));
 	}
+
+	@GetMapping("/sale")
+	public ResponseEntity<?> getTopSale() {
+		return ResponseEntity.ok(productService.getTopSaleProduct());
+	}
+	
+	@GetMapping("/lasted")
+	public ResponseEntity<?> getTopLasted() {
+		return ResponseEntity.ok(productService.getTopLastedProduct());
+	}
+	
+	@GetMapping("/most-viewed")
+	public ResponseEntity<?> getTopViewed() {
+		return ResponseEntity.ok(productService.getTopVisitProduct());
+	}
+	
+	@GetMapping("/most-sold")
+	public ResponseEntity<?> getTopSold() {
+		return ResponseEntity.ok(productService.getTopSoldProduct());
+	}
 }
