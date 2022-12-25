@@ -1,7 +1,6 @@
 package net.gymsrote.entity.order;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,8 +23,8 @@ public class OrderDetailKey implements Serializable {
 	 */
 	private static final long serialVersionUID = 465171354677032464L;
 
-	@Column(name = "orders_id")
-	Long ordersId;
+	@Column(name = "order_id")
+	Long orderId;
 
 	@Column(name="id_product_variation")
 	private Long idProductVariation;

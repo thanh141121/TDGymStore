@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import net.gymsrote.dto.CartDetailDTO;
 import net.gymsrote.dto.MediaResourceDTO;
+import net.gymsrote.dto.OrderDetailDTO;
 import net.gymsrote.dto.ProductCartDetailDTO;
 import net.gymsrote.dto.ProductDetailDTO;
 import net.gymsrote.dto.ProductImageDTO;
@@ -25,6 +26,7 @@ import net.gymsrote.entity.address.District;
 import net.gymsrote.entity.address.Province;
 import net.gymsrote.entity.address.Ward;
 import net.gymsrote.entity.cart.CartDetail;
+import net.gymsrote.entity.order.OrderDetail;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductImage;
 import net.gymsrote.entity.product.ProductVariation;
@@ -73,11 +75,6 @@ public class ModelMapperConfig {
 		//PRODUCT CART DETAIL -> CART DETAIL
 		mapper.createTypeMap(Product.class, ProductCartDetailDTO.class);
 		
-		// mapper.createTypeMap(UserRole.class, UserRoleDTO.class).addMappings(m -> {
-		// 	m.map(src -> src.getRoles().getName(), UserRoleDTO::setName);
-		// 	m.map(src -> src.getRoles().getId(), UserRoleDTO::setId);
-		// });
-		
 		//PRODUCT DETAIL DTO
 		 mapper.createTypeMap(Product.class, ProductDetailDTO.class).addMappings(m -> {
 		 m.using((Converter<?, ?>) lstProductImageCvt).map(Product::getImages, ProductDetailDTO::setImages);
@@ -100,36 +97,6 @@ public class ModelMapperConfig {
 		m.map(src -> src.getProduct().getId(), ProductVariationDTO::setIdProduct);
 		});
 		 
-		// m.using(lstProductVariationCvt).map(Product::getVariations,
-		// ProductDetailDTO::setVariations);
-		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductDetailDTO::setAvatar);
-		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductDetailDTO::setAvatar);
-		// m.using(tierVariationsCvt).map(Product::getVariations,
-		// ProductDetailDTO::setTierVariations);
-		// m.<List<ProductCategoryGeneralDTO>> map(Product::getParents,
-		// (dst, value) -> dst.getCategory().setParents(value));
-		// m.map(Product::getTotalRatingTimes, ProductDetailDTO::setTotalRatingTimes);
-		// });
-		
-		// mapper.createTypeMap(Product.class, ProductGeneralDetailDTO.class).addMappings(m -> {
-		// m.using(mediaResourceCvt).map(Product::getAvatar, ProductGeneralDetailDTO::setAvatar);
-		// });
-		 
-		// mapper.createTypeMap(ProductReview.class, ProductReviewDTO.class).addMappings(m -> {
-		// m.map(src -> src.getBuyer().getId(), ProductReviewDTO::setIdBuyer);
-		// m.map(src -> src.getBuyer().getUsername(), ProductReviewDTO::setBuyerUsername);
-		// m.using(mediaResourceCvt).map(src -> src.getBuyer().getAvatar(),
-		// ProductReviewDTO::setBuyerAvatar);
-		// m.using(lstProductReviewImageCvt).map(ProductReview::getImages,
-		// ProductReviewDTO::setImages);
-		// });/***/
-		 
-		// mapper.createTypeMap(ProductReviewImage.class, ProductReviewImageDTO.class)
-		// .addMappings(m -> {
-		// m.map(src -> src.getMedia().getUrl(), ProductReviewImageDTO::setUrl);
-		// m.map(src -> src.getMedia().getResourceType(),
-		// ProductReviewImageDTO::setResourceType);
-		// });
 		
 		//CART DETAIL DTO
 		 mapper.createTypeMap(CartDetail.class, CartDetailDTO.class).addMappings(m -> {
@@ -137,45 +104,11 @@ public class ModelMapperConfig {
 		 m.map(src -> src.getProductVariation().getProduct(),
 					 CartDetailDTO::setProductDetail);
 		 });
-		// m.map(src -> src.getProductVariation().getProduct(),
-		// BuyerCartDetailDTO::setProductDetail);
-		// });
 		
-		// mapper.createTypeMap(BuyerFavouriteProduct.class, BuyerFavouriteProductDTO.class)
-		// .addMappings(m -> {
-		// m.map(BuyerFavouriteProduct::getBuyer, BuyerFavouriteProductDTO::setBuyer);
-		// });
-		
-		// mapper.createTypeMap(Log.class, LogDTO.class).addMappings(m -> {
-		// m.map(src -> src.getUser().getUsername(), LogDTO::setUsername);
-		// });
-		// /*******/
-		
-		// mapper.createTypeMap(Product.class, OrderProductGeneralDetailDTO.class).addMappings(m ->
-		// {
-		// m.using(mediaResourceCvt).map(Product::getAvatar,
-		// OrderProductGeneralDetailDTO::setAvatar);
-		// });
-		
-		// mapper.createTypeMap(Order.class, AdminOrderDTO.class).addMappings(m -> {
-		// m.map(src -> src.getDeliveryAddress().getId(), AdminOrderDTO::setIdDeliveryAddress);
-		// m.using(lstOrderDetailCvt).map(Order::getOrderDetails, AdminOrderDTO::setOrderDetails);
-		// });
-		
-		// mapper.createTypeMap(Order.class, BuyerOrderDTO.class).addMappings(m -> {
-		// m.map(src -> src.getDeliveryAddress().getId(), BuyerOrderDTO::setIdDeliveryAddress);
-		// m.using(lstOrderDetailCvt).map(Order::getOrderDetails, BuyerOrderDTO::setOrderDetails);
-		// });
-		
-		// mapper.createTypeMap(Order.class, AdminDetailedOrderDTO.class).addMappings(m -> {
-		// m.using(lstOrderDetailCvt).map(Order::getOrderDetails,
-		// AdminDetailedOrderDTO::setOrderDetails);
-		// });
-		
-		// mapper.createTypeMap(Order.class, BuyerDetailedOrderDTO.class).addMappings(m -> {
-		// m.using(lstOrderDetailCvt).map(Order::getOrderDetails,
-		// BuyerDetailedOrderDTO::setOrderDetails);
-		// });
+		 //ORDERDETAIL TO ORDERDETAIL DTO
+		mapper.createTypeMap(OrderDetail.class, OrderDetailDTO.class).addMappings(m -> {
+			m.map(src -> src.getOrder().getId(), OrderDetailDTO::setOrderId);
+		});
 		
 		return mapper;
 	}

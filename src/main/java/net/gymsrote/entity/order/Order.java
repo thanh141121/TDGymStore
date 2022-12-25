@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,14 +31,14 @@ import net.gymsrote.entity.user.User;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name = "order_")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "total")
-	private Double total;
+	private Long total;
 	
 //	@Column(name = "created_date")
 //	@CreatedDate
@@ -57,13 +58,13 @@ public class Order {
 	private User user;
 	
 	@Column(name="address_detail")
-	private String address_detail;
+	private String addressDetail;
 	
 	@Column(name="receiver_phone")
-	private String receiver_phone;
+	private String receiverPhone;
 	
 	@Column(name = "receiver_name")
-	private String receiver_name;
+	private String receiverName;
 	
 	@Column(name = "create_time")
 	private Date createTime;
@@ -71,21 +72,21 @@ public class Order {
 	@Column(name = "price")
 	private Long price = 0L;
 
-	@Column(name = "payPrice")
-	private Long payPrice = 0L;;
+	@Column(name = "shipPrice")
+	private Long shipPrice = 0L;
 	
-	@OneToMany(mappedBy = "orders")
-	private List<OrderDetail> orderDetail = new ArrayList<>();
+	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+	private List<OrderDetail> orderDetails = new ArrayList<>();
 
-	public Order(User user, EOrderStatus status, EPaymentMethod paymentMethod, String address_detail,
-			String receiver_phone, String receiver_name) {
+	public Order(User user, EOrderStatus status, EPaymentMethod paymentMethod, String addressDetail,
+			String receiverPhone, String receiverName) {
 		super();
 		this.status = status;
 		this.paymentMethod = paymentMethod;
 		this.user = user;
-		this.address_detail = address_detail;
-		this.receiver_phone = receiver_phone;
-		this.receiver_name = receiver_name;
+		this.addressDetail = addressDetail;
+		this.receiverPhone = receiverPhone;
+		this.receiverName = receiverName;
 	}
 
 }

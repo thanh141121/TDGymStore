@@ -18,16 +18,16 @@ import net.gymsrote.entity.product.ProductVariation;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "orders_detail")
+@Table(name = "order_detail")
 public class OrderDetail {
 	
     @EmbeddedId
     private OrderDetailKey id;
     
     @ManyToOne
-    @MapsId("ordersId")
-    @JoinColumn(name = "orders_id")
-    Order orders;
+    @MapsId("orderId")
+    @JoinColumn(name = "order_id")
+    Order order;
     
 	@ManyToOne
 	@MapsId("idProductVariation")
@@ -43,13 +43,13 @@ public class OrderDetail {
 	@Column(name = "reviewed")
 	private Boolean reviewed;
 	
-	public OrderDetail(Order orders, ProductVariation productVariation, Long quantity, Long unitPrice) {
-		this.orders = orders;
+	public OrderDetail(Order order, ProductVariation productVariation, Long quantity, Long unitPrice) {
+		this.order = order;
 		this.productVariation = productVariation;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		
-		this.id = new OrderDetailKey(orders.getId(), productVariation.getId());
+		this.id = new OrderDetailKey(order.getId(), productVariation.getId());
 		this.reviewed = false;
 	}
 	

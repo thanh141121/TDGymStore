@@ -1,5 +1,9 @@
 package net.gymsrote.utility;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +15,7 @@ public class PagingInfo {
 	private Integer size;
 	private Integer sortBy;
 	private Boolean sortDescending;
+	private Pageable pageable;
 	
 	public PagingInfo(Integer currentPage, Integer size, Integer sortBy, Boolean sortDescending) {
 		if (currentPage == null || currentPage < 1)
@@ -25,5 +30,6 @@ public class PagingInfo {
 		
 		this.sortBy = sortBy;
 		this.sortDescending = sortDescending;
+		this.pageable = PageRequest.of(this.currentPage, this.size);
 	}
 }

@@ -2,6 +2,7 @@ package net.gymsrote.controller.payload.request.order;
 
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -14,8 +15,14 @@ public class CreateOrderRequest {
 	@NotEmpty
 	private List<CreateProductOrderRequest> products;
 	
-    @NotNull
-    private Long idAddress;
+    @NotBlank
+    private String address;
+
+    @NotBlank
+    private String receiverName;
+
+    @NotBlank
+    private String receiverPhone;
     
     @NotNull
     private EPaymentMethod paymentMethod;
