@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.BaseResponse;
+import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.UserAddressDTO;
 import net.gymsrote.dto.UserDTO;
@@ -68,10 +69,15 @@ public class UserService{// implements IUserService{
 	}
 
 	public User getUser(String username) {
-		log.info("Fetching user {}", username);
 		return userRepo.findByUsernameOrEmail(username, username)
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User not found with username or email : " + username));
+	}
+	public DataResponse<UserDTO> getUserProfile(String username) {
+		User user = userRepo.findByUsernameOrEmail(username, username)
+				.orElseThrow(() -> new UsernameNotFoundException(
+						"User not found with username or email : " + username));
+		return serviceUtils.convertToDataResponse(user, UserDTO.class);
 	}
 
 

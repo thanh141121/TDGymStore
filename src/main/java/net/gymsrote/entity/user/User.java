@@ -56,7 +56,7 @@ public class User implements UserInfo{
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
-		this.isEnabled = false;
+		this.isEnabled = true;
 	}
 	
     public User(String fullname, String username, String email, String password) {

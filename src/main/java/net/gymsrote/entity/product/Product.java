@@ -149,19 +149,19 @@ public class Product implements UpdatableAvatar{
 		return rating1 + rating2 + rating3 + rating4 + rating5;
 	}
 	
-	public List<String> allImgUrl(){
-		List<String> urls = new ArrayList<>();
-		urls.add(this.avatar.getUrl());
+	public List<MediaResource> allImgUrl(){
+		List<MediaResource> urls = new ArrayList<>();
+		urls.add(this.avatar);
 		for(ProductImage proImg : this.images) {
-			urls.add(proImg.getMedia().getUrl());
+			urls.add(proImg.getMedia());
 		}
 		return urls;
 	}
 	
-	public HashMap<Long, String> allImgVar(){
-		HashMap<Long, String> result = new HashMap<>();
+	public HashMap<Long, MediaResource> allImgVar(){
+		HashMap<Long, MediaResource> result = new HashMap<>();
 		for(ProductVariation proVar : this.variations ) {
-			result.put(proVar.getId(), proVar.getAvatar().getUrl());
+			result.put(proVar.getId(), proVar.getAvatar());
 		}
 		return result;
 	}

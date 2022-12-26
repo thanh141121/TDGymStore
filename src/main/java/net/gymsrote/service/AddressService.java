@@ -85,6 +85,21 @@ public class AddressService {
 		return serviceUtils.convertToDataResponse(userAdress, UserAddressDTO.class);
 	}
 	
+	@Transactional 
+	public DataResponse<UserAddressDTO> setDefault(Long idUser, Long idAddress) {
+		User u = userRepo.findById(idUser)
+				.orElseThrow(() -> new InvalidInputDataException("Không tìm thấy 'User' với id: "+ idUser));
+
+		UserAddress userAdress = userAddressRepo.findById(idAddress).orElseThrow( () -> 
+				new InvalidInputDataException("Không tìm thấy địa chỉ với id: " + idAddress)
+			);
+	
+		u.setDefaultAddress(userAdress);
+	
+		return serviceUtils.convertToDataResponse(userAdress, UserAddressDTO.class);
+	}
+	
+
 	@Transactional
 	private Ward getWard(CreateAddressRequest addressRequest) {
 		try {

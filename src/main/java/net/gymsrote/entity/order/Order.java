@@ -40,10 +40,6 @@ public class Order {
 	@Column(name = "total")
 	private Long total;
 	
-//	@Column(name = "created_date")
-//	@CreatedDate
-//	private Date created_date ;
-	
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
@@ -87,6 +83,7 @@ public class Order {
 		this.addressDetail = addressDetail;
 		this.receiverPhone = receiverPhone;
 		this.receiverName = receiverName;
+		this.createTime = new Date();
 	}
 
 }

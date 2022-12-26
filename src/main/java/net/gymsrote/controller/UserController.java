@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
+import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
@@ -52,38 +54,18 @@ public class UserController {
 	@GetMapping("/users")
 	//@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getUsers(){
-		System.out.println("get Users");
 		return ResponseEntity.ok().body(userService.getUsers());
+	}
+
+	@GetMapping("/profile")
+	public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetailsImpl<User> user){
+		return ResponseEntity.ok().body(userService.getUserProfile(user.getUsername()));
 	}
 	
 	@PatchMapping("/enabled/{id}")
 	public ResponseEntity<?> isEnabled(@PathVariable("id") Long id){
 		return ResponseEntity.ok(userService.isEnabled(id, true));
 	}
-	
-/*	@GetMapping("/token/refresh")
-	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException{
-	}
-	
-	@PostMapping("/user/save")
-	public ResponseEntity<User> saveUser(@RequestBody User user){
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toString());
-		return ResponseEntity.created(uri).body(userService.saveUser(user));
-	}
-	
-	@PostMapping("/admin/role/save")
-	public ResponseEntity<UserRole> saveRole(@RequestBody UserRole role){
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/admin/role/save").toString());
-		return ResponseEntity.created(uri).body(userService.saveRole(role));
-	}
-	@PostMapping("/admin/role/addToUser")
-	public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form){
-		userService.addRoleToUser(form.getUsername(), form.getRolename());
-		return ResponseEntity.ok().build();
-	}
-	
-*/
-	
 }
 
 @Data

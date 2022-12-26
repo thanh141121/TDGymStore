@@ -1,6 +1,7 @@
 package net.gymsrote.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -13,9 +14,17 @@ import net.gymsrote.entity.EnumEntity.ETransportation;
 public class OrderDTO {
 	private Long id;
 	private EOrderStatus status;
-	private Double total;
 	private ETransportation transportation;
-	private Long userId;
+	private UserDTO user;
+	private Date createTime;
+	private String addressDetail;
+	private String receiverName; 
+	private String receiverPhone; 
+	private Long total;
+	private String note;
+	private String paymentMethod;
+	private Long price;
+	private Long shipPrice;
 
 	private List<OrderDetailDTO> orderDetails = new ArrayList<>();
 

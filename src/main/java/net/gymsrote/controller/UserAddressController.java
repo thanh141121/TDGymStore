@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,30 +24,35 @@ import net.gymsrote.service.AddressService;
 public class UserAddressController {
 	@Autowired
 	private AddressService addressService;
-	
+
 	@GetMapping
-	public ResponseEntity<?> getAllAddressByUser(@AuthenticationPrincipal UserDetailsImpl<User> user)
-	{
+	public ResponseEntity<?> getAllAddressByUser(@AuthenticationPrincipal UserDetailsImpl<User> user) {
 		return ResponseEntity.ok(addressService.getAllAddressByUser(user.getUser().getId()));
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@PathVariable Long id)
-	{
+			@PathVariable Long id) {
 		return ResponseEntity.ok(addressService.get(id));
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid CreateAddressRequest body,
 			@AuthenticationPrincipal UserDetailsImpl<User> user) {
 		return ResponseEntity.ok(addressService.create(user.getUser().getId(), body, null));
 	}
-	
+
 	@PutMapping("/{idAddress}")
 	public ResponseEntity<?> update(@RequestBody @Valid CreateAddressRequest body,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@PathVariable Long idAddress) {
 		return ResponseEntity.ok(addressService.create(user.getUser().getId(), body, idAddress));
+	}
+
+	@PatchMapping("/set-default/{idAddress}")
+	public ResponseEntity<?> setDefault(
+			@AuthenticationPrincipal UserDetailsImpl<User> user,
+			@PathVariable Long idAddress) {
+		return ResponseEntity.ok(addressService.setDefault(user.getUser().getId(), idAddress));
 	}
 }

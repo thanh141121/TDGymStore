@@ -99,11 +99,9 @@ public class ModelMapperConfig {
 		 
 		
 		//CART DETAIL DTO
-		 mapper.createTypeMap(CartDetail.class, CartDetailDTO.class).addMappings(m -> {
-		 m.map(src -> src.getBuyer().getId(), CartDetailDTO::setUserId);
-		 m.map(src -> src.getProductVariation().getProduct(),
-					 CartDetailDTO::setProductDetail);
-		 });
+		//  mapper.createTypeMap(CartDetail.class, CartDetailDTO.class).addMappings(m -> {
+		//  m.map(src -> src.getBuyer().getId(), CartDetailDTO::setUserId);
+		//  });
 		
 		 //ORDERDETAIL TO ORDERDETAIL DTO
 		mapper.createTypeMap(OrderDetail.class, OrderDetailDTO.class).addMappings(m -> {

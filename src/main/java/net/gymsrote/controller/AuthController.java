@@ -29,8 +29,7 @@ import net.gymsrote.controller.payload.response.LoginResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.service.UserService;
 import net.gymsrote.service.authen.AuthService;
-//@RestController
-@Controller
+@RestController
 @RequestMapping("/api")
 public class AuthController {
 	@Autowired
@@ -38,19 +37,6 @@ public class AuthController {
 
 	@Autowired
 	UserService userService;
-	
-//	@Operation(
-//			summary = "Login API for admin",
-//			description = "Login key can be username, phone number or email that user is registered.")
-//	@ApiResponses(value = {
-//			@ApiResponse(responseCode = "200",
-//					description = "Successful",
-//					content = { @Content(mediaType = "application/json") })
-//	})
-//	@PostMapping("/admin/login")
-//	public ResponseEntity<?> admin(@RequestBody LoginKeyPasswordRequest body) {
-//		return ResponseEntity.ok(login(body, EUserRole.ADMIN));
-//	}
 	
 	@Operation(
 			summary = "Login API for buyer",
@@ -71,15 +57,16 @@ public class AuthController {
 		return authService.authenticateWithUsernamePassword(body.getLoginKey(), body.getPassword());
 	}
 
-//	@PostMapping("signup")
-//	public ResponseEntity<?> signup(@RequestPart SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
-//		return ResponseEntity.ok(authService.register(body, getSiteURL(request)));
-//	}
 	@PostMapping("signup")
-	public String signup(@Valid @RequestBody SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
-		BaseResponse temp =  authService.register(body, getSiteURL(request));
-		return "register_success";
+	public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest body, HttpServletRequest request) {
+		return ResponseEntity.ok(authService.register(body, getSiteURL(request)));
 	}
+
+	// @PostMapping("signup")
+	// public String signup(@Valid @RequestBody SignUpRequest body, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+	// 	BaseResponse temp =  authService.register(body, getSiteURL(request));
+	// 	return "register_success";
+	// }
 	private String getSiteURL(HttpServletRequest request) {
 		String siteURL = request.getRequestURL().toString();
 		return siteURL.replace(request.getServletPath(), "");

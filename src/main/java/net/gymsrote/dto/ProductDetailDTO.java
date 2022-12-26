@@ -3,8 +3,6 @@ package net.gymsrote.dto;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.persistence.Column;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,6 +41,6 @@ public class ProductDetailDTO {
 	
 	private List<ProductVariationDTO> variations;
 	
-	private List<String> allImgUrl;
-	private HashMap<Long, String> allImgVar;
+	private List<MediaResourceDTO> allImgUrl;
+	private HashMap<Long, MediaResourceDTO> allImgVar;
 }

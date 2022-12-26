@@ -30,6 +30,6 @@ public class PagingInfo {
 		
 		this.sortBy = sortBy;
 		this.sortDescending = sortDescending;
-		this.pageable = PageRequest.of(this.currentPage, this.size);
+		this.pageable = PageRequest.of(this.currentPage, this.size, Sort.by("id").descending());
 	}
 }
