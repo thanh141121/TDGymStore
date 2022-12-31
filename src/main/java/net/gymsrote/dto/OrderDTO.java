@@ -28,4 +28,6 @@ public class OrderDTO {
 
 	private List<OrderDetailDTO> orderDetails = new ArrayList<>();
 
+	private String payUrl;
+
 }

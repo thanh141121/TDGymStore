@@ -1,5 +1,6 @@
 package net.gymsrote.service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,10 @@ public class OrderService {
 
 	@Autowired
 	UserRepo userRepo;
-	//
-	// @Autowired
-	// PaymentService paymentService;
-	//
+	
+	@Autowired
+	PaymentService paymentService;
+	
 	@Autowired
 	UserAddressRepo userAddressRepo;
 
@@ -73,11 +74,11 @@ public class OrderService {
 	}
 
 	@Transactional
-	public DataResponse<OrderDTO> create(Long idUser, CreateOrderRequest data) {
+	public DataResponse<OrderDTO> create(Long idUser, CreateOrderRequest data, HttpServletRequest req) {
 		User user = userRepo.getReferenceById(idUser);
 
 		Order order = new Order(user,
-				EOrderStatus.WAIT_FOR_CONFIRM,
+				EOrderStatus.WAIT_FOR_PAYMENT,
 				data.getPaymentMethod(),
 				data.getAddress(),
 				data.getReceiverPhone(),
@@ -92,7 +93,12 @@ public class OrderService {
 
 		order.setTotal(order.getPrice() + data.getShipPrice());
 		order.setShipPrice(data.getShipPrice());
-		return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
+
+		DataResponse<OrderDTO> res = serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
+		
+		res.getData().setPayUrl(paymentService.createPayment(res.getData().getId(), user.getId(), req));
+
+		return res;
 	}
 
 	private OrderDetail createOrderDetail(ProductVariation productVariation, Long quantity, Order order) {

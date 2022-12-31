@@ -1,7 +1,6 @@
 package net.gymsrote.controller;
 
-import java.util.Date;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -17,11 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.payload.request.order.CreateOrderRequest;
-import net.gymsrote.entity.EnumEntity.EOrderStatus;
-import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.service.OrderService;
 import net.gymsrote.utility.PagingInfo;
@@ -36,10 +32,11 @@ public class OrderController {
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(
+			HttpServletRequest req,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestBody @Valid CreateOrderRequest body
 			){
-		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body));
+		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body, req));
 	}
 
 	@GetMapping(produces = "application/json")
