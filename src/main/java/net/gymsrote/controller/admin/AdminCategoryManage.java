@@ -40,8 +40,7 @@ public class AdminCategoryManage {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable("id") long id,
-			@RequestParam String name){
+	public ResponseEntity<?> get(@PathVariable("id") long id){
 		return ResponseEntity.ok(productCategoryService.get(id, false)) ;
 	}
 	
