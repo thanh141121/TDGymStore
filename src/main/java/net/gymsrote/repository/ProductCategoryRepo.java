@@ -3,10 +3,13 @@ package net.gymsrote.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.product.ProductCategory;
 //import net.gymsrote.repository.custom.ProductCategoryRepoCustom;
 import net.gymsrote.service.NeedImpl.ProductCategoryRepoCustom;
@@ -42,4 +45,7 @@ public interface ProductCategoryRepo
 	//@Query(value = "SELECT pc FROM ProductCategory pc WHERE pc.parent IS NULL AND pc.status <> net.gymsrote.entity.EnumEntity.EProductCategoryStatus.BANNED")
 	@Query(value = "SELECT pc FROM ProductCategory pc WHERE pc.status <> net.gymsrote.entity.EnumEntity.EProductCategoryStatus.DISABLED")
 	List<ProductCategory> FindAllCategories();
+	
+
+
 }

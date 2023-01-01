@@ -94,7 +94,6 @@ public class ProductController {
 		PageInfoRequest request = new PageInfoRequest();
 		Pageable pageable = PageRequest.of(request.getCurrentPage(), request.getSize());
 		return ResponseEntity.ok(productService.search(key,pageable));
-//		return ResponseEntity.ok(productService.getAllProducts());
 	}
 	
 	/*@GetMapping("/search")

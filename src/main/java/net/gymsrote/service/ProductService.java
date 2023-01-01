@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,6 +66,11 @@ public class ProductService {
 
 	@Autowired
 	ServiceUtils serviceUtils;
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void updateProductStatus(Long idCategory, EProductStatus status) {
+		productRepo.updateStatusProduct(idCategory, status);
+	}
 
 //	public ListWithPagingResponse<ProductGeneralDetailDTO> search(ProductFilter filter,
 //			PagingInfo pagingInfo) {

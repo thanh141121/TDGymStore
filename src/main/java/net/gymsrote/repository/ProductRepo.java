@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.service.NeedImpl.ProductRepoCustom;
@@ -22,7 +23,12 @@ public interface ProductRepo
 	
     @Query(value = "SELECT * FROM product WHERE MATCH(name, description) "
             + "AGAINST (?1)", nativeQuery = true)          
-    Page<Product> search(String keyword, Pageable pageable);
+    Page<Product> search(String keyword, Pageable pageable);	
+    
+    @Transactional
+	@Modifying
+	@Query(value = "Update Product p set p.status = :status where p.category.id = :idCategory")
+	int updateStatusProduct(@Param("idCategory") Long idCategory,@Param("status") EProductStatus status);
 
 	@Transactional
 	@Modifying
