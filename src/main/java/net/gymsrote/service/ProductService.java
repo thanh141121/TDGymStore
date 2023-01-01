@@ -104,25 +104,21 @@ public class ProductService {
 
 	@SuppressWarnings("null")
 	@Transactional
-	public DataResponse<ProductDetailDTO> getById(Long id, UserDetailsImpl<User> authen) {
-		Product p = productRepo.findById(id)
-				.orElseThrow(() -> new InvalidInputDataException("No product found with given id"));
-		/*if (authen != null) {
-			if(authen.getUser().getRole().getName().equals(EUserRole.ADMIN)) {
-				return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
-			}else {
-				if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.BANNED))
-					throw new InvalidInputDataException("No product found with given id");
-				else {
-					p.setNvisit(p.getNvisit()+1);
-				}
-			}
-		}*/
-		if (p.getStatus() == EProductStatus.DISABLED || serviceUtils.checkStatusProductCategory(p.getCategory(), EProductCategoryStatus.DISABLED)) {
-			if (authen == null || authen.getUser().getRole().getName().equals(EUserRole.USER))
-				throw new InvalidInputDataException("No product found with given id");
+	public DataResponse<ProductDetailDTO> getById(Long id, boolean isBuyer) {
+		Product p = productRepo.findById(id).orElseThrow(() -> new InvalidInputDataException("No product found with given id"));
+		
+		if (isBuyer && 
+				(p.getStatus() == EProductStatus.DISABLED ))
+			throw new InvalidInputDataException("No product found with given id");
+		else {
+			if (isBuyer)
+				productRepo.updateVisitCount(id);
 		}
-		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
+		
+		return serviceUtils.convertToDataResponse(
+				p,
+				ProductDetailDTO.class
+			);
 	}
 
 	@SuppressWarnings("null")

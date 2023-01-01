@@ -1,7 +1,5 @@
 package net.gymsrote.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,19 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.DataResponse;
-import net.gymsrote.controller.payload.response.ListResponse;
-import net.gymsrote.dto.UserAddressDTO;
+import net.gymsrote.controller.payload.response.ListWithPagingResponse;
+import net.gymsrote.dto.OrderDTO;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.User;
-import net.gymsrote.entity.user.UserAddress;
 import net.gymsrote.entity.user.UserRole;
 import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.service.utils.ServiceUtils;
+import net.gymsrote.utility.PagingInfo;
 
 @Service
 @Transactional
@@ -73,6 +70,14 @@ public class UserService{// implements IUserService{
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User not found with username or email : " + username));
 	}
+
+	public DataResponse<UserDTO> getById(Long id) {
+		return serviceUtils.convertToDataResponse(
+				userRepo.getReferenceById(id),
+				UserDTO.class
+			);
+	}
+
 	public DataResponse<UserDTO> getUserProfile(String username) {
 		User user = userRepo.findByUsernameOrEmail(username, username)
 				.orElseThrow(() -> new UsernameNotFoundException(
@@ -81,11 +86,8 @@ public class UserService{// implements IUserService{
 	}
 
 
-	public ListResponse<UserDTO> getUsers() {
-		log.info("Fetching all users");
-		return serviceUtils.convertToListResponse(userRepo.findAll(), UserDTO.class);
-				//userRepo.findAll();
+	public ListWithPagingResponse<?> getAll(PagingInfo pagingInfo) {
+		return serviceUtils.convertToListResponse(userRepo.findAll(pagingInfo.getPageable()),
+				UserDTO.class);
 	}
-
-
 }

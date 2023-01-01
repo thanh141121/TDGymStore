@@ -47,6 +47,11 @@ public class AdminProductController {
 		return ResponseEntity.ok(productService.getAllProducts(pageable));
 	}
 	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getDetails(@PathVariable("id") long id) {
+		return ResponseEntity.ok(productService.getById(id, false));
+	}
+
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
 	@RequestPart("productInfo") @Valid CreateProductReq productInfo,
