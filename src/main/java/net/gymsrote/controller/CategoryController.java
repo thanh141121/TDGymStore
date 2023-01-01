@@ -30,12 +30,12 @@ public class CategoryController {
 	
 	@GetMapping
 	public ResponseEntity<?> getAllCategories(){
-		return ResponseEntity.ok(productCategoryService.getAllCategories());
+		return ResponseEntity.ok(productCategoryService.getAllCategoriesForUser());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable Long id) {
-		return ResponseEntity.ok(productCategoryService.get(id));
+		return ResponseEntity.ok(productCategoryService.get(id, true));
 	}
 	
 	//Create new Category

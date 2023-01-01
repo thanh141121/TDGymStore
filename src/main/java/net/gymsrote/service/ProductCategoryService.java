@@ -2,12 +2,14 @@ package net.gymsrote.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
+import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.ProductCategoryDTO;
 import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
@@ -27,9 +29,11 @@ public class ProductCategoryService {
 	@Autowired
 	ServiceUtils serviceUtils;
 
-	public DataResponse<ProductCategoryDTO> get(Long id) {
+	public DataResponse<ProductCategoryDTO> get(Long id, boolean isBuyer) {
 		ProductCategory category = productCategoryRepo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("No product category found with given id"));
+		if (isBuyer && serviceUtils.checkStatusProductCategory(category, EProductCategoryStatus.DISABLED))
+			throw new InvalidInputDataException("Category has been disabled");
 		return serviceUtils.convertToDataResponse(category, ProductCategoryDTO.class);
 	}
 
@@ -38,10 +42,13 @@ public class ProductCategoryService {
 				productCategoryRepo.FindAllCategories(), ProductCategoryDTO.class);
 	}
 	
-	public void updateProductStatus(Long idCategory, EProductCategoryStatus status) {
+	public void updateProductStatus(Long idCategory, Boolean status) {
 		ProductCategory category = productCategoryRepo.findById(idCategory).orElseThrow(
 				() -> new InvalidInputDataException("No product category found with given id"));
-		category.setStatus(status);
+		if(status)
+			category.setStatus(EProductCategoryStatus.ENABLED);
+		else
+			category.setStatus(EProductCategoryStatus.DISABLED);
 		productCategoryRepo.save(category);
 	}
 	
@@ -55,9 +62,9 @@ public class ProductCategoryService {
 	
 
 
-	public ListResponse<ProductCategoryDTO> getAll() {
+	public ListWithPagingResponse<ProductCategoryDTO> getAll(Pageable pageable) {
 		return serviceUtils.convertToListResponse(
-				productCategoryRepo.findAll(), ProductCategoryDTO.class);
+				productCategoryRepo.findAll(pageable), ProductCategoryDTO.class);
 	}
 //
 //	public DataResponse<ProductCategoryDTO> create(Long idUser, CreateProductCategoryRequest data) {
