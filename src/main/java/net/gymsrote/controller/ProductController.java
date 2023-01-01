@@ -123,8 +123,8 @@ public class ProductController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getDetails(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl<User> user) {
-		return ResponseEntity.ok(productService.getById(id, user));
+	public ResponseEntity<?> getDetails(@PathVariable("id") long id) {
+		return ResponseEntity.ok(productService.getById(id, true));
 	}
 
 	@GetMapping("/sale")

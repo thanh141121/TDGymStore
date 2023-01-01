@@ -1,12 +1,11 @@
 package net.gymsrote.service.thirdparty.payment.momo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 
 @Getter @Setter
 @JsonAppend()

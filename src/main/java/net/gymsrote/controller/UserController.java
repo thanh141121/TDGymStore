@@ -50,12 +50,6 @@ import net.gymsrote.entity.user.User;
 public class UserController {
 	@Autowired
 	UserService userService;
-	
-	@GetMapping("/users")
-	//@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> getUsers(){
-		return ResponseEntity.ok().body(userService.getUsers());
-	}
 
 	@GetMapping("/profile")
 	public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetailsImpl<User> user){
