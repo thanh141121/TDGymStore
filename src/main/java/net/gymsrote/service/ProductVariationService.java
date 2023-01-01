@@ -69,30 +69,32 @@ public class ProductVariationService {
 	}
 	
 	public static void updatePriceProduct(Product p, ProductVariation var) {
-		Long minPricePro = p.getMinPrice();
-		Long maxPricePro = p.getMaxPrice();
-		long price = var.getFinalPrice().longValue();
-		if(minPricePro == null) {
-			p.setMinPrice(price);
-		}else {
-			if(minPricePro.longValue() > price)
+		if(var.getStatus().equals(EProductVariationStatus.ENABLED)) {
+			Long minPricePro = p.getMinPrice();
+			Long maxPricePro = p.getMaxPrice();
+			long price = var.getFinalPrice().longValue();
+			if(minPricePro == null) {
 				p.setMinPrice(price);
-		}
-		if(p.getMaxPrice() == null) {
-			p.setMaxPrice(price);
-		}else {
-			if(maxPricePro.longValue() < price)
+			}else {
+				if(minPricePro.longValue() > price)
+					p.setMinPrice(price);
+			}
+			if(p.getMaxPrice() == null) {
 				p.setMaxPrice(price);
-		}
-		if(var.getDiscount() != null){
-			int maxDis = var.getDiscount();
-			Integer pMaxDis = p.getMaxDiscount();
-			if(pMaxDis != null ){
-				if(pMaxDis < maxDis)
+			}else {
+				if(maxPricePro.longValue() < price)
+					p.setMaxPrice(price);
+			}
+			if(var.getDiscount() != null){
+				int maxDis = var.getDiscount();
+				Integer pMaxDis = p.getMaxDiscount();
+				if(pMaxDis != null ){
+					if(pMaxDis < maxDis)
+						p.setMaxDiscount(maxDis);
+				}
+				else
 					p.setMaxDiscount(maxDis);
 			}
-			else
-				p.setMaxDiscount(maxDis);
 		}
 	}
 
@@ -126,12 +128,30 @@ public class ProductVariationService {
 			variation.setDiscount(data.getDiscount());
 		}
 		if (data.getStatus() != null && !variation.getStatus().equals(data.getStatus())) {
-			if (data.getStatus() == EProductVariationStatus.DISABLED
-					&& variation.getProduct().getVariations()
-							.size() <= PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION) {
-				throw new CommonRestException(String.format(
-						"A product must have at least %s enabled product(s) variation",
-						PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
+			if (data.getStatus() == EProductVariationStatus.DISABLED) 
+			{ 
+				if(variation.getProduct().getVariations()
+							.size() <= PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION)
+					throw new CommonRestException(String.format(
+							"A product must have at least %s enabled product(s) variation",
+							PlatformPolicyParameter.MIN_ALLOWED_PRODUCT_VARIATION));
+				Long min = variation.getProduct().getMinPrice();
+				Long max = variation.getProduct().getMaxPrice();
+				Product p = variation.getProduct();
+				if(variation.getDiscount().equals(p.getMaxDiscount()))
+					p.setMaxDiscount(null);
+				if(variation.getFinalPrice().equals(min)) {
+					p.setMinPrice(null);
+					p.getVariations().stream().forEach(vari -> {
+						updatePriceProduct(p, vari);
+					});
+				}
+				if(variation.getFinalPrice().equals(max)) {
+					p.setMaxPrice(null);
+					p.getVariations().stream().forEach(vari -> {
+						updatePriceProduct(p, vari);
+					});
+				}
 			}
 			variation.setStatus(data.getStatus());
 		}		
