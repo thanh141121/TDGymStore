@@ -3,11 +3,14 @@ package net.gymsrote.service;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.dto.ProductCategoryDTO;
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
+import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.product.ProductCategory;
 import net.gymsrote.repository.ProductCategoryRepo;
 import net.gymsrote.service.utils.ServiceUtils;
@@ -17,6 +20,9 @@ import net.gymsrote.service.utils.ServiceUtils;
 public class ProductCategoryService {
 	@Autowired
 	ProductCategoryRepo productCategoryRepo;
+	
+	@Autowired
+	ProductService productService;
 
 	@Autowired
 	ServiceUtils serviceUtils;
@@ -27,9 +33,31 @@ public class ProductCategoryService {
 		return serviceUtils.convertToDataResponse(category, ProductCategoryDTO.class);
 	}
 
-	public ListResponse<ProductCategoryDTO> getAllCategories() {
+	public ListResponse<ProductCategoryDTO> getAllCategoriesForUser() {
 		return serviceUtils.convertToListResponse(
 				productCategoryRepo.FindAllCategories(), ProductCategoryDTO.class);
+	}
+	
+	public void updateProductStatus(Long idCategory, EProductCategoryStatus status) {
+		ProductCategory category = productCategoryRepo.findById(idCategory).orElseThrow(
+				() -> new InvalidInputDataException("No product category found with given id"));
+		category.setStatus(status);
+		productCategoryRepo.save(category);
+	}
+	
+	@Transactional
+	public DataResponse<?> update(Long id, String name){
+		ProductCategory category = productCategoryRepo.findById(id).orElseThrow(
+				() -> new InvalidInputDataException("No product category found with given id"));
+		category.setName(name);
+		return serviceUtils.convertToDataResponse(category, ProductCategoryDTO.class);
+	}
+	
+
+
+	public ListResponse<ProductCategoryDTO> getAll() {
+		return serviceUtils.convertToListResponse(
+				productCategoryRepo.findAll(), ProductCategoryDTO.class);
 	}
 //
 //	public DataResponse<ProductCategoryDTO> create(Long idUser, CreateProductCategoryRequest data) {
