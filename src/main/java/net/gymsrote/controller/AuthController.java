@@ -29,7 +29,7 @@ import net.gymsrote.controller.payload.response.LoginResponse;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.service.UserService;
 import net.gymsrote.service.authen.AuthService;
-@RestController
+@Controller
 @RequestMapping("/api")
 public class AuthController {
 	@Autowired
@@ -57,6 +57,7 @@ public class AuthController {
 		return authService.authenticateWithUsernamePassword(body.getLoginKey(), body.getPassword());
 	}
 
+	@ResponseBody
 	@PostMapping("signup")
 	public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest body, HttpServletRequest request) {
 		return ResponseEntity.ok(authService.register(body, getSiteURL(request)));
