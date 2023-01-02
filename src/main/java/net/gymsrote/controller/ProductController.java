@@ -60,7 +60,7 @@ public class ProductController {
 	
 	@GetMapping
 	public ResponseEntity<?> getAllProducts(@RequestParam(value = "page", required=false) Integer page, 
-			@RequestParam(value = "page", required=false) Long categoryId, 
+			@RequestParam(value = "categoryId", required=false) Long categoryId, 
 			@RequestBody(required=false) PageInfoRequest infoRequest){
 		if(infoRequest == null) infoRequest = new PageInfoRequest();
 		if(page != null) infoRequest.setCurrentPage(page);
