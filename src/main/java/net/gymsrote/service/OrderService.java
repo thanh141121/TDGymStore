@@ -3,7 +3,7 @@ package net.gymsrote.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,12 +58,12 @@ public class OrderService {
 	@Autowired
 	ServiceUtils serviceUtils;
 
-	public ListWithPagingResponse<?> getAll(Long idUser, PagingInfo pagingInfo, boolean isBuyer) {
+	public ListWithPagingResponse<?> getAll(Long idUser, Pageable pagingInfo, boolean isBuyer) {
 		if (isBuyer) {
-			return serviceUtils.convertToListResponse(orderRepo.findAllByUserId(idUser, pagingInfo.getPageable()),
+			return serviceUtils.convertToListResponse(orderRepo.findAllByUserId(idUser, pagingInfo),
 					OrderDTO.class);
 		} else {
-			return serviceUtils.convertToListResponse(orderRepo.findAll(pagingInfo.getPageable()),
+			return serviceUtils.convertToListResponse(orderRepo.findAll(pagingInfo),
 					OrderDTO.class);
 		}
 	}

@@ -6,6 +6,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.gymsrote.config.login.UserDetailsImpl;
+import net.gymsrote.controller.payload.request.PageInfoRequest;
 import net.gymsrote.controller.payload.request.order.CreateOrderRequest;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.service.OrderService;
@@ -42,20 +45,17 @@ public class OrderController {
 	@GetMapping(produces = "application/json")
 	public ResponseEntity<?> getBuyers(
 		@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestParam(required = false) 
-				Integer page,
-			@RequestParam(required = false) 
-				Integer size,
-			@RequestParam(required = false) 
-			@Min(1) @Max(3)
-				Integer sortBy,
-			@RequestParam(required = false)
-				Boolean sortDescending) {
+			@RequestParam(required = false) Integer page,
+			@RequestBody(required=false) PageInfoRequest infoRequest) {
+		
+		if(infoRequest == null) infoRequest = new PageInfoRequest();
+		if(page != null) infoRequest.setCurrentPage(page);
+		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
 
 		return ResponseEntity.ok(
 			orderService.getAll(
 				user.getUser().getId(),
-				new PagingInfo(page, size, sortBy, sortDescending),
+				pageable,
 				true
 			)
 		);
