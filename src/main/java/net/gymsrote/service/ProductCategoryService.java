@@ -33,7 +33,7 @@ public class ProductCategoryService {
 				() -> new InvalidInputDataException("No product category found with given id"));
 		if (isBuyer && serviceUtils.checkStatusProductCategory(category, EProductCategoryStatus.DISABLED))
 			throw new InvalidInputDataException("Category has been disabled");
-		return serviceUtils.convertToDataResponse(category, ProductCategoryDTO.class);
+		return serviceUtils.convertToDataResponse(productCategoryRepo.save(category), ProductCategoryDTO.class);
 	}
 
 	public ListResponse<ProductCategoryDTO> getAllCategoriesForUser() {
