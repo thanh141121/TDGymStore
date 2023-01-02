@@ -18,6 +18,7 @@ import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.OrderDTO;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
+import net.gymsrote.entity.cart.CartDetailKey;
 import net.gymsrote.entity.order.Order;
 import net.gymsrote.entity.order.OrderDetail;
 import net.gymsrote.entity.product.ProductVariation;
@@ -27,6 +28,7 @@ import net.gymsrote.repository.OrderDetailRepo;
 import net.gymsrote.repository.OrderRepo;
 import net.gymsrote.repository.ProductVariationRepo;
 import net.gymsrote.repository.UserAddressRepo;
+import net.gymsrote.repository.UserCartDetailRepo;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.service.thirdparty.ghn.GHNService;
 import net.gymsrote.service.utils.ServiceUtils;
@@ -39,6 +41,9 @@ public class OrderService {
 
 	@Autowired
 	OrderDetailRepo orderDetailRepo;
+	
+	@Autowired
+	UserCartDetailRepo userCartDetailRepo;
 
 	@Autowired
 	UserRepo userRepo;
@@ -94,6 +99,7 @@ public class OrderService {
 					OrderDetail orderDetail = createOrderDetail(productVariation, p.getQuantity(), order);
 					order.getOrderDetails().add(orderDetail);
 					order.setPrice(order.getPrice() + orderDetail.getUnitPrice() * orderDetail.getQuantity());
+					userCartDetailRepo.deleteById(new CartDetailKey(user.getId(), productVariation.getId()));
 				});
 		order.setToDistrict(data.getToDistrict());
 		order.setTotal(order.getPrice() + data.getShipPrice());
