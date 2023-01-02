@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter @Setter
 @JsonAppend()
 public class GHNPOJOCreate {
-	private int payment_type_id = 2;
+	private int payment_type_id;
 	private String from_name = "TDGYMSTORE";
 	private String from_address = "Đường số 8";
 	private String from_ward_name = "Phường 5";
@@ -37,15 +37,15 @@ public class GHNPOJOCreate {
 
     private int cod_amount = 0;
     private String content;
-    private int weight = 200; //Khối lượng của đơn hàng (gram).
-    private int length = 1; //Chiều dài của đơn hàng (cm).
+    private int weight = 2000; //Khối lượng của đơn hàng (gram).
+    private int length = 10; //Chiều dài của đơn hàng (cm).
     private int width = 19; //Chiều rộng của đơn hàng (cm).
     private int height = 10; //Chiều cao của đơn hàng (cm).
 //    private int pick_station_id;
 //    private int deliver_station_id;
     private int insurance_value = 10000; //Giá trị của đơn hàng ( Trường hợp mất hàng , bể hàng sẽ đền theo giá trị của đơn hàng).
-    private int service_id = 0;
-    private int service_type_id = 2;
+    private int service_id ;
+//    private int service_type_id = 2;
     //private int coupon;
     // pick_shift;
 //    private int  pickup_time;
@@ -56,11 +56,28 @@ public class GHNPOJOCreate {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class Item {
-		private String name = "Sản phẩm";
+		private String name;
 		private int quantity;
 		
 	}
 	public GHNPOJOCreate() {
-		this.items.add(new Item("test tên sp", 1));
+	}
+	public GHNPOJOCreate(int payment_type_id, String client_order_code, String to_name,
+			String to_phone, String to_address, String to_ward_name, String to_district_name, String to_province_name,
+			int cod_amount, String content, int insurance_value, int service_id, List<Item> items) {
+		super();
+		this.payment_type_id = payment_type_id;
+		this.client_order_code = client_order_code;
+		this.to_name = to_name;
+		this.to_phone = to_phone;
+		this.to_address = to_address;
+		this.to_ward_name = to_ward_name;
+		this.to_district_name = to_district_name;
+		this.to_province_name = to_province_name;
+		this.cod_amount = cod_amount;
+		this.content = content;
+		this.insurance_value = insurance_value;
+		this.service_id = service_id;
+		this.items = items;
 	}
 }

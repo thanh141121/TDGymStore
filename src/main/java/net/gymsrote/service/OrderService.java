@@ -1,15 +1,16 @@
 package net.gymsrote.service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.CommonRuntimeException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
+import net.gymsrote.controller.advice.exception.UnknownException;
 import net.gymsrote.controller.payload.request.filter.OrderFilter;
 import net.gymsrote.controller.payload.request.order.CreateOrderRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
@@ -94,7 +95,7 @@ public class OrderService {
 					order.getOrderDetails().add(orderDetail);
 					order.setPrice(order.getPrice() + orderDetail.getUnitPrice() * orderDetail.getQuantity());
 				});
-
+		order.setToDistrict(data.getToDistrict());
 		order.setTotal(order.getPrice() + data.getShipPrice());
 		order.setShipPrice(data.getShipPrice());
 
@@ -115,39 +116,44 @@ public class OrderService {
 		);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = { InvalidInputDataException.class, UnknownException.class })
 	public DataResponse<OrderDTO> updateStatus(Long id, Long idBuyer, EOrderStatus newStatus) {
-		Order order = orderRepo.findById(id).orElseThrow(
-			() -> new InvalidInputDataException("No order found with given id "));
-		
-		if(idBuyer != null && !order.getUser().getId().equals(idBuyer))
-			throw new InvalidInputDataException("Can not update other buyer's orders");
-		
-		if (newStatus == EOrderStatus.CANCELLED)
-			return cancelOrder(order);
+		try {
+			Order order = orderRepo.findById(id).orElseThrow(
+					() -> new InvalidInputDataException("No order found with given id "));
+				
+				if(idBuyer != null && !order.getUser().getId().equals(idBuyer))
+					throw new InvalidInputDataException("Can not update other buyer's orders");
+				
+				if (newStatus == EOrderStatus.CANCELLED)
+					return cancelOrder(order);
 
-		if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
-			order.getOrderDetails().stream().forEach(od -> {
-				if(productVariationRepo.reduceStock(od.getProductVariation().getId(), od.getQuantity()) == 0 ){
-					throw new InvalidInputDataException("Product variation " + od.getProductVariation().getId() + " is out of stock");
+				if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
+					order.getOrderDetails().stream().forEach(od -> {
+						if(productVariationRepo.reduceStock(od.getProductVariation().getId(), od.getQuantity()) == 0 ){
+							throw new InvalidInputDataException("Product variation " + od.getProductVariation().getId() + " is out of stock");
+						}
+					});
+					String order_code = ghnService.createShipmentGHN(order);
+					order.setOrderCode(order_code);
 				}
-			});
-			ghnService.createShipmentGHN(order);
-		}
 
-		// if(newStatus == EOrderStatus.COMPLETED) {
-		// 	Long totalSpend = order.getUser().getTotalSpent() == null ? order.getPayPrice() : order.getUser().getTotalSpent() + order.getPayPrice();
-		// 	Buyer buyer = order.getUser();
-		// 	buyer.setTotalSpent(totalSpend);
-		// 	if(buyer.getRank().getNextRank() != null && buyer.getTotalSpent() >= buyer.getRank().getThreshold()) {
-		// 		buyerRankService.rankUp(buyerRepo.save(buyer).getId());
-		// 	}else{
-		// 		buyerRepo.save(buyer);
-		// 	}
-		// }
-		
-		order.setStatus(newStatus);
-		return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
+				// if(newStatus == EOrderStatus.COMPLETED) {
+				// 	Long totalSpend = order.getUser().getTotalSpent() == null ? order.getPayPrice() : order.getUser().getTotalSpent() + order.getPayPrice();
+				// 	Buyer buyer = order.getUser();
+				// 	buyer.setTotalSpent(totalSpend);
+				// 	if(buyer.getRank().getNextRank() != null && buyer.getTotalSpent() >= buyer.getRank().getThreshold()) {
+				// 		buyerRankService.rankUp(buyerRepo.save(buyer).getId());
+				// 	}else{
+				// 		buyerRepo.save(buyer);
+				// 	}
+				// }
+				
+				order.setStatus(newStatus);
+				return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
+		}catch (Exception e) {
+			throw new UnknownException("Something was wrong: " + e.getMessage());
+		}
 	}
 
 

@@ -25,6 +25,7 @@ import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.EnumEntity.ETransportation;
+import net.gymsrote.entity.address.District;
 import net.gymsrote.entity.user.User;
 
 @Getter
@@ -64,6 +65,12 @@ public class Order {
 	
 	@Column(name = "create_time")
 	private Date createTime;
+	
+	@Column(name = "to_district")
+	private int toDistrict;
+	
+	@Column(name = "order_code")
+	private String orderCode;
 
 	@Column(name = "price")
 	private Long price = 0L;
