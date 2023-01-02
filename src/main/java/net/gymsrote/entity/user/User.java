@@ -44,15 +44,15 @@ public class User implements UserInfo{
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
-		this.isEnabled = true;
+		this.isEnabled = false;
 	}
 	
-    public User(String fullname, String username, String email, String password) {
-        this.fullname = fullname;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
+//    public User(String fullname, String username, String email, String password) {
+//        this.fullname = fullname;
+//        this.username = username;
+//        this.email = email;
+//        this.password = password;
+//    }
 
 
 	@Id
