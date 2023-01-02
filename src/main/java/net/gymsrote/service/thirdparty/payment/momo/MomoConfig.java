@@ -26,5 +26,6 @@ public class MomoConfig {
 		private String paymentRefund;
 		private String notify;
 		private String callback;
+		private String redirect;
 	}
 }
