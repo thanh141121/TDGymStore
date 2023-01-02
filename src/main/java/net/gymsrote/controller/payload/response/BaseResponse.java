@@ -19,4 +19,9 @@ public class BaseResponse {
 		this.success = true;
 		this.message = "";
 	}
+
+	public BaseResponse(Boolean success) {
+		this.success = success;
+		this.message = "";
+	}
 }

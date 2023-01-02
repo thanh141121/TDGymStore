@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.gymsrote.controller.payload.request.CreateCategoryRequest;
 import net.gymsrote.controller.payload.request.PageInfoRequest;
+import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.service.ProductCategoryService;
 
 @RestController
@@ -29,11 +30,11 @@ public class AdminCategoryManage {
 	@Autowired
 	ProductCategoryService productCategoryService;
 	
-	@PatchMapping("/status/{id}")
+	@PatchMapping("/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable("id") long id,
-			@RequestParam Boolean status){
+			@RequestParam EProductCategoryStatus status){
 		productCategoryService.updateProductStatus(id, status);
-		return ResponseEntity.accepted().body(null);
+		return ResponseEntity.ok("");
 	}
 	
 	@PutMapping("/{id}")

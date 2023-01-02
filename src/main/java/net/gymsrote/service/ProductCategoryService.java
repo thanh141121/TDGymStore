@@ -41,13 +41,11 @@ public class ProductCategoryService {
 				productCategoryRepo.findAllCategories(), ProductCategoryDTO.class);
 	}
 	
-	public void updateProductStatus(Long idCategory, Boolean status) {
+	public void updateProductStatus(Long idCategory, EProductCategoryStatus status) {
 		ProductCategory category = productCategoryRepo.findById(idCategory).orElseThrow(
 				() -> new InvalidInputDataException("No product category found with given id"));
-		if(status)
-			category.setStatus(EProductCategoryStatus.ENABLED);
-		else
-			category.setStatus(EProductCategoryStatus.DISABLED);
+
+		category.setStatus(status);
 		productCategoryRepo.save(category);
 	}
 	

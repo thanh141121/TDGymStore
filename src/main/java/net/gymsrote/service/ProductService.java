@@ -18,6 +18,7 @@ import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.product.CreateProductReq;
 import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
+import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
@@ -212,6 +213,14 @@ public class ProductService {
 		return serviceUtils.convertToListResponse(
 				productRepo.search(keyword, pageable),
 				ProductGeneralDetailDTO.class);
+	}
+
+	public BaseResponse updateStatus(Long id, EProductStatus status) {
+		if(productRepo.updateStatus(id, status) == 1) {
+			return new BaseResponse();
+		} else {
+			throw new InvalidInputDataException("Update status failed");
+		}
 	}
 
 }

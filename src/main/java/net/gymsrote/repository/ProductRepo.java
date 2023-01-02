@@ -12,20 +12,23 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.gymsrote.entity.EnumEntity.EProductCategoryStatus;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.product.Product;
-import net.gymsrote.service.NeedImpl.ProductRepoCustom;
 
 @Repository
 public interface ProductRepo
-		extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{//, ProductRepoCustom//, RefreshableRepo<Product> {
+		extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
 	
     @Query(value = "SELECT * FROM product WHERE MATCH(name, description) "
             + "AGAINST (?1)", nativeQuery = true)          
     Page<Product> search(String keyword, Pageable pageable);
 
 	Page<Product> findAllByStatus(EProductStatus status, Pageable pageable);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
+	int updateStatus(@Param("id")Long id,@Param("status") EProductStatus status);
     
     @Transactional
 	@Modifying
@@ -75,5 +78,5 @@ public interface ProductRepo
 	List<Product> findTop10ByStatusOrderByNvisitDesc(EProductStatus status);
 
 	List<Product> findTop10ByStatusOrderByNsoldDesc(EProductStatus status);
-	// List<Product> findByName(String name);
+	
 }

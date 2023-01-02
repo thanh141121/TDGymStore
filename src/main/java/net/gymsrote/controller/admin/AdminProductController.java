@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ import net.gymsrote.controller.payload.request.product.CreateProductReq;
 import net.gymsrote.controller.payload.request.product.CreateVariationReq;
 import net.gymsrote.controller.payload.request.product.UpdateProductRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
+import net.gymsrote.entity.EnumEntity.EProductStatus;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.service.ProductService;
 
@@ -81,5 +83,10 @@ public class AdminProductController {
 			@RequestPart(name = "productInfo", required = false) @Valid UpdateProductRequest request,
 			@RequestPart(name = "avatar", required = false) MultipartFile avatar) {
 		return ResponseEntity.ok(productService.update(id, request, avatar));
+	}
+
+	@PatchMapping(path = "/{id}")
+	public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam @NotEmpty EProductStatus status) {
+		return ResponseEntity.ok(productService.updateStatus(id, status));
 	}
 }

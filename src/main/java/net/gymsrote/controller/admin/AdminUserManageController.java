@@ -40,8 +40,8 @@ public class AdminUserManageController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable("id") Long id,
-			@RequestParam Boolean status){
-		userService.updateStatus(id, status);
-		return ResponseEntity.accepted().body(null);
+			@RequestParam Boolean isEnabled){
+		userService.updateStatus(id, isEnabled);
+		return ResponseEntity.ok("");
 	}
 }
