@@ -46,11 +46,6 @@ public class StatisticService {
 			EStatisticType type,
 			User user) {
 
-		if(EUserRole.valueOf(user.getRole().toString()) != EUserRole.ADMIN){
-			idAdmins.clear();
-			idAdmins.add(user.getId());
-		}
-
 		if(month == null && quarter == null && type == null){
 			throw new InvalidInputDataException("You must specify type of statistic if statistic by year");
 		}
