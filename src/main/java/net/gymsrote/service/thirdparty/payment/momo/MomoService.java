@@ -34,7 +34,7 @@ public class MomoService implements Payment {
 		return createPayment(
 				String.format("%d-%s", idOrder, RandomString.get(6)), 
 				buildUrl(momoConfig.getUrl().getNotify(), req),
-				buildUrl(momoConfig.getUrl().getCallback(), req),
+				momoConfig.getUrl().getRedirect(),
 				amount
 			);
 	}
