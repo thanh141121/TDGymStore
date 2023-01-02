@@ -29,5 +29,8 @@ public class CreateOrderRequest {
     
     @NotNull
     private Long shipPrice;
+    
+    @NotNull
+    private int toDistrict;
 
 }

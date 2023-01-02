@@ -15,6 +15,7 @@ import net.gymsrote.service.thirdparty.payment.momo.MomoConfig.Url;
 public class GHNConfig {
 	private int ShopId;
 	private String Token;
+	private int fromDistrict;
 	
 
 	private UrlGHN url;
@@ -23,6 +24,7 @@ public class GHNConfig {
 	@NoArgsConstructor
 	public static class UrlGHN {
 		private String create;
+		private String availableService;
 		
 	}
 }
