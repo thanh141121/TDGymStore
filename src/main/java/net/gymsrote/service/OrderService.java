@@ -27,6 +27,7 @@ import net.gymsrote.repository.OrderRepo;
 import net.gymsrote.repository.ProductVariationRepo;
 import net.gymsrote.repository.UserAddressRepo;
 import net.gymsrote.repository.UserRepo;
+import net.gymsrote.service.thirdparty.ghn.GHNService;
 import net.gymsrote.service.utils.ServiceUtils;
 import net.gymsrote.utility.PagingInfo;
 
@@ -49,6 +50,9 @@ public class OrderService {
 
 	@Autowired
 	ProductVariationRepo productVariationRepo;
+	
+	@Autowired
+	GHNService ghnService;
 
 	@Autowired
 	ServiceUtils serviceUtils;
@@ -128,6 +132,7 @@ public class OrderService {
 					throw new InvalidInputDataException("Product variation " + od.getProductVariation().getId() + " is out of stock");
 				}
 			});
+			ghnService.createShipmentGHN(order);
 		}
 
 		// if(newStatus == EOrderStatus.COMPLETED) {

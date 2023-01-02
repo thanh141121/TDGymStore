@@ -27,6 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = null;
 		user = userRepo.findByUsername(username);
+
 		if (user == null) {
 			log.error("User not found in the databse");
 			throw new UsernameNotFoundException("User not found in the databse");

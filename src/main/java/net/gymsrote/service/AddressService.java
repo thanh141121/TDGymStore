@@ -127,4 +127,9 @@ public class AddressService {
 			throw new UnknownException(e.getMessage());
 		}
 	}
+
+	public void delete(Long idAddress) {
+		UserAddress ud = userAddressRepo.getReferenceById(idAddress);
+		userAddressRepo.delete(ud);
+	}
 }

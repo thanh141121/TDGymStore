@@ -6,6 +6,7 @@ import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,5 +36,12 @@ public class AdminUserManageController {
 		return ResponseEntity.ok(
 				userService.getAll(
 						new PagingInfo(page, size, sortBy, sortDescending)));
+	}
+	
+	@PatchMapping("/{id}")
+	public ResponseEntity<?> updateStatus(@PathVariable("id") Long id,
+			@RequestParam Boolean status){
+		userService.updateStatus(id, status);
+		return ResponseEntity.accepted().body(null);
 	}
 }
