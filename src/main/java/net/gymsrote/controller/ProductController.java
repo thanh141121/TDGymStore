@@ -46,29 +46,6 @@ public class ProductController {
 	@Autowired
 	CustomProductRepository customProductRepository;
 	
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public DataResponse<?> create(@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestPart("productInfo")@Valid CreateProductReq productInfo ,
-			@RequestPart("avatar")@NotEmpty MultipartFile avatar ,
-			@RequestPart(value = "imagesPro", required=false) List<MultipartFile> imagesPro,
-			@RequestPart(value = "imagesVar", required=false) List<MultipartFile> imagesVar
-			) throws IOException{
-		 try{
-			 if(productInfo.getVariations().size() != imagesVar.size()){
-			 	throw new InvalidInputDataException("Provide image for your variation!");
-			 }
-			List<CreateVariationReq> var = productInfo.getVariations();
-			int i=0;
-			for(CreateVariationReq varReq : var) {
-				varReq.setImage(imagesVar.get(i));
-				i++;
-			}
-		 }catch(Exception e){
-		 	throw new InvalidInputDataException(e.getMessage());
-		 }
-		return productService.create(productInfo, avatar, imagesPro);
-	}
-	
 	@GetMapping("/search/filter")
 	public ResponseEntity<?> searchWithFilterProducts(){
 		Filter lowRange = Filter.builder()
@@ -82,11 +59,13 @@ public class ProductController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> getAllProducts(@RequestParam(value = "page", required=false) Integer page, @RequestBody(required=false) PageInfoRequest infoRequest){
+	public ResponseEntity<?> getAllProducts(@RequestParam(value = "page", required=false) Integer page, 
+			@RequestParam(value = "categoryId", required=false) Long categoryId, 
+			@RequestBody(required=false) PageInfoRequest infoRequest){
 		if(infoRequest == null) infoRequest = new PageInfoRequest();
 		if(page != null) infoRequest.setCurrentPage(page);
 		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
-		return ResponseEntity.ok(productService.getAllProducts(pageable, true));
+		return ResponseEntity.ok(productService.getAllProducts(pageable, true, categoryId));
 	}
 	
 	@GetMapping("/search")

@@ -46,7 +46,7 @@ public class AdminProductController {
 		if(infoRequest == null) infoRequest = new PageInfoRequest();
 		if(page != null) infoRequest.setCurrentPage(page);
 		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
-		return ResponseEntity.ok(productService.getAllProducts(pageable, false));
+		return ResponseEntity.ok(productService.getAllProducts(pageable, false, null));
 	}
 	
 	@GetMapping("/{id}")
