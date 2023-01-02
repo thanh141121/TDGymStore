@@ -135,6 +135,7 @@ public class OrderService {
 						}
 					});
 					String order_code = ghnService.createShipmentGHN(order);
+					order.setOrderCode(order_code);
 				}
 
 				// if(newStatus == EOrderStatus.COMPLETED) {

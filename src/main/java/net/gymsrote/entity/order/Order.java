@@ -68,6 +68,9 @@ public class Order {
 	
 	@Column(name = "to_district")
 	private int toDistrict;
+	
+	@Column(name = "order_code")
+	private String orderCode;
 
 	@Column(name = "price")
 	private Long price = 0L;
