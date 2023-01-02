@@ -57,6 +57,7 @@ public class UserAddress {
 	}
 	
 	public String toString() {
+		this.addressDetail = this.addressDetail.replaceAll(",", "-");
 		return String.format("%s, %s, %s, %s",
 				this.addressDetail,
 				this.ward.getWardName(),

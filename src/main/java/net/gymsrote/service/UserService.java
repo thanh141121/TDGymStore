@@ -36,6 +36,14 @@ public class UserService{// implements IUserService{
 	@Autowired
 	ServiceUtils serviceUtils;
 	
+	public void updateStatus(Long id, Boolean status) {
+		User user = userRepo.findById(id)
+				.orElseThrow(() -> new UsernameNotFoundException(
+						"User not found with id: " + id));
+		user.setIsEnabled(status);
+		
+	}
+	
 	
 	public BaseResponse isEnabled(Long id, boolean isEnable) {
 		User user = userRepo.findById(id)

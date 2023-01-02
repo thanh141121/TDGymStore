@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.CommonRestException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
@@ -68,6 +69,7 @@ public class ProductVariationService {
 		return null;
 	}
 	
+	@Transactional
 	public static void updatePriceProduct(Product p, ProductVariation var) {
 		if(var.getStatus().equals(EProductVariationStatus.ENABLED)) {
 			Long minPricePro = p.getMinPrice();
@@ -106,6 +108,7 @@ public class ProductVariationService {
 		}
 	}*/
 
+	@Transactional
 	public DataResponse<ProductVariationDTO> update(Long id, Long idProduct,
 			UpdateProductVariationRequest data) {
 		ProductVariation variation = productVariationRepo.findById(id).orElseThrow(
@@ -128,6 +131,7 @@ public class ProductVariationService {
 			variation.setDiscount(data.getDiscount());
 		}
 		if (data.getStatus() != null && !variation.getStatus().equals(data.getStatus())) {
+			variation.setStatus(data.getStatus());
 			if (data.getStatus() == EProductVariationStatus.DISABLED) 
 			{ 
 				if(variation.getProduct().getVariations()
@@ -153,7 +157,6 @@ public class ProductVariationService {
 					});
 				}
 			}
-			variation.setStatus(data.getStatus());
 		}		
 		if (data.getImage() != null) {
 			serviceUtils.updateAvatar(variation, data.getImage(), EFolderMediaResource.ProductVariation);
