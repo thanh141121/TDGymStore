@@ -200,11 +200,15 @@ public class ProductService {
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
-	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable, Boolean isBuyer) {
-		if (Boolean.TRUE.equals(isBuyer)) {
-			return serviceUtils.convertToListResponse(productRepo.findAllByStatus(EProductStatus.ENABLED, pageable), ProductDetailDTO.class);
-		} else {
-			return serviceUtils.convertToListResponse(productRepo.findAll(pageable), ProductDetailDTO.class);
+	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable, Boolean isBuyer, Long categoryId) {
+		if(categoryId != null) {
+			return serviceUtils.convertToListResponse(productRepo.findAllByCategoryId(categoryId, pageable), ProductDetailDTO.class);
+		}else {
+			if (Boolean.TRUE.equals(isBuyer)) {
+				return serviceUtils.convertToListResponse(productRepo.findAllByStatus(EProductStatus.ENABLED, pageable), ProductDetailDTO.class);
+			} else {
+				return serviceUtils.convertToListResponse(productRepo.findAll(pageable), ProductDetailDTO.class);
+			}
 		}
 	}
 	
