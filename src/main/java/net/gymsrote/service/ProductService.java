@@ -72,12 +72,6 @@ public class ProductService {
 		productRepo.updateStatusProduct(idCategory, status);
 	}
 
-//	public ListWithPagingResponse<ProductGeneralDetailDTO> search(ProductFilter filter,
-//			PagingInfo pagingInfo) {
-//		return serviceUtils.convertToListResponse(productRepo.search(filter, pagingInfo),
-//				ProductGeneralDetailDTO.class);
-//	}
-
 	public ListResponse<ProductGeneralDetailDTO> getTopSaleProduct() {
 		return serviceUtils.convertToListResponse(
 				productRepo.findTop10ByStatusOrderByMaxDiscountDesc(EProductStatus.ENABLED),
@@ -155,7 +149,7 @@ public class ProductService {
 				for(MultipartFile image: images) {
 					MediaResource media = mediaResourceService.save(image.getBytes(), EFolderMediaResource.ProductImage);
 					if(media != null)
-					productImage.add(new ProductImage(p,media));
+						productImage.add(new ProductImage(p,media));
 					tempCloudianaryImage.add(media.getPublicId());
 				}
 			}
@@ -206,9 +200,12 @@ public class ProductService {
 		return serviceUtils.convertToDataResponse(p, ProductDetailDTO.class);
 	}
 
-	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable) {
-		Page<Product> products = productRepo.findAll(pageable);
-		return serviceUtils.convertToListResponse(products, ProductDetailDTO.class);
+	public ListWithPagingResponse<ProductDetailDTO> getAllProducts(Pageable pageable, Boolean isBuyer) {
+		if (Boolean.TRUE.equals(isBuyer)) {
+			return serviceUtils.convertToListResponse(productRepo.findAllByStatus(EProductStatus.ENABLED, pageable), ProductDetailDTO.class);
+		} else {
+			return serviceUtils.convertToListResponse(productRepo.findAll(pageable), ProductDetailDTO.class);
+		}
 	}
 	
 	public ListWithPagingResponse<ProductGeneralDetailDTO> search(String keyword, Pageable pageable) {
@@ -216,68 +213,5 @@ public class ProductService {
 				productRepo.search(keyword, pageable),
 				ProductGeneralDetailDTO.class);
 	}
-
-	/*public void updateRating(Long id, Integer point) {
-		switch (point) {
-			case 1:
-				productRepo.updateRating1(id);
-				break;
-			case 2:
-				productRepo.updateRating2(id);
-				break;
-			case 3:
-				productRepo.updateRating3(id);
-				break;
-			case 4:
-				productRepo.updateRating4(id);
-				break;
-			case 5:
-				productRepo.updateRating5(id);
-				break;
-		}
-		productRepo.updateAverageRating(id, point);
-	}*/
-//
-//	/***
-//	 * For entity listener
-//	 * 
-//	 * @param pv
-//	 */
-	/*public void updatePriceWhenVariationCreated(ProductVariation pv) {
-		Product p = pv.getProduct();
-		List<ProductVariation> pvs = new ArrayList<>(p.getVariations());
-		pvs.add(pv);
-		updatePrice(p, pvs);
-	}*/
-//
-//	/***
-//	 * For entity listener
-//	 * 
-//	 * @param pv
-//	 */
-	/*public void updatePriceWhenVariationChange(ProductVariation pv) {
-		Product p = pv.getProduct();
-		List<ProductVariation> pvs = new ArrayList<>(p.getVariations());
-		updatePrice(p, pvs);
-	}
-
-	private void updatePrice(Product p, List<ProductVariation> pvs) {
-		Supplier<Stream<ProductVariation>> streamSupplier =
-				() -> pvs.stream().filter(x -> x.getAvailableQuantity() > 0
-						&& x.getStatus() == EProductVariationStatus.ENABLED);
-		Optional<ProductVariation> maxDiscount = streamSupplier.get()
-				.max((first, second) -> Long.compare(first.getDiscount(), second.getDiscount()));
-		Optional<ProductVariation> minPv = streamSupplier.get().min((first, second) -> Long
-				.compare(first.getPriceAfterDiscount(), second.getPriceAfterDiscount()));
-		Optional<ProductVariation> maxPv = streamSupplier.get().max((first, second) -> Long
-				.compare(first.getPriceAfterDiscount(), second.getPriceAfterDiscount()));
-		if (maxDiscount.isPresent())
-			p.setMaxDiscount(maxDiscount.get().getDiscount());
-		if (minPv.isPresent())
-			p.setMinPrice(minPv.get().getPriceAfterDiscount());
-		if (maxPv.isPresent())
-			p.setMaxPrice(maxPv.get().getPriceAfterDiscount());
-		productRepo.save(p);
-	}*/
 
 }

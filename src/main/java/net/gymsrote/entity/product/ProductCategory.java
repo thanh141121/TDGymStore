@@ -37,7 +37,10 @@ public class ProductCategory {
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
 	private EProductCategoryStatus status;
-	
 
+	public ProductCategory(String name) {
+		this.name = name;
+		this.status = EProductCategoryStatus.ENABLED;
+	}
 
 }

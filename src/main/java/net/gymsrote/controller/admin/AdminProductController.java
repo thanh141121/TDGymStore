@@ -44,7 +44,7 @@ public class AdminProductController {
 		if(infoRequest == null) infoRequest = new PageInfoRequest();
 		if(page != null) infoRequest.setCurrentPage(page);
 		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
-		return ResponseEntity.ok(productService.getAllProducts(pageable));
+		return ResponseEntity.ok(productService.getAllProducts(pageable, false));
 	}
 	
 	@GetMapping("/{id}")
@@ -53,9 +53,9 @@ public class AdminProductController {
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public DataResponse<?> getProductByCategory(@AuthenticationPrincipal UserDetailsImpl<User> user,
+	public DataResponse<?> create(@AuthenticationPrincipal UserDetailsImpl<User> user,
 	@RequestPart("productInfo") @Valid CreateProductReq productInfo,
-	@RequestPart("avatar") MultipartFile avatar ,
+	@RequestPart("avatar") MultipartFile avatar,
 	@RequestPart(value = "imagesPro", required=false) List<MultipartFile> imagesPro,
 	@RequestPart(value = "imagesVar", required=false) List<MultipartFile> imagesVar
 			) throws IOException{
@@ -82,15 +82,4 @@ public class AdminProductController {
 			@RequestPart(name = "avatar", required = false) MultipartFile avatar) {
 		return ResponseEntity.ok(productService.update(id, request, avatar));
 	}
-	
-	/*@PostMapping("/variations")
-	public Object addProductVariation(@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestPart("variations")@Valid List<CreateVariationReq> variationReqs,
-			@RequestPart("productId") Long proId
-			) throws IOException{
-		return productService.addVariation(productService.getById(proId, user), variationReqs);
-		//return user.getUser().getId();
-	}*/
-	
-
 }

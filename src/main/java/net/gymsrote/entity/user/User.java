@@ -99,6 +99,4 @@ public class User implements UserInfo{
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
 	private List<CartDetail> cart;
 
-
-
 }

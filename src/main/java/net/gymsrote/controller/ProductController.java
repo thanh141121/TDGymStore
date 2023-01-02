@@ -86,7 +86,7 @@ public class ProductController {
 		if(infoRequest == null) infoRequest = new PageInfoRequest();
 		if(page != null) infoRequest.setCurrentPage(page);
 		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
-		return ResponseEntity.ok(productService.getAllProducts(pageable));
+		return ResponseEntity.ok(productService.getAllProducts(pageable, true));
 	}
 	
 	@GetMapping("/search")
@@ -96,29 +96,29 @@ public class ProductController {
 		return ResponseEntity.ok(productService.search(key,pageable));
 	}
 	
-	/*@GetMapping("/search")
-	public ResponseEntity<?> searchProducts(@RequestParam String key){
-		PageInfoRequest request = new PageInfoRequest();
-		Pageable pageable = PageRequest.of(request.getCurrentPage(), request.getSize());
+	// @GetMapping
+	// public ResponseEntity<?> searchProducts(@RequestParam String key){
+	// 	PageInfoRequest request = new PageInfoRequest();
+	// 	Pageable pageable = PageRequest.of(request.getCurrentPage(), request.getSize());
 		
-		Filter lowRange = Filter.builder()
-			    .field(Product_.MIN_PRICE)
-			    .operator(QueryOperator.LESS_THAN)
-			    .value("10000000")
-			    .build();
-		List<Filter> filters = new ArrayList<>();
-		filters.add(lowRange);
-		List<Product> list1 =  customProductRepository.getQueryResult(filters);
-		List<Product> list2 = productService.search(key);
-		List<Product> list = new ArrayList<>();
-		for (Product t : list1) {
-            if(list2.contains(t)) {
-                list.add(t);
-            }
-        }
-		return ResponseEntity.ok(serviceUtils.convertToListResponse(list, Product.class));
-//		return ResponseEntity.ok(productService.getAllProducts());
-	}*/
+	// 	Filter lowRange = Filter.builder()
+	// 		    .field(Product_.MIN_PRICE)
+	// 		    .operator(QueryOperator.LESS_THAN)
+	// 		    .value("10000000")
+	// 		    .build();
+	// 	List<Filter> filters = new ArrayList<>();
+	// 	filters.add(lowRange);
+	// 	List<Product> list1 =  customProductRepository.getQueryResult(filters);
+	// 	List<Product> list2 = productService.search(key);
+	// 	List<Product> list = new ArrayList<>();
+	// 	for (Product t : list1) {
+    //         if(list2.contains(t)) {
+    //             list.add(t);
+    //         }
+    //     }
+	// 	return ResponseEntity.ok(serviceUtils.convertToListResponse(list, Product.class));
+	// 	return ResponseEntity.ok(productService.getAllProducts());
+	// }
 	
 	
 	@GetMapping("/{id}")

@@ -23,7 +23,9 @@ public interface ProductRepo
 	
     @Query(value = "SELECT * FROM product WHERE MATCH(name, description) "
             + "AGAINST (?1)", nativeQuery = true)          
-    Page<Product> search(String keyword, Pageable pageable);	
+    Page<Product> search(String keyword, Pageable pageable);
+
+	Page<Product> findAllByStatus(EProductStatus status, Pageable pageable);
     
     @Transactional
 	@Modifying
