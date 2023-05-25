@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.gymsrote.controller.payload.response.BaseResponse;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
-import net.gymsrote.dto.OrderDTO;
 import net.gymsrote.dto.UserDTO;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 import net.gymsrote.entity.user.User;
@@ -23,7 +22,7 @@ import net.gymsrote.utility.PagingInfo;
 @Service
 @Transactional
 @Slf4j
-public class UserService{// implements IUserService{
+public class UserService {// implements IUserService{
 	@Autowired
 	private UserRepo userRepo;
 
@@ -35,16 +34,15 @@ public class UserService{// implements IUserService{
 
 	@Autowired
 	ServiceUtils serviceUtils;
-	
+
 	public void updateStatus(Long id, Boolean status) {
 		User user = userRepo.findById(id)
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User not found with id: " + id));
 		user.setIsEnabled(status);
-		
+
 	}
-	
-	
+
 	public BaseResponse isEnabled(Long id, boolean isEnable) {
 		User user = userRepo.findById(id)
 				.orElseThrow(() -> new UsernameNotFoundException(
@@ -82,8 +80,7 @@ public class UserService{// implements IUserService{
 	public DataResponse<UserDTO> getById(Long id) {
 		return serviceUtils.convertToDataResponse(
 				userRepo.getReferenceById(id),
-				UserDTO.class
-			);
+				UserDTO.class);
 	}
 
 	public DataResponse<UserDTO> getUserProfile(String username) {
@@ -92,7 +89,6 @@ public class UserService{// implements IUserService{
 						"User not found with username or email : " + username));
 		return serviceUtils.convertToDataResponse(user, UserDTO.class);
 	}
-
 
 	public ListWithPagingResponse<?> getAll(PagingInfo pagingInfo) {
 		return serviceUtils.convertToListResponse(userRepo.findAll(pagingInfo.getPageable()),

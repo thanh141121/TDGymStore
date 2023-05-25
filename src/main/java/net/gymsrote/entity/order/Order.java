@@ -17,15 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
-import net.gymsrote.entity.EnumEntity.ETransportation;
-import net.gymsrote.entity.address.District;
 import net.gymsrote.entity.user.User;
 
 @Getter
@@ -40,35 +36,34 @@ public class Order {
 
 	@Column(name = "total")
 	private Long total;
-	
-	
+
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
-	private EOrderStatus  status;
-	
+	private EOrderStatus status;
+
 	@Column(name = "payment_method")
 	@Enumerated(EnumType.STRING)
 	private EPaymentMethod paymentMethod;
-	
+
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name = "user_id")
 	private User user;
-	
-	@Column(name="address_detail")
+
+	@Column(name = "address_detail")
 	private String addressDetail;
-	
-	@Column(name="receiver_phone")
+
+	@Column(name = "receiver_phone")
 	private String receiverPhone;
-	
+
 	@Column(name = "receiver_name")
 	private String receiverName;
-	
+
 	@Column(name = "create_time")
 	private Date createTime;
-	
+
 	@Column(name = "to_district")
 	private int toDistrict;
-	
+
 	@Column(name = "order_code")
 	private String orderCode;
 
@@ -77,7 +72,7 @@ public class Order {
 
 	@Column(name = "shipPrice")
 	private Long shipPrice = 0L;
-	
+
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
 	private List<OrderDetail> orderDetails = new ArrayList<>();
 

@@ -41,22 +41,22 @@ public class OrderService {
 
 	@Autowired
 	OrderDetailRepo orderDetailRepo;
-	
+
 	@Autowired
 	UserCartDetailRepo userCartDetailRepo;
 
 	@Autowired
 	UserRepo userRepo;
-	
+
 	@Autowired
 	PaymentService paymentService;
-	
+
 	@Autowired
 	UserAddressRepo userAddressRepo;
 
 	@Autowired
 	ProductVariationRepo productVariationRepo;
-	
+
 	@Autowired
 	GHNService ghnService;
 
@@ -64,6 +64,7 @@ public class OrderService {
 	ServiceUtils serviceUtils;
 
 	public ListWithPagingResponse<?> getAll(Long idUser, Pageable pagingInfo, boolean isBuyer) {
+		// pagingInfo.getSort().and(Sort.by("id").descending());
 		if (isBuyer) {
 			return serviceUtils.convertToListResponse(orderRepo.findAllByUserId(idUser, pagingInfo),
 					OrderDTO.class);
@@ -77,9 +78,9 @@ public class OrderService {
 		Order order = orderRepo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("No order found with given id"));
 
-		if(idUser != null && !order.getUser().getId().equals(idUser)) 
+		if (idUser != null && !order.getUser().getId().equals(idUser))
 			throw new InvalidInputDataException("Can not read order of other buyers");
-		
+
 		return serviceUtils.convertToDataResponse(order, OrderDTO.class);
 	}
 
@@ -94,19 +95,21 @@ public class OrderService {
 				data.getReceiverPhone(),
 				data.getReceiverName());
 
-			data.getProducts().stream().forEach(p -> {
-					ProductVariation productVariation = productVariationRepo.findById(p.getId()).orElseThrow( () -> new InvalidInputDataException("No product variation found with given id"));
-					OrderDetail orderDetail = createOrderDetail(productVariation, p.getQuantity(), order);
-					order.getOrderDetails().add(orderDetail);
-					order.setPrice(order.getPrice() + orderDetail.getUnitPrice() * orderDetail.getQuantity());
-					userCartDetailRepo.deleteById(new CartDetailKey(user.getId(), productVariation.getId()));
-				});
+		data.getProducts().stream().forEach(p -> {
+			ProductVariation productVariation = productVariationRepo.findById(p.getId())
+					.orElseThrow(() -> new InvalidInputDataException("No product variation found with given id"));
+			OrderDetail orderDetail = createOrderDetail(productVariation, p.getQuantity(), order);
+			order.getOrderDetails().add(orderDetail);
+			order.setPrice(order.getPrice() + orderDetail.getUnitPrice() * orderDetail.getQuantity());
+			if (!data.getIsBuyNow())
+				userCartDetailRepo.deleteById(new CartDetailKey(user.getId(), productVariation.getId()));
+		});
 		order.setToDistrict(data.getToDistrict());
 		order.setTotal(order.getPrice() + data.getShipPrice());
 		order.setShipPrice(data.getShipPrice());
 
 		DataResponse<OrderDTO> res = serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
-		
+
 		res.getData().setPayUrl(paymentService.createPayment(res.getData().getId(), user.getId(), req));
 
 		return res;
@@ -115,11 +118,10 @@ public class OrderService {
 	private OrderDetail createOrderDetail(ProductVariation productVariation, Long quantity, Order order) {
 
 		return new OrderDetail(
-			order,
-			productVariation,
-			quantity,
-			(long)Math.ceil(productVariation.getPrice() * (1 - productVariation.getDiscount() / 100.0))
-		);
+				order,
+				productVariation,
+				quantity,
+				(long) Math.ceil(productVariation.getPrice() * (1 - productVariation.getDiscount() / 100.0)));
 	}
 
 	@Transactional(rollbackFor = { InvalidInputDataException.class, UnknownException.class })
@@ -127,41 +129,43 @@ public class OrderService {
 		try {
 			Order order = orderRepo.findById(id).orElseThrow(
 					() -> new InvalidInputDataException("No order found with given id "));
-				
-				if(idBuyer != null && !order.getUser().getId().equals(idBuyer))
-					throw new InvalidInputDataException("Can not update other buyer's orders");
-				
-				if (newStatus == EOrderStatus.CANCELLED)
-					return cancelOrder(order);
 
-				if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
-					order.getOrderDetails().stream().forEach(od -> {
-						if(productVariationRepo.reduceStock(od.getProductVariation().getId(), od.getQuantity()) == 0 ){
-							throw new InvalidInputDataException("Product variation " + od.getProductVariation().getId() + " is out of stock");
-						}
-					});
-					String order_code = ghnService.createShipmentGHN(order);
-					order.setOrderCode(order_code);
-				}
+			if (idBuyer != null && !order.getUser().getId().equals(idBuyer))
+				throw new InvalidInputDataException("Can not update other buyer's orders");
 
-				// if(newStatus == EOrderStatus.COMPLETED) {
-				// 	Long totalSpend = order.getUser().getTotalSpent() == null ? order.getPayPrice() : order.getUser().getTotalSpent() + order.getPayPrice();
-				// 	Buyer buyer = order.getUser();
-				// 	buyer.setTotalSpent(totalSpend);
-				// 	if(buyer.getRank().getNextRank() != null && buyer.getTotalSpent() >= buyer.getRank().getThreshold()) {
-				// 		buyerRankService.rankUp(buyerRepo.save(buyer).getId());
-				// 	}else{
-				// 		buyerRepo.save(buyer);
-				// 	}
-				// }
-				
-				order.setStatus(newStatus);
-				return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
-		}catch (Exception e) {
+			if (newStatus == EOrderStatus.CANCELLED)
+				return cancelOrder(order);
+
+			if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
+				order.getOrderDetails().stream().forEach(od -> {
+					if (productVariationRepo.reduceStock(od.getProductVariation().getId(), od.getQuantity()) == 0) {
+						throw new InvalidInputDataException(
+								"Product variation " + od.getProductVariation().getId() + " is out of stock");
+					}
+				});
+				String order_code = ghnService.createShipmentGHN(order);
+				order.setOrderCode(order_code);
+			}
+
+			// if(newStatus == EOrderStatus.COMPLETED) {
+			// Long totalSpend = order.getUser().getTotalSpent() == null ?
+			// order.getPayPrice() : order.getUser().getTotalSpent() + order.getPayPrice();
+			// Buyer buyer = order.getUser();
+			// buyer.setTotalSpent(totalSpend);
+			// if(buyer.getRank().getNextRank() != null && buyer.getTotalSpent() >=
+			// buyer.getRank().getThreshold()) {
+			// buyerRankService.rankUp(buyerRepo.save(buyer).getId());
+			// }else{
+			// buyerRepo.save(buyer);
+			// }
+			// }
+
+			order.setStatus(newStatus);
+			return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
+		} catch (Exception e) {
 			throw new UnknownException("Something was wrong: " + e.getMessage());
 		}
 	}
-
 
 	@Transactional
 	private DataResponse<OrderDTO> cancelOrder(Order order) {
@@ -178,11 +182,10 @@ public class OrderService {
 						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
 					// paymentService.refundPayment(order);
 				}
-				
+
 				// revert stock when order is cancelled
-				order.getOrderDetails().stream().forEach(od -> 
-					productVariationRepo.refundStock(od.getProductVariation().getId(), od.getQuantity())
-				);
+				order.getOrderDetails().stream().forEach(
+						od -> productVariationRepo.refundStock(od.getProductVariation().getId(), od.getQuantity()));
 
 				order.setStatus(EOrderStatus.CANCELLED);
 				break;
@@ -192,9 +195,8 @@ public class OrderService {
 			default:
 				throw new CommonRuntimeException("Order cannot be cancelled");
 		}
-		
+
 		return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);
 	}
 
-	
 }

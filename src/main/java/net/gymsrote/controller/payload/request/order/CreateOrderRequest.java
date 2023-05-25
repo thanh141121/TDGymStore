@@ -33,4 +33,6 @@ public class CreateOrderRequest {
     @NotNull
     private int toDistrict;
 
+    private Boolean isBuyNow;
+
 }
