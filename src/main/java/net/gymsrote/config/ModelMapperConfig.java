@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import net.gymsrote.dto.CartDetailDTO;
+import net.gymsrote.dto.CommentDTO;
 import net.gymsrote.dto.MediaResourceDTO;
 import net.gymsrote.dto.OrderDetailDTO;
 import net.gymsrote.dto.ProductCartDetailDTO;
@@ -26,6 +27,7 @@ import net.gymsrote.entity.address.District;
 import net.gymsrote.entity.address.Province;
 import net.gymsrote.entity.address.Ward;
 import net.gymsrote.entity.cart.CartDetail;
+import net.gymsrote.entity.comment.Comment;
 import net.gymsrote.entity.order.OrderDetail;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductImage;
@@ -106,6 +108,14 @@ public class ModelMapperConfig {
 		 //ORDERDETAIL TO ORDERDETAIL DTO
 		mapper.createTypeMap(OrderDetail.class, OrderDetailDTO.class).addMappings(m -> {
 			m.map(src -> src.getOrder().getId(), OrderDetailDTO::setOrderId);
+		});
+		
+		//Comment to commentDTO
+		mapper.createTypeMap(Comment.class, CommentDTO.class).addMappings(m -> {
+			m.map(src -> src.getUser().getFullname(), CommentDTO::setFullnameOfUser);
+			m.map(src -> src.getUser().getId(), CommentDTO::setUserId);
+			m.map(src -> src.getProduct().getId(), CommentDTO::setProductId);
+			
 		});
 		
 		return mapper;
