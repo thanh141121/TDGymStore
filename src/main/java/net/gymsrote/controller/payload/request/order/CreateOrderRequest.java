@@ -10,11 +10,12 @@ import lombok.Getter;
 import lombok.Setter;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 
-@Getter @Setter
+@Getter
+@Setter
 public class CreateOrderRequest {
-	@NotEmpty
-	private List<CreateProductOrderRequest> products;
-	
+    @NotEmpty
+    private List<CreateProductOrderRequest> products;
+
     @NotBlank
     private String address;
 
@@ -23,16 +24,16 @@ public class CreateOrderRequest {
 
     @NotBlank
     private String receiverPhone;
-    
+
     @NotNull
     private EPaymentMethod paymentMethod;
-    
+
     @NotNull
     private Long shipPrice;
-    
+
     @NotNull
     private int toDistrict;
 
-    private Boolean isBuyNow;
+    private Boolean isBuyNow = false;
 
 }

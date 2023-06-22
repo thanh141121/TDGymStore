@@ -18,7 +18,7 @@ public class ConfigService {
 
 	@Autowired
 	ServiceUtils serviceUtils;
-	
+
 	public DataResponse<ConfigDTO> get(Long id) {
 		return serviceUtils.convertToDataResponse(repo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("Không tìm thấy 'Config' với id: " + id)), ConfigDTO.class);
@@ -45,9 +45,14 @@ public class ConfigService {
 		return serviceUtils.convertToDataResponse(config, ConfigDTO.class);
 	}
 
-	//select
-	public DataResponse<Long> select(Long id) {
-		return serviceUtils.convertToDataResponse(repo.select(id), Long.class);
+	// select
+	public DataResponse<Long> updateStatus(Long id, Boolean status) {
+		if (!status) {
+			return null;
+		} else {
+			repo.unSelected();
+			return serviceUtils.convertToDataResponse(repo.selected(id), Long.class);
+		}
 	}
 
 }

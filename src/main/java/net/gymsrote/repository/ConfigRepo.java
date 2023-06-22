@@ -12,6 +12,11 @@ import net.gymsrote.entity.Config;
 public interface ConfigRepo extends JpaRepository<Config, Long> {
     @Modifying
     @Transactional
-    @Query("UPDATE Config c SET c.isSelected = false WHERE c.isSelected = true")
-    Long select(Long id);
+    @Query("UPDATE Config c SET c.isSelected = false")
+    Integer unSelected();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Config c SET c.isSelected = true WHERE c.id = ?1")
+    Integer selected(Long id);
 }
