@@ -51,10 +51,17 @@ public class ProductController {
 		Filter lowRange = Filter.builder()
 			    .field(Product_.MIN_PRICE)
 			    .operator(QueryOperator.LESS_THAN)
-			    .value("10000000")
+			    .value("5000000")
+			    .build();
+		
+		Filter namelike = Filter.builder()
+			    .field(Product_.NAME)
+			    .operator(QueryOperator.LIKE)
+			    .value("whey")
 			    .build();
 		List<Filter> filters = new ArrayList<>();
 		filters.add(lowRange);
+		filters.add(namelike);
 		return ResponseEntity.ok( customProductRepository.getQueryResult(filters));
 	}
 	

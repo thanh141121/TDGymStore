@@ -9,8 +9,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import static org.springframework.data.jpa.domain.Specification.where;
 
+import net.gymsrote.controller.payload.response.ListResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
+import net.gymsrote.dto.ProductDTO;
 import net.gymsrote.dto.ProductDetailDTO;
+import net.gymsrote.dto.ProductGeneralDetailDTO;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.ProductCategory_;
 import net.gymsrote.entity.product.Product_;
@@ -50,9 +53,13 @@ public class CustomProductRepository {
         	return null;
         }
     }*/
-    public List<Product> getQueryResult(List<Filter> filters){
+    public ListResponse<ProductGeneralDetailDTO> getQueryResult(List<Filter> filters){
         if(filters.size()>0) {
-            return productRepo.findAll(getSpecificationFromFilters(filters));
+            return serviceUtils.convertToListResponse(
+            		productRepo.findAll(getSpecificationFromFilters(filters)),
+            		ProductGeneralDetailDTO.class
+            		);
+//            		productRepo.findAll(getSpecificationFromFilters(filters));
             		
         }else {
 //            return productRepo.findAll();
