@@ -48,11 +48,10 @@ public class CommentController {
 		
 	}
 	
-	@DeleteMapping("/{productId}")
-	public ResponseEntity<?> delete(@PathVariable("productId") long productId,
-			@AuthenticationPrincipal UserDetailsImpl<User> user
+	@DeleteMapping("/{commentId}")
+	public ResponseEntity<?> delete(@PathVariable("commentId") long commentId
 			){
-		commentService.delete(user.getUser().getId(), productId);
+		commentService.delete(commentId);
 		return ResponseEntity.accepted().body(null);
 	}
 

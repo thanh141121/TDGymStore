@@ -1,11 +1,12 @@
 package net.gymsrote.entity.comment;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -20,22 +21,18 @@ import net.gymsrote.entity.user.User;
 @Entity
 @Table(name = "comment")
 public class Comment {
-
-	
-    @EmbeddedId
-    private CommentKey id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
     
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    private User user;
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user;
     
-    @ManyToOne
-    @MapsId("productId")
-    @JoinColumn(name = "product_id")
-    private Product product;
-    
-    
+	@OneToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
+       
     @Column
     private Long rate;
     
@@ -48,8 +45,6 @@ public class Comment {
 		this.product = product;
 		this.rate = rate;
 		this.description = description;
-		
-		this.id = new CommentKey(user.getId(), product.getId());
 	}
     
     

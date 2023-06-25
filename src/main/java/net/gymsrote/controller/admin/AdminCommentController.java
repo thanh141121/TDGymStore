@@ -32,12 +32,10 @@ public class AdminCommentController {
 		
 	}
 	
-	@DeleteMapping("/{productId}/{userId}")
-	public ResponseEntity<?> delete(
-			@PathVariable("productId") long productId,
-			@PathVariable("userId") long userId
+	@DeleteMapping("/{commentId}")
+	public ResponseEntity<?> delete(@PathVariable("commentId") long commentId
 			){
-		commentService.delete(userId, productId);
+		commentService.delete(commentId);
 		return ResponseEntity.accepted().body(null);
 	}
 }

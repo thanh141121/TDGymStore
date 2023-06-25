@@ -59,8 +59,8 @@ public class CommentService {
 				);
 	}
 	
-	public void delete(Long userId, Long productId) {
-		commentRepo.deleteById(new CommentKey(userId, productId));
+	public void delete(Long id) {
+		commentRepo.deleteById(id);
 	}
 
 }

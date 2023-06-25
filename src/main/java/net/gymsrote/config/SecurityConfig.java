@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,8 @@ import org.springframework.web.filter.CorsFilter;
 
 //import io.swagger.annotations.ApiModelProperty.AccessMode;
 import lombok.RequiredArgsConstructor;
+import net.gymsrote.config.oauth.CustomOAuthUserService;
+import net.gymsrote.config.oauth.OAuthAuthenticationSuccessHandler;
 import net.gymsrote.entity.EnumEntity.EUserRole;
 
 //import net.gymsrote.security.CustomUserDetailsService;
@@ -30,6 +33,11 @@ import net.gymsrote.entity.EnumEntity.EUserRole;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+	@Autowired
+	CustomOAuthUserService oAuth2UserService;
+	
+	@Autowired
+	OAuthAuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 	
 	@Autowired
 	UserDetailsService userDetailsService;
@@ -39,6 +47,9 @@ public class SecurityConfig {
 	
 	@Autowired
 	CustomAccessDeniedHandler customAccessDeniedHandler;
+	
+
+	
 	
 	@Bean
     protected PasswordEncoder passwordEncoder() {
@@ -58,12 +69,21 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	http
-    		.cors()
-    		.and()
-	    	.csrf().disable()
-	    	.exceptionHandling().authenticationEntryPoint(authenticationExceptionHandling)
-	    	.and()
-	    	.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+		.cors()
+		.and()
+    	.csrf().disable()
+    	.httpBasic().disable()
+    	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
+		.oauth2Login()
+		.userInfoEndpoint()
+		.userService(oAuth2UserService)
+		.and()
+		.successHandler(oAuth2AuthenticationSuccessHandler)
+    	.and()
+    	.exceptionHandling().authenticationEntryPoint(authenticationExceptionHandling)
+    	.and()
+    	.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
     	
     	http
 	    	.authorizeRequests()

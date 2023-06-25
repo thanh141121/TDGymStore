@@ -1,5 +1,8 @@
 package net.gymsrote.service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +21,7 @@ import net.gymsrote.repository.RoleRepository;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.service.utils.ServiceUtils;
 import net.gymsrote.utility.PagingInfo;
+import net.gymsrote.utility.RandomString;
 
 @Service
 @Transactional
@@ -34,6 +38,11 @@ public class UserService {// implements IUserService{
 
 	@Autowired
 	ServiceUtils serviceUtils;
+	
+	public boolean existsByEmail(String email) {
+		return userRepo.existsByEmail(email);
+	}
+	
 
 	public void updateStatus(Long id, Boolean status) {
 		User user = userRepo.findById(id)
@@ -93,5 +102,41 @@ public class UserService {// implements IUserService{
 	public ListWithPagingResponse<?> getAll(PagingInfo pagingInfo) {
 		return serviceUtils.convertToListResponse(userRepo.findAll(pagingInfo.getPageable()),
 				UserDTO.class);
+	}
+
+
+	public String createOAuth2User(String email, String fullname) {
+		String username = generateUsername(email.substring(0, email.indexOf("@")));
+		
+		User newUser = new User(email, 
+				username, 
+				null,
+				fullname, 
+				null);
+		newUser.setIsEnabled(true);
+		newUser.setRole( roleRepo.findByName(EUserRole.USER));
+		newUser = userRepo.save(newUser);
+		userRepo.save(newUser);
+		return username;
+	}
+	
+	private String generateUsername(String username) {
+		if (userRepo.existsByUsername(username).booleanValue()) {
+			String usernameOrgin = username;
+			do {
+				username = RandomString.generateUsername(usernameOrgin);
+			} while (userRepo.existsByUsername(username).booleanValue());
+		}
+		
+		return username;
+	}
+
+
+	
+	public String getUsernameByEmail(String email) {
+		// TODO Auto-generated method stub
+		return userRepo.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found"))
+                .getUsername();
 	}
 }

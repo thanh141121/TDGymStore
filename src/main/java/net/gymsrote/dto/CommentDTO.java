@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class CommentDTO {
+	private Long id;
 	private String fullnameOfUser;
 	private Long userId;
 	private Long productId;
