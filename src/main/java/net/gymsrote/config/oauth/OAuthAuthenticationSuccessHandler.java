@@ -1,17 +1,25 @@
 package net.gymsrote.config.oauth;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.util.URLEncoder;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+
+import net.gymsrote.dto.UserDTO;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.service.UserService;
 import net.gymsrote.service.authen.AuthService;
 
@@ -20,6 +28,9 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 	private final UserService userService;
 	
 	private final AuthService authService;
+	
+	@Autowired
+	ModelMapper mapper;
 	
 
 
@@ -40,18 +51,19 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 		
 		CustomOAuthUser user = (CustomOAuthUser)authentication.getPrincipal();
 		String email = user.getEmail();
-		String username;
+		User userReturned;
 		
 		if (!userService.existsByEmail(email))
-			username = userService.createOAuth2User(email, user.getName());
+			userReturned = userService.createOAuth2User(email, user.getName());
 		else
-			username = userService.getUsernameByEmail(email);
+			userReturned = userService.getUsernameByEmail(email);
 		
 		clearAuthenticationAttributes(request, response);
 		getRedirectStrategy().sendRedirect(
 				request, 
 				response, 
-				redirectUrl + "?token=" + authService.generateToken(username));
+		        redirectUrl + "?token=" + authService.generateToken(userReturned.getUsername()) +
+                  "&user=" + java.net.URLEncoder.encode(new Gson().toJson(mapper.map(userReturned, UserDTO.class)), StandardCharsets.UTF_8.name()));
 		
 		super.onAuthenticationSuccess(request, response, authentication);
 	}

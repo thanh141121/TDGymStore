@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import net.gymsrote.entity.comment.Comment;
-import net.gymsrote.entity.comment.CommentKey;
 import net.gymsrote.entity.product.Product;
 @Repository
 public interface CommentRepo extends JpaRepository<Comment, Long> {

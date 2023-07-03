@@ -33,6 +33,9 @@ import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.UpdatableAvatar;
 import net.gymsrote.entity.EnumEntity.EProductStatus;
+import net.gymsrote.entity.comment.Comment;
+import net.gymsrote.entity.order.OrderDetail;
+import net.gymsrote.entity.user.UserAddress;
 
 @Getter
 @Setter
@@ -124,6 +127,9 @@ public class Product implements UpdatableAvatar{
 	private Integer width;
 	@Column(name = "height")
 	private Integer height;
+	
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+	private List<Comment> comments = new ArrayList<>();
 
 	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;

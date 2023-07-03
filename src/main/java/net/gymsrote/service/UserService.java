@@ -105,7 +105,7 @@ public class UserService {// implements IUserService{
 	}
 
 
-	public String createOAuth2User(String email, String fullname) {
+	public User createOAuth2User(String email, String fullname) {
 		String username = generateUsername(email.substring(0, email.indexOf("@")));
 		
 		User newUser = new User(email, 
@@ -117,7 +117,7 @@ public class UserService {// implements IUserService{
 		newUser.setRole( roleRepo.findByName(EUserRole.USER));
 		newUser = userRepo.save(newUser);
 		userRepo.save(newUser);
-		return username;
+		return newUser;
 	}
 	
 	private String generateUsername(String username) {
@@ -133,10 +133,9 @@ public class UserService {// implements IUserService{
 
 
 	
-	public String getUsernameByEmail(String email) {
+	public User getUsernameByEmail(String email) {
 		// TODO Auto-generated method stub
 		return userRepo.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User not found"))
-                .getUsername();
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
 	}
 }
