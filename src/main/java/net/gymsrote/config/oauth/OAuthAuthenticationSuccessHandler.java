@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 
@@ -26,52 +27,52 @@ import net.gymsrote.service.authen.AuthService;
 @Component
 public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	private final UserService userService;
-	
+
 	private final AuthService authService;
-	
+
 	@Autowired
 	ModelMapper mapper;
-	
 
+	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-	
 	@Value("${net.gymstore.security.oauth2.fe-login-url}")
 	String redirectUrl;
-	
-	public OAuthAuthenticationSuccessHandler(@Lazy UserService userService, @Lazy AuthService authService, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+
+	public OAuthAuthenticationSuccessHandler(@Lazy UserService userService, @Lazy AuthService authService,
+			HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
 		this.userService = userService;
 		this.authService = authService;
 		this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
 	}
-	
+
 	@Override
+	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		
-		CustomOAuthUser user = (CustomOAuthUser)authentication.getPrincipal();
+
+		CustomOAuthUser user = (CustomOAuthUser) authentication.getPrincipal();
 		String email = user.getEmail();
 		User userReturned;
-		
+
 		if (!userService.existsByEmail(email))
 			userReturned = userService.createOAuth2User(email, user.getName());
 		else
 			userReturned = userService.getUsernameByEmail(email);
-		
+
 		clearAuthenticationAttributes(request, response);
 		getRedirectStrategy().sendRedirect(
-				request, 
-				response, 
-		        redirectUrl + "?token=" + authService.generateToken(userReturned.getUsername()) +
-                  "&user=" + java.net.URLEncoder.encode(new Gson().toJson(mapper.map(userReturned, UserDTO.class)), StandardCharsets.UTF_8.name()));
-		
+				request,
+				response,
+				redirectUrl + "?token=" + authService.generateToken(userReturned.getUsername()) +
+						"&user="
+						+ java.net.URLEncoder.encode(new Gson().toJson(mapper.map(userReturned, UserDTO.class)),
+								StandardCharsets.UTF_8.name()));
+
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
-	
 
-
-    protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
-        super.clearAuthenticationAttributes(request);
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-    }
+	protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
+		super.clearAuthenticationAttributes(request);
+		httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+	}
 }

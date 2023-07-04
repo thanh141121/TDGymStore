@@ -7,17 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class CreateCommentRequest {
-	
+
 	@NotNull
 	private Long productId;
-	
+
 	@NotNull
-	private Long Rate;
-	
+	private Long rate;
+
 	@NotBlank
 	private String description;
-	
 
 }

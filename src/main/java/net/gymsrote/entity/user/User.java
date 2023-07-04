@@ -26,7 +26,7 @@ import net.gymsrote.entity.cart.CartDetail;
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
-public class User implements UserInfo{
+public class User implements UserInfo {
 
 	public User(String email, String username, String password, String fullname, String phone,
 			UserRole role) {
@@ -46,14 +46,14 @@ public class User implements UserInfo{
 		this.fullname = fullname;
 		this.isEnabled = false;
 	}
-	
-//    public User(String fullname, String username, String email, String password) {
-//        this.fullname = fullname;
-//        this.username = username;
-//        this.email = email;
-//        this.password = password;
-//    }
 
+	// public User(String fullname, String username, String email, String password)
+	// {
+	// this.fullname = fullname;
+	// this.username = username;
+	// this.email = email;
+	// this.password = password;
+	// }
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,28 +73,26 @@ public class User implements UserInfo{
 
 	@Column(name = "phone", unique = true)
 	private String phone;
-	
+
 	@Column
 	private Boolean isEnabled;
-	
+
 	@Column(name = "verification_code", length = 64)
 	private String verificationCode;
-	
+
 	@OneToOne
 	@JoinColumn(name = "default_address")
 	private UserAddress defaultAddress;
-	
-	@OneToMany(mappedBy = "user")//, fetch = FetchType.LAZY)
-	private List<UserAddress> userAddress;
-	
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cloud_resource_id", referencedColumnName = "id")
-	private MediaResource avatar;
 
+	@OneToMany(mappedBy = "user") // , fetch = FetchType.LAZY)
+	private List<UserAddress> userAddress;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "cloud_resource_id", referencedColumnName = "id")
+	private MediaResource avatar;
 
 	@ManyToOne
 	private UserRole role;
-	
 
 	@OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
 	private List<CartDetail> cart;
