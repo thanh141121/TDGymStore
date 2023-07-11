@@ -1,8 +1,10 @@
 package net.gymsrote.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import net.gymsrote.repository.search.CustomProductRepository;
 import net.gymsrote.repository.search.Filter;
 import net.gymsrote.repository.search.QueryOperator;
 import net.gymsrote.service.ProductService;
+import net.gymsrote.service.Recommendation.Recommender;
 
 @RestController
 @RequestMapping("/api/product")
@@ -29,6 +32,9 @@ public class ProductController {
 	
 	@Autowired
 	CustomProductRepository customProductRepository;
+
+	@Autowired
+	Recommender recommender;
 	
 	@GetMapping("/search/filter")
 	public ResponseEntity<?> searchWithFilterProducts(){
@@ -64,6 +70,12 @@ public class ProductController {
 		PageInfoRequest request = new PageInfoRequest();
 		Pageable pageable = PageRequest.of(request.getCurrentPage(), request.getSize());
 		return ResponseEntity.ok(productService.search(key,pageable));
+	}
+	
+	@GetMapping("/recommend")
+	public ResponseEntity<?> recommend(@RequestParam long id) throws IOException, TasteException{
+		System.out.println(id);
+		return ResponseEntity.ok(recommender.recommendItems(id, 10));
 	}
 	
 	// @GetMapping
