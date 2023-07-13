@@ -22,19 +22,20 @@ import net.gymsrote.service.CommentService;
 public class AdminCommentController {
 	@Autowired
 	private CommentService commentService;
-	
-	@GetMapping("/all")
-	public ResponseEntity<?> getCommentForProduct(@RequestBody(required=false) PageInfoRequest infoRequest){
-		if(infoRequest == null) infoRequest = new PageInfoRequest();
-		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
-		
+
+	@GetMapping
+	public ResponseEntity<?> getCommentForProduct(@RequestBody(required = false) PageInfoRequest infoRequest) {
+		if (infoRequest == null)
+			infoRequest = new PageInfoRequest();
+		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(),
+				infoRequest.buildSort());
+
 		return ResponseEntity.ok(commentService.getAllCommentForAdmin(pageable));
-		
+
 	}
-	
+
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<?> delete(@PathVariable("commentId") long commentId
-			){
+	public ResponseEntity<?> delete(@PathVariable("commentId") long commentId) {
 		commentService.delete(commentId);
 		return ResponseEntity.accepted().body(null);
 	}

@@ -3,9 +3,10 @@ package net.gymsrote.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ConfigDTO {
 	private Long id;
 	private String value;
-	private Boolean isSelected;
+	private Boolean isSelected = false;
 }

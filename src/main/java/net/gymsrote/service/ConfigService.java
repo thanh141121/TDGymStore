@@ -41,6 +41,8 @@ public class ConfigService {
 	public DataResponse<ConfigDTO> delete(Long id) {
 		Config config = repo.findById(id).orElseThrow(
 				() -> new InvalidInputDataException("Không tìm thấy 'Config' với id: " + id));
+		if (config.getIsSelected())
+			throw new InvalidInputDataException("Không thể xóa 'Config' đang được chọn");
 		repo.delete(config);
 		return serviceUtils.convertToDataResponse(config, ConfigDTO.class);
 	}
