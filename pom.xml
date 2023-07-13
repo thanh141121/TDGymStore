@@ -117,6 +117,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
     		<groupId>com.google.code.gson</groupId>
     		<artifactId>gson</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.mahout</groupId>
+		    <artifactId>mahout-core</artifactId>
+		    <version>0.9</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
