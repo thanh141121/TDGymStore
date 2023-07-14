@@ -183,15 +183,15 @@ public class OrderService {
 	private DataResponse<OrderDTO> cancelOrder(Order order) {
 		switch (order.getStatus()) {
 			case WAIT_FOR_CONFIRM:
-				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO)
-						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
+				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO) ) {
+//						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
 					// paymentService.refundPayment(order);
 				}
 				order.setStatus(EOrderStatus.CANCELLED);
 				break;
 			case WAIT_FOR_SEND:
-				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO)
-						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
+				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO) ) {
+//						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
 					// paymentService.refundPayment(order);
 				}
 

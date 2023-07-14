@@ -38,7 +38,7 @@ public class OrderController {
 	
 	@GetMapping(value = "/status")
 	public ResponseEntity<?> getByStatus(
-			@RequestBody(required=true) EOrderStatus status,
+			@RequestParam EOrderStatus status,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestParam(required = false) Integer page,
 			@RequestBody(required=false) PageInfoRequest infoRequest) {
