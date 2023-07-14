@@ -3,6 +3,7 @@ package net.gymsrote.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import net.gymsrote.controller.payload.request.order.CreateOrderRequest;
 import net.gymsrote.controller.payload.response.DataResponse;
 import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.OrderDTO;
+import net.gymsrote.dto.OrderGeneralDTO;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.EnumEntity.EPaymentMethod;
 import net.gymsrote.entity.cart.CartDetailKey;
@@ -82,6 +84,16 @@ public class OrderService {
 			throw new InvalidInputDataException("Can not read order of other buyers");
 
 		return serviceUtils.convertToDataResponse(order, OrderDTO.class);
+	}
+	
+
+	public ListWithPagingResponse<?> getByStatus(User user, EOrderStatus status, Pageable pagingInfo) {
+		Page<Order> orders = orderRepo.findAllByUserAndStatus(user, status, pagingInfo);
+		
+		if(orders == null)
+			return null;
+		
+		return serviceUtils.convertToListResponse(orders, OrderGeneralDTO.class);
 	}
 
 	@Transactional
