@@ -1,14 +1,20 @@
 package net.gymsrote.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.payload.request.PageInfoRequest;
+import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.Product_;
+import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.search.CustomProductRepository;
 import net.gymsrote.repository.search.Filter;
 import net.gymsrote.repository.search.QueryOperator;
@@ -72,11 +81,18 @@ public class ProductController {
 		return ResponseEntity.ok(productService.search(key,pageable));
 	}
 	
+	//Item-Based 
 	@GetMapping("/recommend")
-	public ResponseEntity<?> recommend(@RequestParam long id) throws IOException, TasteException{
-		System.out.println(id);
-		return ResponseEntity.ok(recommender.recommendItems(id, 10));
+	public ResponseEntity<?> recommendforUser(@AuthenticationPrincipal UserDetailsImpl<User> user) throws IOException, TasteException{
+
+		return ResponseEntity.ok(recommender.recommendItems(user.getUser().getId(), 10));
 	}
+	
+	//Content-based
+	@GetMapping("/recommend/{productId}")
+    public ResponseEntity<?>  recommendProducts(@PathVariable int productId) throws InterruptedException {
+		return  ResponseEntity.ok(productService.recommendContentBased(productId));
+    }
 	
 	// @GetMapping
 	// public ResponseEntity<?> searchProducts(@RequestParam String key){

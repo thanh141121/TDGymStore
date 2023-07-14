@@ -33,12 +33,12 @@ public class Recommender {
 	@Autowired
 	ServiceUtils serviceUtils;
 
-    public ListResponse<ProductGeneralDetailDTO> recommendItems(long itemId, int numRecommendations) throws IOException, TasteException {
-    	DataModel model = new FileDataModel(new File("data/dataCF.csv"));
+    public ListResponse<ProductGeneralDetailDTO> recommendItems(long userId, int numRecommendations) throws IOException, TasteException {
+    	DataModel model = new FileDataModel(new File("data/dataIB.csv"));
 
         ItemSimilarity similarity = new PearsonCorrelationSimilarity(model);
         GenericItemBasedRecommender recommender = new GenericItemBasedRecommender(model, similarity);
-        List<RecommendedItem> recommendedItems  = recommender.recommend(itemId, numRecommendations);
+        List<RecommendedItem> recommendedItems  = recommender.recommend(userId, numRecommendations);
         List<Product> products = new ArrayList<>();
         for (RecommendedItem recommendedItem : recommendedItems) {
             Long productId = recommendedItem.getItemID();

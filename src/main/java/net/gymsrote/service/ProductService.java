@@ -1,6 +1,9 @@
 package net.gymsrote.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -226,5 +229,42 @@ public class ProductService {
 			throw new InvalidInputDataException("Update status failed");
 		}
 	}
+	
+	public ListResponse<ProductGeneralDetailDTO> recommendContentBased(int id) throws InterruptedException{
+	    StringBuilder resultBuilder = new StringBuilder();
+	    List<Long> recommendations = new ArrayList<>();
+	    try {
+	        // Xây dựng quá trình thực thi file Python
+	        ProcessBuilder processBuilder = new ProcessBuilder("python", "D:/F8/testpython/contentBasedFilter2.py", String.valueOf(id));
+	        Process process = processBuilder.start();
+
+	        // Đọc dữ liệu từ InputStream và ErrorStream của quá trình thực thi
+	        BufferedReader inputStreamReader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+	        BufferedReader errorStreamReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+	        String line = inputStreamReader.readLine(); // Đọc dòng duy nhất từ file Python
+	        String[] productIdStrings = line.split(","); // Phân tách chuỗi thành mảng các chuỗi productId
+
+	        // Chuyển đổi các chuỗi productId thành số nguyên và thêm vào danh sách recommendations
+	        for (String productIdString : productIdStrings) {
+	            recommendations.add(Long.parseLong(productIdString.trim()));
+	        }
+	        
+	        //Chuyển sang list product
+	        
+	        List<Product> products = new ArrayList<>();
+	        for (Long idPro : recommendations) {
+	            Product product = productRepo.findById(idPro).orElse(null);
+	            if (product != null) {
+	                products.add(product);
+	            }
+	        }
+	        
+	        return serviceUtils.convertToListResponse(products, ProductGeneralDetailDTO.class);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+        return null;
+    }
 
 }
