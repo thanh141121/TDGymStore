@@ -31,7 +31,11 @@ public class AdminCommentController {
 				infoRequest.buildSort());
 
 		return ResponseEntity.ok(commentService.getAllCommentForAdmin(pageable));
+	}
 
+	@GetMapping("/{commentId}")
+	public ResponseEntity<?> getCommentById(@PathVariable("commentId") long commentId) {
+		return ResponseEntity.ok(commentService.getCommentById(commentId));
 	}
 
 	@DeleteMapping("/{commentId}")
