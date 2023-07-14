@@ -14,7 +14,6 @@ import net.gymsrote.entity.EnumEntity.ETransportation;
 public class OrderGeneralDTO {
 	private Long id;
 	private EOrderStatus status;
-	private ETransportation transportation;
 	private String userFullname;
 	private Date createTime;
 	private String addressDetail;

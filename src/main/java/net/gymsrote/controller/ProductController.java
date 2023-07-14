@@ -13,7 +13,6 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.gymsrote.config.login.UserDetailsImpl;
 import net.gymsrote.controller.payload.request.PageInfoRequest;
-import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.product.Product;
 import net.gymsrote.entity.product.Product_;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.search.CustomProductRepository;
 import net.gymsrote.repository.search.Filter;
 import net.gymsrote.repository.search.QueryOperator;
-import net.gymsrote.service.OrderService;
 import net.gymsrote.service.ProductService;
 import net.gymsrote.service.Recommendation.Recommender;
 
@@ -47,17 +44,9 @@ public class ProductController {
 
 	@Autowired
 	Recommender recommender;
-	@Autowired
-	OrderService orderService;
 	
 	@GetMapping("/search/filter")
-	public ResponseEntity<?> searchWithFilterProducts(
-
-			@RequestParam EOrderStatus status,
-			@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestParam(required = false) Integer page,
-			@RequestBody(required=false) PageInfoRequest infoRequest
-			){
+	public ResponseEntity<?> searchWithFilterProducts(){
 		Filter lowRange = Filter.builder()
 			    .field(Product_.MIN_PRICE)
 			    .operator(QueryOperator.LESS_THAN)
@@ -72,18 +61,7 @@ public class ProductController {
 		List<Filter> filters = new ArrayList<>();
 		filters.add(lowRange);
 		filters.add(namelike);
-//		return ResponseEntity.ok( customProductRepository.getQueryResult(filters));
-			
-			if(infoRequest == null) infoRequest = new PageInfoRequest();
-			if(page != null) infoRequest.setCurrentPage(page);
-			Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), Sort.by(Sort.Direction.DESC, "id"));
-
-			return ResponseEntity.ok(
-				orderService.getByStatus(
-					user.getUser(),
-					status,
-					pageable
-				));
+		return ResponseEntity.ok( customProductRepository.getQueryResult(filters));
 	}
 	
 	@GetMapping
