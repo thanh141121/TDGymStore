@@ -6,7 +6,7 @@ import javax.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter 
+@Getter
 @Setter
 public class SignUpRequest {
     @NotBlank
@@ -25,8 +25,9 @@ public class SignUpRequest {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
-    
+
     @NotNull
-    @Size(max=10)
-	private String phone;
+    @Pattern(regexp = "\\d+", message = "Phone number must be numeric")
+    @Size(min = 10, max = 10, message = "Phone number must be 10 digits")
+    private String phone;
 }
