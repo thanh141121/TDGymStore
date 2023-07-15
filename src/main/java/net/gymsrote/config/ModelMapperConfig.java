@@ -121,7 +121,9 @@ public class ModelMapperConfig {
 		mapper.createTypeMap(Comment.class, CommentDTO.class).addMappings(m -> {
 			m.map(src -> src.getUser().getFullname(), CommentDTO::setFullnameOfUser);
 			m.map(src -> src.getUser().getId(), CommentDTO::setUserId);
-			m.map(src -> src.getProduct().getId(), CommentDTO::setProductId);
+			m.map(src -> src.getProductVariation().getId(), CommentDTO::setProductVariationId);
+			m.map(src -> src.getProductVariation().getVariationName(), CommentDTO::setProductVariationName);
+			m.map(src -> src.getCreatedDate(), CommentDTO::setCreatedDate);
 			
 		});
 		

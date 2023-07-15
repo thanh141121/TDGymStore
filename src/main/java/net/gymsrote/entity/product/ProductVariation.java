@@ -1,5 +1,9 @@
 package net.gymsrote.entity.product;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -20,6 +25,7 @@ import lombok.Setter;
 import net.gymsrote.entity.MediaResource;
 import net.gymsrote.entity.UpdatableAvatar;
 import net.gymsrote.entity.EnumEntity.EProductVariationStatus;
+import net.gymsrote.entity.comment.Comment;
 import net.gymsrote.entity.listener.ProductVariationListener;
 
 @Getter @Setter
@@ -56,6 +62,10 @@ public class ProductVariation implements UpdatableAvatar{
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
 	private EProductVariationStatus status;	
+
+	
+	@OneToMany(mappedBy = "productVariation", cascade = CascadeType.REMOVE)
+	private List<Comment> comments = new ArrayList<>();
 	
 	public Long getFinalPrice(){
 		if(discount!= null)

@@ -12,9 +12,11 @@ import net.gymsrote.controller.payload.response.ListWithPagingResponse;
 import net.gymsrote.dto.CommentDTO;
 import net.gymsrote.entity.comment.Comment;
 import net.gymsrote.entity.product.Product;
+import net.gymsrote.entity.product.ProductVariation;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.repository.CommentRepo;
 import net.gymsrote.repository.ProductRepo;
+import net.gymsrote.repository.ProductVariationRepo;
 import net.gymsrote.repository.UserRepo;
 import net.gymsrote.service.utils.ServiceUtils;
 
@@ -29,6 +31,9 @@ public class CommentService {
 
 	@Autowired
 	ProductRepo productRepo;
+
+	@Autowired
+	ProductVariationRepo productVariationRepo;
 
 	@Autowired
 	ServiceUtils serviceUtils;
@@ -49,9 +54,10 @@ public class CommentService {
 	public DataResponse<CommentDTO> create(CreateCommentRequest data, Long idUser) {
 
 		User user = userRepo.getReferenceById(idUser);
-		Product product = productRepo.getReferenceById(data.getProductId());
-		Comment c = new Comment(user, product, data.getRate(), data.getDescription());
+		ProductVariation productVar = productVariationRepo.getReferenceById(data.getProductVariationId());
+		Comment c = new Comment(user, productVar, data.getRate(), data.getDescription());
 		int rate = (int) data.getRate().longValue();
+		Product product = c.getProductVariation().getProduct();
 		switch (rate) {
 			case 1:
 				product.setRating1(product.getRating1() + 1);
@@ -84,7 +90,7 @@ public class CommentService {
 	public void delete(Long id) {
 		Comment c = commentRepo.getReferenceById(id);
 		commentRepo.deleteById(id);
-		Product p = c.getProduct();
+		Product p = c.getProductVariation().getProduct();
 		switch (c.getRate().intValue()) {
 			case 1:
 				p.setRating1(p.getRating1() - 1);
@@ -116,9 +122,9 @@ public class CommentService {
 	private Double countAverageRating(Product p) {
 		Long total = (long) (p.getRating1() + p.getRating2() * 2 + p.getRating3() * 3 + p.getRating4() * 4
 				+ p.getRating5() * 5);
-		int length = p.getComments().size();
-		if (length > 0)
-			return (double) total / length;
+//		int length = p.getComments().size();
+//		if (length > 0)
+//			return (double) total / length;
 		return 0.0;
 	}
 

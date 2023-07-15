@@ -127,9 +127,6 @@ public class Product implements UpdatableAvatar{
 	private Integer width;
 	@Column(name = "height")
 	private Integer height;
-	
-	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-	private List<Comment> comments = new ArrayList<>();
 
 	public Product(ProductCategory category, String name, String description, MediaResource avatar, EProductStatus status) {
 		this.category = category;
