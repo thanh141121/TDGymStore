@@ -85,14 +85,13 @@ public class OrderService {
 
 		return serviceUtils.convertToDataResponse(order, OrderDTO.class);
 	}
-	
 
 	public ListWithPagingResponse<?> getByStatus(User user, EOrderStatus status, Pageable pagingInfo) {
 		Page<Order> orders = orderRepo.findAllByUserAndStatus(user, status, pagingInfo);
-		
-		if(orders == null)
+
+		if (orders == null)
 			return null;
-		
+
 		return serviceUtils.convertToListResponse(orders, OrderGeneralDTO.class);
 	}
 
@@ -145,7 +144,7 @@ public class OrderService {
 			if (idBuyer != null && !order.getUser().getId().equals(idBuyer))
 				throw new InvalidInputDataException("Can not update other buyer's orders");
 
-			if (newStatus == EOrderStatus.CANCELLED)
+			if (newStatus == EOrderStatus.CANCELED)
 				return cancelOrder(order);
 
 			if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
@@ -183,29 +182,29 @@ public class OrderService {
 	private DataResponse<OrderDTO> cancelOrder(Order order) {
 		switch (order.getStatus()) {
 			case WAIT_FOR_CONFIRM:
-				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO) ) {
-//						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
+				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO)) {
+					// || order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
 					// paymentService.refundPayment(order);
 				}
-				order.setStatus(EOrderStatus.CANCELLED);
+				order.setStatus(EOrderStatus.CANCELED);
 				break;
 			case WAIT_FOR_SEND:
-				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO) ) {
-//						|| order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
+				if (order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_MOMO)) {
+					// || order.getPaymentMethod().equals(EPaymentMethod.ONLINE_PAYMENT_PAYPAL)) {
 					// paymentService.refundPayment(order);
 				}
 
-				// revert stock when order is cancelled
+				// revert stock when order is CANCELED
 				order.getOrderDetails().stream().forEach(
 						od -> productVariationRepo.refundStock(od.getProductVariation().getId(), od.getQuantity()));
 
-				order.setStatus(EOrderStatus.CANCELLED);
+				order.setStatus(EOrderStatus.CANCELED);
 				break;
 			case WAIT_FOR_PAYMENT:
-				order.setStatus(EOrderStatus.CANCELLED);
+				order.setStatus(EOrderStatus.CANCELED);
 				break;
 			default:
-				throw new CommonRuntimeException("Order cannot be cancelled");
+				throw new CommonRuntimeException("Order cannot be CANCELED");
 		}
 
 		return serviceUtils.convertToDataResponse(orderRepo.save(order), OrderDTO.class);

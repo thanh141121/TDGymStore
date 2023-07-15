@@ -5,15 +5,17 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 product_id = int(sys.argv[1])
 # Đọc dữ liệu từ file CSV
-data = pd.read_csv('D:/F8/testpython/dataContent.csv')
+data = pd.read_csv(
+    'C:/Users/Duy/Documents/HocTap/TLCN/TDGymStore/data/dataContent.csv')
 
 # Tạo vector từ các thuộc tính nameProduct, description và categoryName
 vectorizer = TfidfVectorizer()
-corpus =data['name'] + ' ' + data['description'] + ' ' + data['categoryName']
+corpus = data['name'] + ' ' + data['description'] + ' ' + data['categoryName']
 description_matrix = vectorizer.fit_transform(corpus)
 
 # Tính ma trận độ tương đồng dựa trên cosine similarity
 similarity_matrix = cosine_similarity(description_matrix)
+
 
 def convert_array_to_string(arr):
     # Sử dụng phương thức join() để kết hợp các phần tử của mảng thành một chuỗi
@@ -22,6 +24,8 @@ def convert_array_to_string(arr):
     return string
 
 # Hàm đề xuất sản phẩm dựa trên id sản phẩm đầu vào
+
+
 def recommend_products(product_id, top_n):
     # Lấy chỉ số của sản phẩm trong dataset dựa trên id
     index = data[data['id'] == product_id].index[0]
@@ -41,6 +45,7 @@ def recommend_products(product_id, top_n):
     # Trả về danh sách các sản phẩm được đề xuất
     recommended_products = data.loc[top_indices, 'id'].values
     return recommended_products
+
 
 # Sử dụng hàm recommend_products để đề xuất sản phẩm
 # product_id = 5  # Id của sản phẩm đầu vào
