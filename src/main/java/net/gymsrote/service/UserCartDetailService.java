@@ -3,6 +3,7 @@ package net.gymsrote.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.payload.request.CreateCartDetailRequest;
@@ -58,6 +59,8 @@ public class UserCartDetailService {
 				CartDetailDTO.class);
 	}
 
+
+	@Transactional(rollbackFor = { InvalidInputDataException.class })
 	public DataResponse<?> create(Long idProductVariation, Long userId,
 			CreateCartDetailRequest data) {
 		if (!productVariationRepo.existsById(idProductVariation)) {
@@ -70,8 +73,13 @@ public class UserCartDetailService {
 					productVariationRepo.getReferenceById(idProductVariation), data.getQuantity());
 		}else {
 			cartDetail = cartDetailRepo.getReferenceById(new CartDetailKey(userId, idProductVariation));
-			cartDetail.setQuantity(cartDetail.getQuantity() + data.getQuantity());
 		}
+		long tempQty = cartDetail.getQuantity() + data.getQuantity();
+		if(cartDetail.getProductVariation().getAvailableQuantity() >= tempQty)
+			cartDetail.setQuantity(cartDetail.getQuantity() + data.getQuantity());
+		else
+			throw new InvalidInputDataException(
+					"Số lượng thêm vào lớn hơn số lượng sản phẩm hiện có" + idProductVariation);
 		return serviceUtils.convertToDataResponse(cartDetailRepo.save(cartDetail),
 				CartDetailDTO.class);
 	}
