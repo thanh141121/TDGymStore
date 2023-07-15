@@ -80,7 +80,7 @@ public class AuthService {
 		return jwtUtil.generateJwtToken(username);
 	}
 	
-	@Transactional(rollbackFor = { UnknownException.class })
+	@Transactional(rollbackFor = { UnknownException.class, Exception.class })
 	public BaseResponse register(SignUpRequest user, String siteURL){ //throws UnsupportedEncodingException, MessagingException
 		try {
 			User newUser = new User(user.getEmail(), 

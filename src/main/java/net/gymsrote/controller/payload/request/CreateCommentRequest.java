@@ -13,7 +13,7 @@ import lombok.Setter;
 public class CreateCommentRequest {
 
 	@NotNull
-	private Long productId;
+	private Long productVariationId;
 
 	@NotNull
 	private Long rate;
