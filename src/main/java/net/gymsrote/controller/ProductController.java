@@ -75,9 +75,12 @@ public class ProductController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<?> searchProducts(@RequestParam String key){
-		PageInfoRequest request = new PageInfoRequest();
-		Pageable pageable = PageRequest.of(request.getCurrentPage(), request.getSize());
+	public ResponseEntity<?> searchProducts(@RequestParam String key,
+			@RequestParam(value = "page", required=false) Integer page,
+			@RequestBody(required=false) PageInfoRequest infoRequest){
+		if(infoRequest == null) infoRequest = new PageInfoRequest();
+		if(page != null) infoRequest.setCurrentPage(page);
+		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), infoRequest.buildSort());
 		return ResponseEntity.ok(productService.search(key,pageable));
 	}
 	

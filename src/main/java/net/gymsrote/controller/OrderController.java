@@ -27,6 +27,7 @@ import net.gymsrote.controller.payload.request.order.CreateOrderRequest;
 import net.gymsrote.entity.EnumEntity.EOrderStatus;
 import net.gymsrote.entity.user.User;
 import net.gymsrote.service.OrderService;
+import net.gymsrote.service.PaymentService;
 import net.gymsrote.utility.PagingInfo;
 
 @RestController
@@ -34,6 +35,9 @@ import net.gymsrote.utility.PagingInfo;
 public class OrderController {
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	PaymentService paymentService;
 
 	@GetMapping
 	public ResponseEntity<?> getByStatus(
@@ -62,6 +66,14 @@ public class OrderController {
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestBody @Valid CreateOrderRequest body) {
 		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body, req));
+	}
+	
+	@PostMapping(value="{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createPayment(
+			@PathVariable Long id,
+			HttpServletRequest req,
+			@AuthenticationPrincipal UserDetailsImpl<User> user) {
+		return ResponseEntity.ok(paymentService.createPayment(id, user.getUser().getId(), req));
 	}
 	
 	@PutMapping("/{id}")

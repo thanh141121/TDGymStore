@@ -11,7 +11,7 @@ public class PageInfoRequest {
 
 	private Integer currentPage = 0;
 	private Integer size;
-	private String sortBy;
+	private String sortBy = "id";
 	private String direction = "dsc";
 	
 	public PageInfoRequest(Integer currentPage, Integer size, String sortBy, String direction) {
