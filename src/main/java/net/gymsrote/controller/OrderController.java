@@ -28,58 +28,38 @@ import net.gymsrote.entity.user.User;
 import net.gymsrote.service.OrderService;
 import net.gymsrote.utility.PagingInfo;
 
-
-
 @RestController
 @RequestMapping("/api/user/order")
 public class OrderController {
 	@Autowired
 	OrderService orderService;
-	
-	@GetMapping(value = "/status")
+
+	@GetMapping
 	public ResponseEntity<?> getByStatus(
 			@RequestParam EOrderStatus status,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestParam(required = false) Integer page,
-			@RequestBody(required=false) PageInfoRequest infoRequest) {
-		
-		if(infoRequest == null) infoRequest = new PageInfoRequest();
-		if(page != null) infoRequest.setCurrentPage(page);
-		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), Sort.by(Sort.Direction.DESC, "id"));
+			@RequestBody(required = false) PageInfoRequest infoRequest) {
+
+		if (infoRequest == null)
+			infoRequest = new PageInfoRequest();
+		if (page != null)
+			infoRequest.setCurrentPage(page);
+		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(),
+				Sort.by(Sort.Direction.DESC, "id"));
 
 		return ResponseEntity.ok(
-			orderService.getByStatus(
-				user.getUser(),
-				status,
-				pageable
-			));
+				orderService.getByStatus(
+						user.getUser(),
+						status,
+						pageable));
 	}
-	
+
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(
 			HttpServletRequest req,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestBody @Valid CreateOrderRequest body
-			){
+			@RequestBody @Valid CreateOrderRequest body) {
 		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body, req));
-	}
-
-	@GetMapping(produces = "application/json")
-	public ResponseEntity<?> getBuyers(
-		@AuthenticationPrincipal UserDetailsImpl<User> user,
-			@RequestParam(required = false) Integer page,
-			@RequestBody(required=false) PageInfoRequest infoRequest) {
-		
-		if(infoRequest == null) infoRequest = new PageInfoRequest();
-		if(page != null) infoRequest.setCurrentPage(page);
-		Pageable pageable = PageRequest.of(infoRequest.getCurrentPage(), infoRequest.getSize(), Sort.by(Sort.Direction.DESC, "id"));
-
-		return ResponseEntity.ok(
-			orderService.getAll(
-				user.getUser().getId(),
-				pageable,
-				true
-			)
-		);
 	}
 }

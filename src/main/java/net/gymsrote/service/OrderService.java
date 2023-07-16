@@ -92,7 +92,7 @@ public class OrderService {
 		if (orders == null)
 			return null;
 
-		return serviceUtils.convertToListResponse(orders, OrderGeneralDTO.class);
+		return serviceUtils.convertToListResponse(orders, OrderDTO.class);
 	}
 
 	@Transactional
