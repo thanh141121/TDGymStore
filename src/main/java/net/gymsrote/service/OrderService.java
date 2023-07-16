@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.gymsrote.controller.advice.exception.CommonRuntimeException;
+import net.gymsrote.controller.advice.exception.DataConflictException;
 import net.gymsrote.controller.advice.exception.InvalidInputDataException;
 import net.gymsrote.controller.advice.exception.UnknownException;
 import net.gymsrote.controller.payload.request.filter.OrderFilter;
@@ -136,16 +137,21 @@ public class OrderService {
 	}
 
 	@Transactional(rollbackFor = { InvalidInputDataException.class, UnknownException.class })
-	public DataResponse<OrderDTO> updateStatus(Long id, Long idBuyer, EOrderStatus newStatus) {
+	public DataResponse<OrderDTO> updateStatus(Long id, User Buyer, EOrderStatus newStatus) {
 		try {
 			Order order = orderRepo.findById(id).orElseThrow(
 					() -> new InvalidInputDataException("No order found with given id "));
 
-			if (idBuyer != null && !order.getUser().getId().equals(idBuyer))
+			if (Buyer != null && !order.getUser().getId().equals(Buyer.getId()))
 				throw new InvalidInputDataException("Can not update other buyer's orders");
-
-			if (newStatus == EOrderStatus.CANCELED)
-				return cancelOrder(order);
+			
+			if(Buyer != null) {
+				if (newStatus == EOrderStatus.CANCELED) {
+					if (order.getStatus() == EOrderStatus.WAIT_FOR_SEND)
+						throw new DataConflictException("Không thể Cancel đơn hàng ở trạng thái \"Đợi giao hàng\"");
+					return cancelOrder(order);
+				}
+			}
 
 			if (newStatus == EOrderStatus.WAIT_FOR_SEND && order.getStatus() == EOrderStatus.WAIT_FOR_CONFIRM) {
 				order.getOrderDetails().stream().forEach(od -> {

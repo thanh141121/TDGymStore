@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,5 +62,12 @@ public class OrderController {
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
 			@RequestBody @Valid CreateOrderRequest body) {
 		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body, req));
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateOrderStatus(@PathVariable Long id,
+			@AuthenticationPrincipal UserDetailsImpl<User> user,
+			@RequestParam("new-status") EOrderStatus newStatus) {
+		return ResponseEntity.ok(orderService.updateStatus(id, user.getUser(), newStatus));
 	}
 }

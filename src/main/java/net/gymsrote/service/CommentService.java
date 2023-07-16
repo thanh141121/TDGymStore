@@ -1,5 +1,7 @@
 package net.gymsrote.service;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -122,9 +124,11 @@ public class CommentService {
 	private Double countAverageRating(Product p) {
 		Long total = (long) (p.getRating1() + p.getRating2() * 2 + p.getRating3() * 3 + p.getRating4() * 4
 				+ p.getRating5() * 5);
+	    AtomicInteger length = new AtomicInteger(0);
+	    p.getVariations().forEach(pv -> length.addAndGet(pv.getComments().size()));
 //		int length = p.getComments().size();
-//		if (length > 0)
-//			return (double) total / length;
+		if (length.longValue() > 0)
+			return (double) total / length.longValue();
 		return 0.0;
 	}
 
