@@ -35,7 +35,7 @@ import net.gymsrote.utility.PagingInfo;
 public class OrderController {
 	@Autowired
 	OrderService orderService;
-	
+
 	@Autowired
 	PaymentService paymentService;
 
@@ -67,15 +67,15 @@ public class OrderController {
 			@RequestBody @Valid CreateOrderRequest body) {
 		return ResponseEntity.ok(orderService.create(user.getUser().getId(), body, req));
 	}
-	
-	@PostMapping(value="{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+
+	@PostMapping(value = "/{id}")
 	public ResponseEntity<?> createPayment(
 			@PathVariable Long id,
 			HttpServletRequest req,
 			@AuthenticationPrincipal UserDetailsImpl<User> user) {
 		return ResponseEntity.ok(paymentService.createPayment(id, user.getUser().getId(), req));
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateOrderStatus(@PathVariable Long id,
 			@AuthenticationPrincipal UserDetailsImpl<User> user,
