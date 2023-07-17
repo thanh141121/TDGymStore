@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -217,10 +220,36 @@ public class ProductService {
 	}
 	
 	public ListWithPagingResponse<ProductGeneralDetailDTO> search(String keyword, Pageable pageable) {
+		// Gọi phương thức search() của repository để lấy ra các sản phẩm thỏa mãn điều kiện keyword và status = 0.
+        List<Product> products = productRepo.search(keyword);
+
+        // Lọc các sản phẩm theo điều kiện status của Category
+        List<Product> filteredProducts = products.stream()
+                .filter(product -> product.getCategory().getStatus() == EProductCategoryStatus.ENABLED)
+                .collect(Collectors.toList());
 		return serviceUtils.convertToListResponse(
-				productRepo.search(keyword, pageable),
+				convertListToPage(filteredProducts, pageable),
 				ProductGeneralDetailDTO.class);
 	}
+
+	public Page<Product> convertListToPage(List<Product> productList, Pageable pageable) {
+
+        int currentPage = pageable.getPageNumber() + 1; // Lấy trang hiện tại từ Pageable
+        int pageSize = pageable.getPageSize();
+
+        // Tính tổng số trang và tạo đối tượng PageImpl<Product> cho trang hiện tại
+        int start = (currentPage - 1) * pageSize;
+        int end = Math.min((start + pageSize), productList.size());
+        if (start > productList.size() || start < 0 || start > end) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+        }
+
+        List<Product> pageContent = productList.subList(start, end);
+        long totalElements = productList.size();
+        int totalPages = (int) Math.ceil((double) totalElements / (double) pageSize);
+
+        return new PageImpl<>(pageContent, pageable, totalElements);
+    }
 
 	public BaseResponse updateStatus(Long id, EProductStatus status) {
 		if(productRepo.updateStatus(id, status) == 1) {

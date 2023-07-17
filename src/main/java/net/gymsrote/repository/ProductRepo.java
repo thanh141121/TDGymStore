@@ -20,8 +20,8 @@ public interface ProductRepo
 		extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
 	
     @Query(value = "SELECT * FROM product WHERE MATCH(name, description) "
-            + "AGAINST (?1) and status = 0", nativeQuery = true)          
-    Page<Product> search(String keyword, Pageable pageable);
+            + "AGAINST (?1) and status = 0 order by id desc", nativeQuery = true)          
+    List<Product> search(String keyword);
     
     @Query(value = "SELECT * FROM product WHERE category_id = ?1 and status = 0", nativeQuery = true)          
     Page<Product> findAllByCategoryId(Long categoryId, Pageable pageable);
